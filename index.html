@@ -76,19 +76,18 @@
                               linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
         }
 
-        /* FAQ Accordion */
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.4s ease;
+        /* Scorrimento Clienti Animato (Marquee) */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-        .faq-item.active .faq-answer {
-            max-height: 300px;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
+        .animate-marquee-container {
+            display: flex;
+            width: 200%;
+            animation: marquee 30s linear infinite;
         }
-        .faq-item.active .faq-icon {
-            transform: rotate(180deg);
+        .animate-marquee-container:hover {
+            animation-play-state: paused;
         }
     </style>
 </head>
@@ -208,6 +207,52 @@
         </div>
     </section>
 
+    <section class="py-8 border-y border-white/5 bg-white/[0.01] overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 text-center mb-6">
+            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Aziende e Istituzioni che si affidano alla nostra infrastruttura</span>
+        </div>
+        
+        <div class="relative w-full overflow-hidden">
+            <div class="animate-marquee-container items-center gap-12 sm:gap-20 text-slate-400 opacity-60">
+                <div class="flex items-center gap-12 sm:gap-20 min-w-max">
+                    <span class="text-2xl font-bold tracking-tight">Famila</span>
+                    <span class="text-3xl font-black italic tracking-tighter">CocaCola</span>
+                    <span class="text-2xl font-bold tracking-tighter">FOMA S.p.A. <span class="text-sm font-medium tracking-normal">(Pralboino)</span></span>
+                    <span class="text-3xl font-black tracking-widest">INPS</span>
+                    <span class="text-3xl font-black">INAIL</span>
+                    <span class="text-4xl font-black italic border-2 border-slate-400 rounded-full w-14 h-14 flex items-center justify-center">hp</span>
+                    <span class="text-3xl font-black tracking-widest">ASUS</span>
+                    <span class="text-2xl font-semibold tracking-tight">Infocamere</span>
+                    <span class="text-3xl font-black tracking-tighter">McDonald's</span>
+                    <span class="text-2xl font-black tracking-tighter">ROADHOUSE</span>
+                    <span class="text-3xl font-black">KFC</span>
+                    <span class="text-2xl font-bold">YAMI <span class="text-sm font-light uppercase tracking-widest">Sushi</span></span>
+                    <span class="text-2xl font-black tracking-tight">Multisala OZ</span>
+                    <span class="text-2xl font-bold tracking-widest">ELNOS</span>
+                </div>
+                <div class="flex items-center gap-12 sm:gap-20 min-w-max">
+                    <span class="text-2xl font-bold tracking-tight">Famila</span>
+                    <span class="text-3xl font-black italic tracking-tighter">CocaCola</span>
+                    <span class="text-2xl font-bold tracking-tighter">FOMA S.p.A. <span class="text-sm font-medium tracking-normal">(Pralboino)</span></span>
+                    <span class="text-3xl font-black tracking-widest">INPS</span>
+                    <span class="text-3xl font-black">INAIL</span>
+                    <span class="text-4xl font-black italic border-2 border-slate-400 rounded-full w-14 h-14 flex items-center justify-center">hp</span>
+                    <span class="text-3xl font-black tracking-widest">ASUS</span>
+                    <span class="text-2xl font-semibold tracking-tight">Infocamere</span>
+                    <span class="text-3xl font-black tracking-tighter">McDonald's</span>
+                    <span class="text-2xl font-black tracking-tighter">ROADHOUSE</span>
+                    <span class="text-3xl font-black">KFC</span>
+                    <span class="text-2xl font-bold">YAMI <span class="text-sm font-light uppercase tracking-widest">Sushi</span></span>
+                    <span class="text-2xl font-black tracking-tight">Multisala OZ</span>
+                    <span class="text-2xl font-bold tracking-widest">ELNOS</span>
+                </div>
+            </div>
+            
+            <div class="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-[#020617] to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-[#020617] to-transparent pointer-events-none"></div>
+        </div>
+    </section>
+
     <section id="aziende20" class="py-24 px-4 sm:px-6 bg-slate-900/30 relative border-t border-white/5">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
@@ -252,7 +297,7 @@
                 </div>
             </div>
 
-            </div>
+        </div>
     </section>
 
     <footer class="bg-[#01030a] py-16 px-6 border-t border-blue-900/30 mt-10">
@@ -290,7 +335,39 @@
         <div class="glass-card w-full max-w-lg rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto" id="contactModalContent">
             <button onclick="closeModal('contactModal')" class="absolute top-6 right-6 text-slate-500 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
             <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">Iniziamo il <span class="text-blue-500">Setup.</span></h3>
-            </div>
+            <p class="text-sm text-slate-400 mb-6">Invia una richiesta e un nostro consulente ti contatterà per analizzare l'infrastruttura della tua azienda.</p>
+            
+            <form id="contactForm" class="space-y-4" action="https://formsubmit.co/servizihorizon@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="Nuova Richiesta Servizi - Horizon Italia!">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+                
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Nome / Azienda *</label>
+                    <input type="text" name="Nome_Azienda" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Email *</label>
+                        <input type="email" name="Email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Telefono *</label>
+                        <input type="tel" name="Telefono" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Di cosa hai bisogno?</label>
+                    <textarea name="Messaggio" rows="4" placeholder="Parlaci delle tue esigenze..." required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors resize-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 py-4 rounded-xl font-black text-sm tracking-[0.1em] text-white shadow-xl shadow-blue-900/40 mt-2 transition-all flex justify-center items-center gap-2">
+                    <i data-lucide="send" class="w-4 h-4"></i> RICHIEDI PREVENTIVO
+                </button>
+            </form>
+        </div>
     </div>
 
     <div id="hiringModal" class="fixed inset-0 z-[250] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
@@ -305,8 +382,7 @@
             <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">Unisciti al Team <span class="text-emerald-500">Horizon.</span></h3>
             <p class="text-sm text-slate-400 mb-8">Siamo alla ricerca di talenti brillanti per ampliare il nostro organico interno. Compila il modulo e allega il tuo Curriculum Vitae.</p>
             
-            <form id="hiringForm" class="space-y-4" action="https://formsubmit.co/kamindoddo@gmail.com" method="POST" enctype="multipart/form-data">
-                
+            <form id="hiringForm" class="space-y-4" action="https://formsubmit.co/servizihorizon@gmail.com" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_subject" value="Nuova Candidatura - Horizon Servizi Italia!">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_template" value="table">
@@ -434,9 +510,8 @@
         // Questo script farà aprire automaticamente il popup assunzioni dopo 2.5 secondi
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                // Rimuovi questo commento o aumenta il tempo se vuoi che appaia più tardi
                 openModal('hiringModal');
-            }, 2500); // 2500ms = 2.5 secondi
+            }, 2500); 
         });
     </script>
 </body>
