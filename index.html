@@ -9,6 +9,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJjhL9-d-2QMKDYviV7KfYhUOHWDAoasU",
+            authDomain: "horizongls.firebaseapp.com",
+            databaseURL: "https://horizongls-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "horizongls",
+            storageBucket: "horizongls.firebasestorage.app",
+            messagingSenderId: "611544552805",
+            appId: "1:611544552805:web:88fb0e35e59fb5bf543d8c"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        window.db = getDatabase(app);
+        window.ref = ref;
+        window.set = set;
+    </script>
+
     <style>
         @font-face {
             font-family: 'Product Sans';
@@ -52,71 +72,45 @@
             transform: translateY(-5px);
         }
 
-        /* Mobile Menu */
         #mobile-menu {
             transform: translateX(100%);
             transition: transform 0.4s ease-in-out;
         }
         #mobile-menu.open { transform: translateX(0); }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
 
-        /* Reveal Animation */
         .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* Animated Grid */
         .bg-grid-animate {
             background-size: 50px 50px;
             background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
                               linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
         }
 
-        /* Scorrimento Clienti Animato (Marquee) */
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .animate-marquee-container {
-            display: flex;
-            width: 200%;
-            animation: marquee 35s linear infinite;
-        }
-        .animate-marquee-container:hover {
-            animation-play-state: paused;
-        }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-marquee-container { display: flex; width: 200%; animation: marquee 35s linear infinite; }
+        .animate-marquee-container:hover { animation-play-state: paused; }
 
-        /* Stili Loghi Clienti */
-        .client-logo {
-            height: 38px;
-            width: auto;
-            max-width: 140px;
-            object-fit: contain;
-            /* Rende i loghi completamente bianchi per adattarsi al tema dark */
-            filter: brightness(0) invert(1);
-            opacity: 0.5;
-            transition: all 0.3s ease;
+        .client-logo { height: 38px; width: auto; max-width: 140px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.5; transition: all 0.3s ease; }
+        .client-logo:hover { opacity: 1; transform: scale(1.05); }
+        .client-text { font-size: 1.5rem; font-weight: 800; color: white; opacity: 0.5; white-space: nowrap; transition: all 0.3s ease; cursor: default; }
+        .client-text:hover { opacity: 1; transform: scale(1.05); }
+
+        .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .promo-badge {
+            animation: pulse-promo 2s infinite;
         }
-        .client-logo:hover {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-        .client-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            opacity: 0.5;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-            cursor: default;
-        }
-        .client-text:hover {
-            opacity: 1;
-            transform: scale(1.05);
+        @keyframes pulse-promo {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
     </style>
 </head>
@@ -135,16 +129,16 @@
             </div>
 
             <div class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
-                <a href="#aziende20" class="hover:text-blue-400 transition">Aziende 2.0</a>
-                <a href="#metodo" class="hover:text-blue-400 transition">Il Metodo</a>
-                <a href="#infrastruttura" class="hover:text-blue-400 transition">Sicurezza</a>
-                <a href="#ecosistema" class="hover:text-blue-400 transition">L'Ecosistema</a>
+                <a href="#tecnologia" class="hover:text-blue-400 transition">Tecnologia</a>
+                <a href="#aziende20" class="hover:text-blue-400 transition">L'Ecosistema</a>
+                <a href="#prezzi" class="hover:text-emerald-400 transition text-emerald-400 font-bold">Prezzi & Promo</a>
+                <a href="#sicurezza" class="hover:text-blue-400 transition">Sicurezza GDPR</a>
             </div>
 
             <div class="flex items-center gap-4">
-                <button onclick="openModal('contactModal')" class="hidden md:flex bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all shadow-lg shadow-blue-900/30">
-                    RICHIEDI PREVENTIVO
-                </button>
+                <a href="#prezzi" class="hidden md:flex bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all shadow-lg shadow-blue-900/30">
+                    SCOPRI I PIANI
+                </a>
                 <button onclick="toggleMobileMenu()" class="lg:hidden text-white p-2 focus:outline-none">
                     <i data-lucide="menu" class="w-7 h-7"></i>
                 </button>
@@ -158,25 +152,15 @@
             <button onclick="toggleMobileMenu()" class="p-2 bg-white/10 rounded-full text-white"><i data-lucide="x"></i></button>
         </div>
         <div class="flex flex-col gap-6 text-2xl font-black text-slate-200">
-            <a href="#aziende20" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Il Pacchetto Aziende 2.0</a>
-            <a href="#metodo" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Come Lavoriamo</a>
-            <a href="#infrastruttura" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Infrastruttura & Sicurezza</a>
-            <a href="#ecosistema" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Gruppo Horizon</a>
-            <a href="#faq" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Domande Frequenti</a>
+            <a href="#tecnologia" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Hardware & Software</a>
+            <a href="#aziende20" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Ecosistema Aziende 2.0</a>
+            <a href="#prezzi" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 text-emerald-400">Listino Prezzi</a>
+            <a href="#sicurezza" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Sicurezza e GDPR</a>
         </div>
         <div class="mt-auto pb-6">
-            <button onclick="openModal('contactModal'); toggleMobileMenu();" class="w-full bg-blue-600 py-4 rounded-2xl font-black tracking-widest text-white shadow-xl shadow-blue-600/20">CONTATTACI ORA</button>
+            <a href="#prezzi" onclick="toggleMobileMenu();" class="block text-center w-full bg-blue-600 py-4 rounded-2xl font-black tracking-widest text-white shadow-xl shadow-blue-600/20">CONFIGURA ORA</a>
         </div>
     </div>
-
-    <button onclick="openModal('hiringModal')" class="fixed bottom-6 right-6 z-[90] bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-2xl shadow-2xl shadow-emerald-900/50 flex items-center gap-3 transition-transform hover:scale-105 group border border-emerald-400/30">
-        <div class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-400"></span></div>
-        <div class="flex flex-col text-left">
-            <span class="text-[10px] font-black uppercase tracking-widest text-emerald-200 leading-none mb-1">Stiamo Assumendo</span>
-            <span class="text-sm font-bold leading-none">Invia il tuo CV</span>
-        </div>
-        <i data-lucide="briefcase" class="w-5 h-5 ml-1 opacity-80"></i>
-    </button>
 
     <section class="relative min-h-[90vh] flex items-center pt-28 pb-16 px-4 sm:px-6 overflow-hidden">
         <div class="absolute inset-0 bg-grid-animate z-0 opacity-30"></div>
@@ -196,12 +180,12 @@
                     Elimina la frammentazione. Forniamo <strong>Gestionali ERP, Siti Web Custom, Internet Satellitare, Totem presenze e Cybersecurity</strong>. Un solo abbonamento, un unico colosso tecnologico al tuo fianco.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#aziende20" class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 px-8 py-4 rounded-2xl text-center font-bold text-white transition-all shadow-xl shadow-blue-900/40">
-                        Vedi Piani Aziende 2.0
+                    <a href="#prezzi" class="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 px-8 py-4 rounded-2xl text-center font-bold text-white transition-all shadow-xl shadow-emerald-900/40">
+                        Visualizza Prezzi (-30%)
                     </a>
-                    <button onclick="openModal('contactModal')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-2xl text-center font-bold text-white transition-all">
-                        Consulenza Gratuita
-                    </button>
+                    <a href="#tecnologia" class="bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-2xl text-center font-bold text-white transition-all">
+                        Scopri la Tecnologia
+                    </a>
                 </div>
             </div>
 
@@ -240,7 +224,6 @@
         <div class="max-w-7xl mx-auto px-4 text-center mb-6">
             <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Aziende e Istituzioni che si affidano alla nostra infrastruttura</span>
         </div>
-        
         <div class="relative w-full overflow-hidden">
             <div class="animate-marquee-container items-center gap-12 sm:gap-20">
                 <div class="flex items-center gap-12 sm:gap-20 min-w-max">
@@ -252,12 +235,6 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg" alt="HP" class="client-logo" style="height: 45px;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg" alt="ASUS" class="client-logo">
                     <div class="client-text font-bold tracking-tight">InfoCamere</div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/McDonald%27s_Golden_Arches.svg" alt="McDonald's" class="client-logo" style="height: 45px;">
-                    <div class="client-text uppercase font-black tracking-tighter">ROADHOUSE</div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/bf/KFC_logo.svg" alt="KFC" class="client-logo" style="height: 45px;">
-                    <div class="client-text font-black tracking-widest">YAMI <span class="font-light text-sm uppercase">Sushi</span></div>
-                    <div class="client-text italic font-black tracking-tighter">CINEMA Multisala OZ</div>
-                    <div class="client-text uppercase font-bold tracking-widest">ELNOS Shopping</div>
                 </div>
                 <div class="flex items-center gap-12 sm:gap-20 min-w-max">
                     <div class="client-text uppercase tracking-tighter">Famila S.r.l. </div>
@@ -268,64 +245,192 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg" alt="HP" class="client-logo" style="height: 45px;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg" alt="ASUS" class="client-logo">
                     <div class="client-text font-bold tracking-tight">InfoCamere</div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/McDonald%27s_Golden_Arches.svg" alt="McDonald's" class="client-logo" style="height: 45px;">
-                    <div class="client-text uppercase font-black tracking-tighter">ROADHOUSE</div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/bf/KFC_logo.svg" alt="KFC" class="client-logo" style="height: 45px;">
-                    <div class="client-text font-black tracking-widest">YAMI <span class="font-light text-sm uppercase">Sushi</span></div>
-                    <div class="client-text italic font-black tracking-tighter">Multisala OZ</div>
-                    <div class="client-text uppercase font-bold tracking-widest">ELNOS</div>
                 </div>
             </div>
-            
             <div class="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-[#020617] to-transparent pointer-events-none"></div>
             <div class="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-[#020617] to-transparent pointer-events-none"></div>
         </div>
     </section>
 
-    <section id="aziende20" class="py-24 px-4 sm:px-6 bg-slate-900/30 relative border-t border-white/5">
+    <section id="tecnologia" class="py-24 px-4 sm:px-6 relative">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
-                <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">L'Offerta Definitiva</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">L'Ecosistema <span class="text-gradient">Aziende 2.0</span></h2>
+                <span class="text-purple-500 font-bold tracking-widest uppercase text-sm mb-2 block">Apparecchiatura & Software</span>
+                <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Tecnologia Proprietaria <span class="text-gradient">Horizon</span></h2>
                 <p class="text-slate-400 text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-                    Un'impresa moderna non può dipendere da 5 fornitori diversi che non comunicano tra loro. Noi progettiamo, installiamo e gestiamo l'intera colonna vertebrale digitale e fisica della tua azienda.
+                    Non affittiamo server da terzi. Costruiamo e installiamo fisicamente l'infrastruttura nella tua azienda, interfacciandola direttamente con i nostri datacenter.
                 </p>
             </div>
 
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
-                <div class="glass-card p-8 rounded-3xl reveal hover:border-blue-500/50">
-                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mb-6"><i data-lucide="layout-dashboard" class="w-6 h-6"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-3">Gestionale Horizon ERP</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                        Il cuore dell'azienda. Un software cloud su misura per risorse umane, fatturazione, ticket operativi e buste paga automatizzate.
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="glass-card p-10 rounded-[2rem] border-blue-500/30 relative overflow-hidden group reveal">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity"><i data-lucide="cpu" class="w-32 h-32 text-blue-500"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-3"><i data-lucide="satellite-dish" class="text-blue-400"></i> Radiotrasmissione Veo3</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6 relative z-10">
+                        Installiamo un sistema di radiotrasmissione privato con antenna parabolica proprietaria sul tetto della tua azienda. Questo ponte radio crea un tunnel crittografato (VPN Hardware) diretto tra la tua sede e i server Horizon.
                     </p>
+                    <ul class="space-y-3 text-sm text-slate-300 font-medium relative z-10">
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Indipendenza dalle linee terrestri locali (fibra interrotta? Nessun problema)</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Latenza ultra-bassa per sincronizzazione dati real-time</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Manutenzione hardware inclusa a vita nell'abbonamento</li>
+                    </ul>
                 </div>
 
-                <div class="glass-card p-8 rounded-3xl reveal delay-100 hover:border-cyan-500/50">
-                    <div class="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center text-cyan-400 mb-6"><i data-lucide="globe" class="w-6 h-6"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-3">Sito Web & Dominio</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                        Progettiamo il tuo sito aziendale ex novo. Sviluppato da <strong>Dev.Ryzn</strong> e ospitato sui server proprietari iper-veloci di Horizon.
+                <div class="glass-card p-10 rounded-[2rem] border-purple-500/30 relative overflow-hidden group reveal delay-100">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity"><i data-lucide="code-2" class="w-32 h-32 text-purple-500"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-3"><i data-lucide="monitor" class="text-purple-400"></i> ERP Dev.Ryzn & Net-Orion</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6 relative z-10">
+                        Il cervello dell'operazione. Un gestionale aziendale (ERP) che fa girare la tua intera azienda, ospitato sui nostri server proprietari ad altissime prestazioni Net-Orion.
                     </p>
+                    <ul class="space-y-3 text-sm text-slate-300 font-medium relative z-10">
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Moduli Risorse Umane, Presenze (Totem), Fatturazione e Magazzino</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Sito web aziendale custom integrato direttamente nel gestionale</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Backup automatici geo-ridondati ogni 4 ore</li>
+                    </ul>
                 </div>
+            </div>
+        </div>
+    </section>
 
-                <div class="glass-card p-8 rounded-3xl reveal delay-200 hover:border-emerald-500/50">
-                    <div class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 mb-6"><i data-lucide="satellite-dish" class="w-6 h-6"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-3">Rete Satellitare B2B</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                        Ti svincoliamo dalle reti tradizionali lente. Antenne satellitari dedicate (Veo3 o Starlink) per una connessione aziendale inarrestabile.
-                    </p>
+    <section id="aziende20" class="py-24 px-4 sm:px-6 bg-slate-900/30 border-t border-white/5">
+        <div class="max-w-7xl mx-auto text-center mb-16 reveal">
+            <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Soluzioni Integrate</span>
+            <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Cosa include l'Ecosistema?</h2>
+        </div>
+        <div class="max-w-7xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass-card p-8 rounded-3xl reveal hover:border-blue-500/50">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mb-6"><i data-lucide="layout-dashboard"></i></div>
+                <h3 class="text-xl font-bold text-white mb-3">Gestionale ERP</h3>
+                <p class="text-sm text-slate-400">Software cloud su misura per HR, fatture, e buste paga automatizzate.</p>
+            </div>
+            <div class="glass-card p-8 rounded-3xl reveal delay-100 hover:border-cyan-500/50">
+                <div class="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center text-cyan-400 mb-6"><i data-lucide="globe"></i></div>
+                <h3 class="text-xl font-bold text-white mb-3">Sito & Dominio</h3>
+                <p class="text-sm text-slate-400">Progettazione web custom ospitata sui nostri server iper-veloci.</p>
+            </div>
+            <div class="glass-card p-8 rounded-3xl reveal delay-200 hover:border-emerald-500/50">
+                <div class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 mb-6"><i data-lucide="satellite-dish"></i></div>
+                <h3 class="text-xl font-bold text-white mb-3">Rete B2B</h3>
+                <p class="text-sm text-slate-400">Antenne dedicate per una connessione aziendale inarrestabile.</p>
+            </div>
+            <div class="glass-card p-8 rounded-3xl reveal delay-300 hover:border-purple-500/50">
+                <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 mb-6"><i data-lucide="tablet-smartphone"></i></div>
+                <h3 class="text-xl font-bold text-white mb-3">Totem Badge</h3>
+                <p class="text-sm text-slate-400">Totem fisico NFC/QR e App Horizon per timbrature smart.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="prezzi" class="py-24 px-4 sm:px-6 relative border-t border-white/5 bg-[#020617]">
+        <div class="absolute top-0 right-1/2 translate-x-1/2 w-[800px] h-[500px] bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-12 reveal">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-xs font-black text-emerald-400 uppercase tracking-widest mb-6 promo-badge">
+                    <i data-lucide="tag" class="w-4 h-4"></i> Promozione Inaugurazione: -30% Sul Primo Anno
                 </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-4 text-white">Listino Abbonamenti</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Seleziona il piano adatto alla tua PMI. Procedi all'ordine sicuro compilando il modulo: il nostro gestionale aprirà subito la pratica tecnica.</p>
+            </div>
 
-                <div class="glass-card p-8 rounded-3xl reveal delay-300 hover:border-purple-500/50">
-                    <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 mb-6"><i data-lucide="tablet-smartphone" class="w-6 h-6"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-3">Totem & App Badge</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed mb-4">
-                        Fornitura fisica del Totem presenze da parete. I dipendenti timbrano con NFC o QR tramite l'App Horizon installata sui loro smartphone.
-                    </p>
+            <div class="max-w-4xl mx-auto glass-card border-blue-500/40 rounded-3xl p-6 md:p-8 mb-16 flex flex-col md:flex-row items-center justify-between gap-6 reveal">
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 shrink-0"><i data-lucide="hard-drive" class="w-8 h-8"></i></div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Setup e Installazione Hardware (Una Tantum)</h3>
+                        <p class="text-sm text-slate-400 mt-1">Include uscita tecnici, posa Antenna Radiotrasmissione, Totem Presenze fisico e setup Server Net-Orion.</p>
+                    </div>
+                </div>
+                <div class="text-right shrink-0">
+                    <div class="text-slate-500 line-through text-sm font-bold">€ 1.500,00</div>
+                    <div class="text-3xl font-black text-blue-400">€ 1.050<span class="text-sm font-medium text-slate-400">/una tantum</span></div>
                 </div>
             </div>
 
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="glass-card rounded-[2.5rem] p-8 flex flex-col reveal hover:border-slate-500 transition-all">
+                    <h4 class="text-xl font-bold text-white mb-2">Starter 2.0</h4>
+                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Per piccole imprese che vogliono digitalizzarsi.</p>
+                    <div class="mb-6">
+                        <span class="text-slate-500 line-through text-sm font-bold block mb-1">€ 199,00 / mese</span>
+                        <div class="flex items-end gap-1">
+                            <span class="text-4xl font-black text-white">€ 139</span><span class="text-slate-400 font-medium mb-1">/mese</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-sm text-slate-300 mb-8 flex-grow">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> ERP Dev.Ryzn (Fino a 5 Utenti)</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Sito Vetrina Base (Server Condiviso)</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> App Timbrature Base</li>
+                        <li class="flex items-start gap-3 opacity-50"><i data-lucide="x" class="w-5 h-5 text-red-500 shrink-0"></i> Rete Satellitare Esclusa</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Piano Starter 2.0')" class="w-full bg-white/10 hover:bg-white/20 py-4 rounded-xl font-bold text-white transition-colors border border-white/10">Ordina Starter</button>
+                </div>
+
+                <div class="glass-card rounded-[2.5rem] p-8 flex flex-col reveal delay-100 border-emerald-500/50 shadow-2xl shadow-emerald-900/20 relative transform md:-translate-y-4">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">Più Richiesto</div>
+                    <h4 class="text-2xl font-bold text-emerald-400 mb-2">Professional</h4>
+                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">L'ecosistema completo per PMI strutturate.</p>
+                    <div class="mb-6">
+                        <span class="text-slate-500 line-through text-sm font-bold block mb-1">€ 399,00 / mese</span>
+                        <div class="flex items-end gap-1">
+                            <span class="text-5xl font-black text-white">€ 279</span><span class="text-slate-400 font-medium mb-1">/mese</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-sm text-slate-300 mb-8 flex-grow">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> ERP Dev.Ryzn (Fino a 25 Utenti)</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Sito Web Custom + E-Commerce</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Rete Radiotrasmissione Inclusa</strong></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Modulo HR e Fatturazione Elettronica</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Piano Professional')" class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-black text-white transition-all shadow-lg shadow-emerald-600/30">Ordina Professional</button>
+                </div>
+
+                <div class="glass-card rounded-[2.5rem] p-8 flex flex-col reveal delay-200 hover:border-slate-500 transition-all">
+                    <h4 class="text-xl font-bold text-white mb-2">Enterprise</h4>
+                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Per grandi volumi di dati e multinazionali.</p>
+                    <div class="mb-6">
+                        <span class="text-slate-500 line-through text-sm font-bold block mb-1">€ 799,00 / mese</span>
+                        <div class="flex items-end gap-1">
+                            <span class="text-4xl font-black text-white">€ 559</span><span class="text-slate-400 font-medium mb-1">/mese</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-sm text-slate-300 mb-8 flex-grow">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Utenti ERP Illimitati</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Server Net-Orion Dedicato</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Doppia Antenna per Ridondanza 100%</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Assistenza Prioritaria 24/7</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Piano Enterprise')" class="w-full bg-white/10 hover:bg-white/20 py-4 rounded-xl font-bold text-white transition-colors border border-white/10">Ordina Enterprise</button>
+                </div>
+            </div>
+            
+            <p class="text-center text-xs text-slate-500 mt-8 font-medium">I prezzi si intendono IVA esclusa. Il contratto ha una durata minima di 12 mesi. Il Tantum per l'installazione verrà fatturato all'accettazione del progetto.</p>
+        </div>
+    </section>
+
+    <section id="sicurezza" class="py-16 border-y border-white/5 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid lg:grid-cols-3 gap-10 items-center">
+                <div class="lg:col-span-1 reveal">
+                    <h2 class="text-3xl font-black text-white mb-4"><i data-lucide="shield-check" class="inline w-8 h-8 text-blue-500 mr-2 mb-1"></i> Sicurezza & GDPR</h2>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-6">
+                        I tuoi dati aziendali, anagrafiche dipendenti e flussi finanziari non viaggiano su server pubblici. L'infrastruttura Horizon garantisce il pieno rispetto del <strong>Regolamento UE 2016/679 (GDPR)</strong>.
+                    </p>
+                    <a href="#prezzi" class="text-blue-400 text-sm font-bold hover:underline">Attiva la tua infrastruttura sicura &rarr;</a>
+                </div>
+                <div class="lg:col-span-2 grid sm:grid-cols-2 gap-6 reveal delay-100">
+                    <div class="bg-black/30 p-6 rounded-2xl border border-white/5">
+                        <i data-lucide="server" class="w-6 h-6 text-emerald-500 mb-3"></i>
+                        <h4 class="font-bold text-white mb-2">Data Center Nazionali</h4>
+                        <p class="text-xs text-slate-400">I server fisici Net-Orion sono localizzati in Italia e nell'Unione Europea, prevenendo il trasferimento dati verso paesi extra-UE non sicuri.</p>
+                    </div>
+                    <div class="bg-black/30 p-6 rounded-2xl border border-white/5">
+                        <i data-lucide="lock" class="w-6 h-6 text-emerald-500 mb-3"></i>
+                        <h4 class="font-bold text-white mb-2">Crittografia AES-256</h4>
+                        <p class="text-xs text-slate-400">Qualsiasi dato trasmesso tra la sede della tua azienda e i nostri server via ponte radio è criptato con standard militare.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -337,143 +442,106 @@
                     Divisione italiana del colosso Horizon Global. Costruiamo l'infrastruttura tecnologica, la connettività satellitare e il software gestionale per spingere le PMI verso il futuro.
                 </p>
             </div>
-            
             <div>
                 <h5 class="text-xs font-black uppercase text-white mb-6 tracking-widest">Soluzioni</h5>
                 <ul class="text-sm text-slate-400 space-y-3 font-medium">
-                    <li><a href="#aziende20" class="hover:text-blue-400 transition">Pacchetti Aziende 2.0</a></li>
+                    <li><a href="#prezzi" class="hover:text-blue-400 transition">Listino Prezzi & Ordini</a></li>
                     <li><button onclick="openModal('hiringModal')" class="hover:text-emerald-400 transition text-emerald-500 font-bold">Lavora con Noi</button></li>
                 </ul>
             </div>
-            
             <div>
                 <h5 class="text-xs font-black uppercase text-white mb-6 tracking-widest">Aziendale</h5>
                 <ul class="text-sm text-slate-400 space-y-3 font-medium">
-                    <li><button onclick="openModal('contactModal')" class="hover:text-blue-400 transition text-left">Contatta l'Assistenza</button></li>
-                    <li><a href="#ecosistema" class="hover:text-blue-400 transition">Ecosistema Horizon</a></li>
+                    <li><a href="#sicurezza" class="hover:text-blue-400 transition">Informativa Privacy & GDPR</a></li>
+                    <li><button onclick="selezionaPiano('Richiesta Contatto Generico')" class="hover:text-blue-400 transition text-left">Contattaci</button></li>
                 </ul>
             </div>
         </div>
-        
         <div class="max-w-7xl mx-auto text-center border-t border-white/5 pt-8">
             <p class="text-[10px] text-slate-600 uppercase tracking-[0.2em] font-bold">&copy; 2024-2030 Horizon Global Italia. L'architettura del domani. Tutti i diritti riservati.</p>
         </div>
     </footer>
 
     <div id="contactModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
-        <div class="glass-card w-full max-w-lg rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto" id="contactModalContent">
+        <div class="glass-card w-full max-w-4xl rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto" id="contactModalContent">
             <button onclick="closeModal('contactModal')" class="absolute top-6 right-6 text-slate-500 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">Iniziamo il <span class="text-blue-500">Setup.</span></h3>
-            <p class="text-sm text-slate-400 mb-6">Invia una richiesta e un nostro consulente ti contatterà per analizzare l'infrastruttura della tua azienda.</p>
             
-            <form id="contactForm" class="space-y-4" action="https://formsubmit.co/servizihorizon@gmail.com" method="POST">
-                <input type="hidden" name="_subject" value="Nuova Richiesta Servizi - Horizon Italia!">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_template" value="table">
+            <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">Checkout & <span class="text-blue-500">Setup.</span></h3>
+            <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-4">Modulo di attivazione commerciale e raccolta dati di fatturazione (GDPR Compliant). Completando l'invio si aprirà la pratica tecnica senza obbligo di pagamento immediato.</p>
+            
+            <form id="contactForm" class="space-y-6" onsubmit="inviaPreventivo(event)">
                 
-                <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Nome / Azienda *</label>
-                    <input type="text" name="Nome_Azienda" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-900/10 p-5 rounded-2xl border border-blue-500/20">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Servizio/Piano Selezionato *</label>
+                        <input type="text" id="pr-servizio" required readonly class="w-full bg-black/40 border border-blue-500/30 rounded-xl px-4 py-3 text-sm text-emerald-400 font-bold outline-none cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Natura Giuridica *</label>
+                        <select id="pr-tipo" onchange="togglePreventivoType()" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors">
+                            <option value="Azienda">Azienda / P.IVA (B2B)</option>
+                            <option value="Privato">Privato / Cittadino (B2C)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Email *</label>
-                        <input type="email" name="Email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors">
+                    <div><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Nome Referente *</label><input type="text" id="pr-nome" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Cognome Referente *</label><input type="text" id="pr-cognome" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Email *</label><input type="email" id="pr-email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Telefono *</label><input type="tel" id="pr-tel" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                </div>
+
+                <div id="pr-area-azienda" class="bg-white/5 border border-white/5 p-5 rounded-2xl">
+                    <h4 class="text-blue-400 font-bold mb-4 text-sm"><i data-lucide="building-2" class="inline w-4 h-4 mr-1"></i> Dati Fatturazione Elettronica Azienda</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2"><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Ragione Sociale Completa *</label><input type="text" id="pr-ragione" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Partita IVA *</label><input type="text" id="pr-piva" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Codice Fiscale (se diverso)</label><input type="text" id="pr-cf-az" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Codice Destinatario (SDI) *</label><input type="text" id="pr-sdi" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Indirizzo PEC *</label><input type="email" id="pr-pec" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Telefono *</label>
-                        <input type="tel" name="Telefono" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors">
+                </div>
+
+                <div id="pr-area-privato" class="hidden bg-emerald-900/10 border border-emerald-500/20 p-5 rounded-2xl">
+                    <h4 class="text-emerald-400 font-bold mb-4 text-sm"><i data-lucide="user" class="inline w-4 h-4 mr-1"></i> Dati Fiscali Privato</h4>
+                    <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Codice Fiscale Personale (16 Caratteri) *</label><input type="text" id="pr-cf-pr" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                </div>
+
+                <div class="bg-white/5 border border-white/5 p-5 rounded-2xl">
+                    <h4 class="text-slate-300 font-bold mb-4 text-sm"><i data-lucide="map-pin" class="inline w-4 h-4 mr-1"></i> Sede Installazione / Legale</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="col-span-2 md:col-span-4"><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Indirizzo completo (Via, Civico) *</label><input type="text" id="pr-via" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                        <div class="col-span-2"><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Città *</label><input type="text" id="pr-citta" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">CAP *</label><input type="text" id="pr-cap" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Prov (Sigla) *</label><input type="text" id="pr-prov" required placeholder="Es. RM" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Di cosa hai bisogno?</label>
-                    <textarea name="Messaggio" rows="4" placeholder="Parlaci delle tue esigenze..." required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors resize-none"></textarea>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Note Opzionali per i Tecnici</label>
+                    <textarea id="pr-note" rows="2" placeholder="Es. L'edificio ha 3 piani, necessità di totem addizionali..." class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors resize-none"></textarea>
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 py-4 rounded-xl font-black text-sm tracking-[0.1em] text-white shadow-xl shadow-blue-900/40 mt-2 transition-all flex justify-center items-center gap-2">
-                    <i data-lucide="send" class="w-4 h-4"></i> RICHIEDI PREVENTIVO
+                <div class="flex items-start gap-3 mt-2 p-4 bg-black/30 rounded-xl border border-white/5">
+                    <input type="checkbox" id="pr-privacy" required class="mt-1 w-4 h-4 accent-blue-500">
+                    <label for="pr-privacy" class="text-[11px] text-slate-400 leading-relaxed">
+                        <strong>Consenso GDPR:</strong> Acconsento al trattamento dei miei dati sui server Horizon Europe per la gestione dell'ordine. Dichiaro di aver preso visione dell'informativa sulla privacy e delle specifiche sull'infrastruttura proprietaria. *
+                    </label>
+                </div>
+
+                <button type="submit" id="pr-btn" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 py-4 rounded-xl font-black text-sm tracking-[0.1em] text-white shadow-xl shadow-blue-900/40 mt-2 transition-all flex justify-center items-center gap-2">
+                    <i data-lucide="send" class="w-4 h-4"></i> CONFERMA ORDINE AL GESTIONALE
                 </button>
             </form>
         </div>
     </div>
 
     <div id="hiringModal" class="fixed inset-0 z-[250] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
-        <div class="glass-card w-full max-w-2xl rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto border-emerald-500/30 shadow-2xl shadow-emerald-900/20" id="hiringModalContent">
+        <div class="glass-card w-full max-w-4xl rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto border-emerald-500/30 shadow-2xl shadow-emerald-900/20" id="hiringModalContent">
             <button onclick="closeModal('hiringModal')" class="absolute top-6 right-6 text-slate-500 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-4">
-                <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
-                Posizioni Aperte - Ufficio Italia
-            </div>
-
             <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">Unisciti al Team <span class="text-emerald-500">Horizon.</span></h3>
-            <p class="text-sm text-slate-400 mb-8">Siamo alla ricerca di talenti brillanti per ampliare il nostro organico interno. Compila il modulo e allega il tuo Curriculum Vitae.</p>
-            
-            <form id="hiringForm" class="space-y-4" action="https://formsubmit.co/servizihorizon@gmail.com" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="_subject" value="Nuova Candidatura - Horizon Servizi Italia!">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_template" value="table">
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Nome *</label>
-                        <input type="text" name="Nome" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-colors">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Cognome *</label>
-                        <input type="text" name="Cognome" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-colors">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Email *</label>
-                        <input type="email" name="Email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-colors">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Telefono *</label>
-                        <input type="tel" name="Telefono" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-colors">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Posizione di Interesse *</label>
-                    <div class="relative">
-                        <select name="Ruolo_Candidatura" required class="w-full bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-colors appearance-none">
-                            <option value="" disabled selected>Seleziona un ruolo dal menu...</option>
-                            <option value="Impiegato Gestione Ordini">Impiegato/a Gestione Ordini</option>
-                            <option value="Contabile / Amministrativo">Contabile / Esperto/a Amministrativo/a</option>
-                            <option value="HR / Risorse Umane">HR / Addetto/a Risorse Umane</option>
-                            <option value="Segreteria Generale">Segreteria Generale & Front Office</option>
-                        </select>
-                        <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Allega il tuo CV (PDF o Word) *</label>
-                    <input type="file" name="Curriculum" accept=".pdf,.doc,.docx" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-300 outline-none focus:border-emerald-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-500/20 file:text-emerald-400 hover:file:bg-emerald-500/30 file:cursor-pointer">
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Lettera di Presentazione (Opzionale)</label>
-                    <textarea name="Presentazione" rows="3" placeholder="Parlaci brevemente di te e del perché vorresti lavorare in Horizon..." class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-colors resize-none"></textarea>
-                </div>
-
-                <div class="flex items-start gap-3 mt-2 p-3 bg-white/5 rounded-xl border border-white/5">
-                    <input type="checkbox" id="privacyHR" name="Privacy_Accettata" required class="mt-1 w-4 h-4 accent-emerald-500">
-                    <label for="privacyHR" class="text-[11px] text-slate-400 leading-tight">
-                        Dichiaro di aver letto l'informativa sulla privacy e autorizzo il trattamento dei miei dati personali e del mio CV per le finalità di ricerca e selezione del personale ai sensi del Regolamento UE 2016/679 (GDPR). *
-                    </label>
-                </div>
-
-                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 py-4 rounded-xl font-black text-sm tracking-[0.1em] text-white shadow-xl shadow-emerald-900/40 mt-2 transition-all flex justify-center items-center gap-2">
-                    <i data-lucide="send" class="w-4 h-4"></i> INVIA LA TUA CANDIDATURA
-                </button>
-            </form>
-        </div>
+            </div>
     </div>
 
     <script>
@@ -511,10 +579,19 @@
             }, 300);
         }
 
+        // Funzione per aprire il checkout col piano selezionato
+        function selezionaPiano(nomePiano) {
+            document.getElementById('pr-servizio').value = nomePiano + " (Promo -30% Applicata)";
+            openModal('contactModal');
+        }
+
         ['contactModal', 'hiringModal'].forEach(id => {
-            document.getElementById(id).addEventListener('click', function(e) {
-                if (e.target === this) closeModal(id);
-            });
+            const el = document.getElementById(id);
+            if(el) {
+                el.addEventListener('click', function(e) {
+                    if (e.target === this) closeModal(id);
+                });
+            }
         });
 
         function reveal() {
@@ -530,11 +607,84 @@
         window.addEventListener("scroll", reveal);
         reveal();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                openModal('hiringModal');
-            }, 2500); 
-        });
+        // LOGICA INVIO FIREBASE (SITO WEB)
+        function togglePreventivoType() {
+            const val = document.getElementById('pr-tipo').value;
+            const aAz = document.getElementById('pr-area-azienda');
+            const aPr = document.getElementById('pr-area-privato');
+            
+            if(val === 'Azienda') {
+                aAz.classList.remove('hidden'); aPr.classList.add('hidden');
+                document.getElementById('pr-ragione').required = true;
+                document.getElementById('pr-piva').required = true;
+                document.getElementById('pr-sdi').required = true;
+                document.getElementById('pr-pec').required = true;
+                if(document.getElementById('pr-cf-pr')) document.getElementById('pr-cf-pr').required = false;
+            } else {
+                aAz.classList.add('hidden'); aPr.classList.remove('hidden');
+                document.getElementById('pr-ragione').required = false;
+                document.getElementById('pr-piva').required = false;
+                document.getElementById('pr-sdi').required = false;
+                document.getElementById('pr-pec').required = false;
+                if(document.getElementById('pr-cf-pr')) document.getElementById('pr-cf-pr').required = true;
+            }
+        }
+
+        async function inviaPreventivo(e) {
+            e.preventDefault();
+            const btn = document.getElementById('pr-btn');
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = `<span class="spinner"></span> ELABORAZIONE ORDINE...`;
+            btn.disabled = true;
+
+            const isAzienda = document.getElementById('pr-tipo').value === 'Azienda';
+            const reqId = Date.now();
+
+            const data = {
+                id: reqId,
+                dataInvio: new Date().toISOString(),
+                tipo: document.getElementById('pr-tipo').value,
+                servizioAcquistato: document.getElementById('pr-servizio').value,
+                nome: document.getElementById('pr-nome').value,
+                cognome: document.getElementById('pr-cognome').value,
+                email: document.getElementById('pr-email').value,
+                telefono: document.getElementById('pr-tel').value,
+                
+                via: document.getElementById('pr-via').value,
+                citta: document.getElementById('pr-citta').value,
+                cap: document.getElementById('pr-cap').value,
+                prov: document.getElementById('pr-prov').value.toUpperCase(),
+                nazione: "Italia",
+                
+                ragioneSociale: isAzienda ? document.getElementById('pr-ragione').value : '',
+                piva: isAzienda ? document.getElementById('pr-piva').value : '',
+                cfAzienda: isAzienda ? document.getElementById('pr-cf-az').value : '',
+                sdi: isAzienda ? document.getElementById('pr-sdi').value : '',
+                pec: isAzienda ? document.getElementById('pr-pec').value : '',
+                cfPrivato: !isAzienda && document.getElementById('pr-cf-pr') ? document.getElementById('pr-cf-pr').value.toUpperCase() : '',
+                
+                dettagli: document.getElementById('pr-note').value,
+                stato: 'Nuovo Ordine'
+            };
+
+            try {
+                if(window.db) {
+                    await window.set(window.ref(window.db, 'richieste_servizi/' + reqId), data);
+                    alert("Ordine ricevuto con successo! La pratica tecnica è stata aperta sui nostri sistemi. Verrai contattato dal reparto commerciale per la conferma.");
+                    document.getElementById('contactForm').reset();
+                    closeModal('contactModal');
+                } else {
+                    alert("Errore: connessione al database fallita.");
+                }
+            } catch(err) {
+                alert("Si è verificato un errore durante l'invio. Riprova. Dettagli: " + err.message);
+            } finally {
+                btn.innerHTML = origHTML;
+                btn.disabled = false;
+            }
+        }
+        
+        togglePreventivoType();
     </script>
 </body>
 </html>
