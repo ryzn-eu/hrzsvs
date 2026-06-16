@@ -44,11 +44,18 @@
             --glass-border: rgba(255, 255, 255, 0.08);
         }
 
+        /* Fix scorrimento orizzontale mobile */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100%;
+            max-width: 100vw;
+            position: relative;
+        }
+
         body {
             background-color: var(--bg-dark);
             color: #f1f5f9;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
         }
 
         h1, h2, h3, .logo-font { font-family: 'Product Sans', sans-serif; }
@@ -130,6 +137,7 @@
 
             <div class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
                 <a href="#tecnologia" class="hover:text-blue-400 transition">Tecnologia</a>
+                <a href="#dettagli-infrastruttura" class="hover:text-blue-400 transition">Architettura</a>
                 <a href="#aziende20" class="hover:text-blue-400 transition">L'Ecosistema</a>
                 <a href="#prezzi" class="hover:text-emerald-400 transition text-emerald-400 font-bold">Prezzi & Promo</a>
                 <a href="#sicurezza" class="hover:text-blue-400 transition">Sicurezza GDPR</a>
@@ -153,6 +161,7 @@
         </div>
         <div class="flex flex-col gap-6 text-2xl font-black text-slate-200">
             <a href="#tecnologia" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Hardware & Software</a>
+            <a href="#dettagli-infrastruttura" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Deep Dive Architetturale</a>
             <a href="#aziende20" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Ecosistema Aziende 2.0</a>
             <a href="#prezzi" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 text-emerald-400">Listino Prezzi</a>
             <a href="#sicurezza" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Sicurezza e GDPR</a>
@@ -176,10 +185,10 @@
                 <h1 class="text-4xl sm:text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tighter text-white">
                     Il Futuro della tua Impresa, <br><span class="text-gradient">connesso da Horizon.</span>
                 </h1>
-                <p class="text-base md:text-xl text-slate-400 mb-10 leading-relaxed max-w-xl">
+                <p class="text-base md:text-xl text-slate-400 mb-8 leading-relaxed max-w-xl">
                     Elimina la frammentazione. Forniamo <strong>Gestionali ERP, Siti Web Custom, Internet Satellitare, Totem presenze e Cybersecurity</strong>. Un solo abbonamento, un unico colosso tecnologico al tuo fianco.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex flex-col sm:flex-row gap-4 mb-5">
                     <a href="#prezzi" class="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 px-8 py-4 rounded-2xl text-center font-bold text-white transition-all shadow-xl shadow-emerald-900/40">
                         Visualizza Prezzi (-30%)
                     </a>
@@ -187,6 +196,10 @@
                         Scopri la Tecnologia
                     </a>
                 </div>
+                
+                <button onclick="openModal('hiringModal')" class="w-full sm:w-max bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/40 px-8 py-3 rounded-xl text-center font-bold text-blue-400 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20 mt-2">
+                    <i data-lucide="briefcase" class="w-5 h-5"></i> Lavora con Noi
+                </button>
             </div>
 
             <div class="hidden lg:block relative float-anim">
@@ -252,7 +265,7 @@
         </div>
     </section>
 
-    <section id="tecnologia" class="py-24 px-4 sm:px-6 relative">
+    <section id="tecnologia" class="py-24 px-4 sm:px-6 relative overflow-hidden">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
                 <span class="text-purple-500 font-bold tracking-widest uppercase text-sm mb-2 block">Apparecchiatura & Software</span>
@@ -292,7 +305,123 @@
         </div>
     </section>
 
-    <section id="aziende20" class="py-24 px-4 sm:px-6 bg-slate-900/30 border-t border-white/5">
+    <section id="dettagli-infrastruttura" class="py-24 px-4 sm:px-6 bg-[#020617]/50 border-t border-white/5 relative overflow-hidden">
+        <div class="absolute top-1/2 left-0 w-[400px] h-[400px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-600/10 blur-[150px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20 reveal">
+                <span class="text-emerald-400 font-bold tracking-widest uppercase text-sm mb-2 block">Deep Dive Architetturale</span>
+                <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Come Funziona L'Infrastruttura <span class="text-blue-500">Dall'Interno</span>.</h2>
+                <p class="text-slate-400 text-base md:text-lg max-w-4xl mx-auto leading-relaxed">
+                    Per garantire SLA (Service Level Agreement) del 99.99%, abbiamo dovuto reinventare il modo in cui i dati viaggiano, vengono archiviati e vengono elaborati. Niente più colli di bottiglia o dipendenze da operatori terzi.
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center gap-12 mb-24 reveal">
+                <div class="lg:w-1/2 order-2 lg:order-1">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4">Livello Fisico (L1-L2)</div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Rete Dati Veo3: <br>La Fine Dei Blackout Internet.</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6">
+                        Le normali connessioni in fibra ottica (FTTH/FTTC) sono vulnerabili a scavi stradali, cabine saturate e guasti di zona. Il nostro approccio scavalca letteralmente il problema via etere.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
+                            <i data-lucide="radio-tower" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
+                            <div>
+                                <strong class="text-slate-200 block text-sm">Frequenze Dedicate (Licensed Band)</strong>
+                                <span class="text-slate-400 text-xs leading-relaxed">Utilizziamo spettri radio su licenza per evitare le interferenze dei classici ponti Wi-Fi 5GHz. Il risultato è un link simmetrico che può raggiungere i 1.8 Gbps reali.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
+                            <i data-lucide="lock" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
+                            <div>
+                                <strong class="text-slate-200 block text-sm">Cifratura Hardware in Tempo Reale</strong>
+                                <span class="text-slate-400 text-xs leading-relaxed">Il flusso dati che esce dall'antenna sul tuo tetto non è leggibile. Viene applicata una cifratura AES-256 a livello hardware prima di essere sparato verso i nostri ripetitori.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
+                            <i data-lucide="arrow-right-left" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
+                            <div>
+                                <strong class="text-slate-200 block text-sm">Failover Terrestre Ibrido (Solo Pacchetti Superiori)</strong>
+                                <span class="text-slate-400 text-xs leading-relaxed">Se richiesto, integriamo la tua connessione fibra pre-esistente nel nostro router aziendale. Se la pioggia torrenziale degrada il segnale, il sistema dirotta il traffico sulla fibra senza farti cadere la connessione (Seamless Failover).</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="lg:w-1/2 order-1 lg:order-2 w-full glass-card p-6 rounded-3xl border-blue-500/20">
+                    <img src="https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&q=80&w=1000" alt="Infrastruttura di Rete" class="w-full h-[400px] object-cover rounded-2xl opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
+                </div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center gap-12 mb-24 reveal">
+                <div class="lg:w-1/2 w-full glass-card p-6 rounded-3xl border-purple-500/20">
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1000" alt="Server Data Center" class="w-full h-[400px] object-cover rounded-2xl opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
+                </div>
+                <div class="lg:w-1/2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-[10px] font-black text-purple-400 uppercase tracking-widest mb-4">Livello Elaborazione (Cloud)</div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Server Net-Orion: <br>Potenza Bruta e Geo-Ridondanza.</h3>
+                    <p class="text-slate-400 leading-relaxed mb-6">
+                        Non ci appoggiamo ad Amazon AWS o Google Cloud. Ospedare i tuoi dati su macchine fisiche di nostra proprietà ci permette di abbattere i costi e ottimizzare il kernel dei server esclusivamente per il nostro software ERP.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
+                            <i data-lucide="database" class="w-6 h-6 text-purple-400 shrink-0 mt-1"></i>
+                            <div>
+                                <strong class="text-slate-200 block text-sm">Cluster NVMe Enterprise</strong>
+                                <span class="text-slate-400 text-xs leading-relaxed">Zero dischi meccanici, zero colli di bottiglia su database. Tutti i dati anagrafici, fatture e file aziendali risiedono su array di dischi a stato solido NVMe collegati via PCIe 4.0, garantendo query al database in meno di 2 millisecondi.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
+                            <i data-lucide="shield-alert" class="w-6 h-6 text-purple-400 shrink-0 mt-1"></i>
+                            <div>
+                                <strong class="text-slate-200 block text-sm">Mitigazione DDoS e Firewall Edge</strong>
+                                <span class="text-slate-400 text-xs leading-relaxed">Il sito web aziendale incluso nei nostri piani non può essere mandato offline da attacchi hacker di forza bruta. Filtriamo il traffico "sporco" ai margini della nostra rete prima ancora che raggiunga il tuo server virtuale.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
+                            <i data-lucide="copy" class="w-6 h-6 text-purple-400 shrink-0 mt-1"></i>
+                            <div>
+                                <strong class="text-slate-200 block text-sm">Triplice Backup ogni 4 Ore</strong>
+                                <span class="text-slate-400 text-xs leading-relaxed">Niente più ansia per i ransomware. Scattiamo una "fotografia" (Snapshot) esatta del tuo gestionale ogni 4 ore e la replichiamo su tre datacenter geograficamente distanti in Europa.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 reveal">
+                <div class="glass-card p-8 rounded-[2rem] border-emerald-500/20 bg-black/20 relative">
+                    <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 mb-6"><i data-lucide="layout-template"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-4">L'Ecosistema Software Dev.Ryzn</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-6">
+                        L'hardware è inutile senza un "cervello". Dev.Ryzn non è solo un gestionale, è il sistema operativo della tua PMI. Si compone di diversi macro-moduli che comunicano tra loro all'istante:
+                    </p>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Totem Presenze Integrato:</strong> Quando un dipendente timbra fisicamente in azienda sul totem NFC Horizon, il dato appare istantaneamente sul cloud dell'amministrazione per le buste paga.</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Integrazione Sito Vetrina:</strong> Il catalogo prodotti o le news che aggiorni dentro al gestionale si riflettono automaticamente sul sito web pubblico della tua azienda (fornito da noi).</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Fatturazione SDI Automatica:</strong> Nessun software di terze parti. Ricevi, emetti e conservi a norma le fatture elettroniche direttamente dentro la dashboard principale.</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card p-8 rounded-[2rem] border-cyan-500/20 bg-gradient-to-br from-cyan-900/10 to-blue-900/10 relative">
+                    <div class="absolute top-0 right-0 px-4 py-2 bg-cyan-500/20 rounded-bl-3xl rounded-tr-[2rem] text-[10px] font-black text-cyan-400 tracking-widest uppercase">Novità Master</div>
+                    <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400 mb-6"><i data-lucide="zap"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Progetto iORE: Utilities IT Integrate</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-6">
+                        Abbiamo trasformato il costo dell'energia in una variabile fissa aziendale. Scegliendo il pacchetto Master All-Inclusive, diventi un nodo della rete energetica agevolata <strong>iORE</strong>.
+                    </p>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-3"><i data-lucide="battery-charging" class="w-5 h-5 text-cyan-400 shrink-0"></i> <strong>Modello Flat Reale:</strong> Horizon copre la fornitura elettrica, del gas e idrica della tua sede legale entro i limiti della fascia PMI, offrendoti un costo aziendale bloccato, slegato dalle fluttuazioni di borsa (PUN/PSV).</li>
+                        <li class="flex items-start gap-3"><i data-lucide="monitor-off" class="w-5 h-5 text-cyan-400 shrink-0"></i> <strong>Burocrazia Zero:</strong> Le bollette scompaiono. Tutto (Antenna radiotrasmissione, server, software ERP, e fornitura energia/acqua/gas) è raggruppato in un'unica fattura mensile Horizon Servizi.</li>
+                        <li class="flex items-start gap-3"><i data-lucide="bar-chart-3" class="w-5 h-5 text-cyan-400 shrink-0"></i> <strong>Telemetria:</strong> Il gestionale Dev.Ryzn leggerà in tempo reale i consumi energetici per aiutarti ad ottimizzare i cicli produttivi.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="aziende20" class="py-24 px-4 sm:px-6 bg-slate-900/30 border-t border-white/5 overflow-hidden">
         <div class="max-w-7xl mx-auto text-center mb-16 reveal">
             <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Soluzioni Integrate</span>
             <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Cosa include l'Ecosistema?</h2>
@@ -321,7 +450,7 @@
         </div>
     </section>
 
-    <section id="prezzi" class="py-24 px-4 sm:px-6 relative border-t border-white/5 bg-[#020617]">
+    <section id="prezzi" class="py-24 px-4 sm:px-6 relative border-t border-white/5 bg-[#020617] overflow-hidden">
         <div class="absolute top-0 right-1/2 translate-x-1/2 w-[800px] h-[500px] bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none"></div>
         
         <div class="max-w-7xl mx-auto relative z-10">
@@ -347,8 +476,8 @@
                 </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                <div class="glass-card rounded-[2.5rem] p-8 flex flex-col reveal hover:border-slate-500 transition-all">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+                <div class="glass-card rounded-[2.5rem] p-6 flex flex-col reveal hover:border-slate-500 transition-all">
                     <h4 class="text-xl font-bold text-white mb-2">Starter 2.0</h4>
                     <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Per piccole imprese che vogliono digitalizzarsi.</p>
                     <div class="mb-6">
@@ -366,7 +495,7 @@
                     <button onclick="selezionaPiano('Piano Starter 2.0')" class="w-full bg-white/10 hover:bg-white/20 py-4 rounded-xl font-bold text-white transition-colors border border-white/10">Ordina Starter</button>
                 </div>
 
-                <div class="glass-card rounded-[2.5rem] p-8 flex flex-col reveal delay-100 border-emerald-500/50 shadow-2xl shadow-emerald-900/20 relative transform md:-translate-y-4">
+                <div class="glass-card rounded-[2.5rem] p-6 flex flex-col reveal delay-100 border-emerald-500/50 shadow-2xl shadow-emerald-900/20 relative transform lg:-translate-y-4">
                     <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">Più Richiesto</div>
                     <h4 class="text-2xl font-bold text-emerald-400 mb-2">Professional</h4>
                     <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">L'ecosistema completo per PMI strutturate.</p>
@@ -385,7 +514,7 @@
                     <button onclick="selezionaPiano('Piano Professional')" class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-black text-white transition-all shadow-lg shadow-emerald-600/30">Ordina Professional</button>
                 </div>
 
-                <div class="glass-card rounded-[2.5rem] p-8 flex flex-col reveal delay-200 hover:border-slate-500 transition-all">
+                <div class="glass-card rounded-[2.5rem] p-6 flex flex-col reveal delay-200 hover:border-slate-500 transition-all">
                     <h4 class="text-xl font-bold text-white mb-2">Enterprise</h4>
                     <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Per grandi volumi di dati e multinazionali.</p>
                     <div class="mb-6">
@@ -402,13 +531,32 @@
                     </ul>
                     <button onclick="selezionaPiano('Piano Enterprise')" class="w-full bg-white/10 hover:bg-white/20 py-4 rounded-xl font-bold text-white transition-colors border border-white/10">Ordina Enterprise</button>
                 </div>
+
+                <div class="glass-card rounded-[2.5rem] p-6 flex flex-col reveal delay-300 border-cyan-500/50 hover:border-cyan-400 transition-all shadow-2xl shadow-cyan-900/20 relative transform lg:-translate-y-4">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap">Master All-Inclusive</div>
+                    <h4 class="text-2xl font-bold text-cyan-400 mb-2">Enterprise + iORE</h4>
+                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">L'intero ecosistema Enterprise unito alla fornitura utenze flat aziendali.</p>
+                    <div class="mb-6">
+                        <span class="text-slate-500 line-through text-xs font-bold block mb-1">Valore: € 1.339,00 / mese</span>
+                        <div class="flex items-end gap-1">
+                            <span class="text-4xl lg:text-5xl font-black text-white">€ 890</span><span class="text-slate-400 font-medium mb-1">/mese</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-sm text-slate-300 mb-8 flex-grow">
+                        <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Tutto il Piano Enterprise Incluso</strong></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400 shrink-0"></i> Fornitura Elettrica Aziendale tramite iORE</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400 shrink-0"></i> Fornitura Gas e Idrica tramite iORE</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400 shrink-0"></i> <strong>Indipendente dai Consumi Effettivi</strong></li>
+                    </ul>
+                    <button onclick="selezionaPiano('Pacchetto Master Enterprise + iORE Utilities')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 py-4 rounded-xl font-black text-white transition-all shadow-lg shadow-cyan-600/30">Ordina Master iORE</button>
+                </div>
             </div>
             
             <p class="text-center text-xs text-slate-500 mt-8 font-medium">I prezzi si intendono IVA esclusa. Il contratto ha una durata minima di 12 mesi. Il Tantum per l'installazione verrà fatturato all'accettazione del progetto.</p>
         </div>
     </section>
 
-    <section id="sicurezza" class="py-16 border-y border-white/5 bg-slate-900/50">
+    <section id="sicurezza" class="py-16 border-y border-white/5 bg-slate-900/50 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="grid lg:grid-cols-3 gap-10 items-center">
                 <div class="lg:col-span-1 reveal">
@@ -434,7 +582,7 @@
         </div>
     </section>
 
-    <footer class="bg-[#01030a] py-16 px-6 border-t border-blue-900/30 mt-10">
+    <footer class="bg-[#01030a] py-16 px-6 border-t border-blue-900/30 mt-10 overflow-hidden">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div class="lg:col-span-2">
                 <span class="text-3xl font-black logo-font text-white">HORIZON <span class="text-blue-500">SERVIZI</span></span>
@@ -461,6 +609,13 @@
             <p class="text-[10px] text-slate-600 uppercase tracking-[0.2em] font-bold">&copy; 2024-2030 Horizon Global Italia. L'architettura del domani. Tutti i diritti riservati.</p>
         </div>
     </footer>
+
+    <a href="tel:+390305409202" class="fixed bottom-6 right-6 z-[90] bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:scale-110 transition-transform duration-300 flex items-center justify-center group border border-emerald-400/50">
+        <i data-lucide="phone" class="w-6 h-6 animate-pulse"></i>
+        <span class="absolute right-full mr-4 bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-700 shadow-xl">
+            Chiama 030 540 9202
+        </span>
+    </a>
 
     <div id="contactModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
         <div class="glass-card w-full max-w-4xl rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto" id="contactModalContent">
@@ -508,6 +663,24 @@
                     <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Codice Fiscale Personale (16 Caratteri) *</label><input type="text" id="pr-cf-pr" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
                 </div>
 
+                <div id="pr-area-utenzes" class="hidden bg-cyan-900/20 border border-cyan-500/40 p-5 rounded-2xl">
+                    <h4 class="text-cyan-400 font-bold mb-4 text-sm"><i data-lucide="zap" class="inline w-4 h-4 mr-1"></i> Identificativi Utenze iORE (Obbligatori)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase text-slate-500 mb-1">POD Luce *</label>
+                            <input type="text" id="pr-pod-luce" placeholder="Es. IT001E..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase text-slate-500 mb-1">POD Acqua *</label>
+                            <input type="text" id="pr-pod-acqua" placeholder="Codice Presa/POD Acqua" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase text-slate-500 mb-1">PDR Gas *</label>
+                            <input type="text" id="pr-pdr-gas" placeholder="Es. 002000..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-cyan-500">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bg-white/5 border border-white/5 p-5 rounded-2xl">
                     <h4 class="text-slate-300 font-bold mb-4 text-sm"><i data-lucide="map-pin" class="inline w-4 h-4 mr-1"></i> Sede Installazione / Legale</h4>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -541,7 +714,7 @@
         <div class="glass-card w-full max-w-4xl rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto border-emerald-500/30 shadow-2xl shadow-emerald-900/20" id="hiringModalContent">
             <button onclick="closeModal('hiringModal')" class="absolute top-6 right-6 text-slate-500 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
             <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">Unisciti al Team <span class="text-emerald-500">Horizon.</span></h3>
-            </div>
+        </div>
     </div>
 
     <script>
@@ -579,9 +752,29 @@
             }, 300);
         }
 
-        // Funzione per aprire il checkout col piano selezionato
+        // Modificata per gestire la comparsa dei campi Utenze per il pacchetto combo
         function selezionaPiano(nomePiano) {
-            document.getElementById('pr-servizio').value = nomePiano + " (Promo -30% Applicata)";
+            const areaUtenze = document.getElementById('pr-area-utenzes');
+            const inpLuce = document.getElementById('pr-pod-luce');
+            const inpAcqua = document.getElementById('pr-pod-acqua');
+            const inpGas = document.getElementById('pr-pdr-gas');
+
+            if (nomePiano.includes('iORE')) {
+                document.getElementById('pr-servizio').value = nomePiano + " (Promo Master Applicata)";
+                areaUtenze.classList.remove('hidden');
+                inpLuce.required = true;
+                inpAcqua.required = true;
+                inpGas.required = true;
+            } else {
+                document.getElementById('pr-servizio').value = nomePiano + " (Promo -30% Applicata)";
+                areaUtenze.classList.add('hidden');
+                inpLuce.required = false;
+                inpAcqua.required = false;
+                inpGas.required = false;
+                inpLuce.value = '';
+                inpAcqua.value = '';
+                inpGas.value = '';
+            }
             openModal('contactModal');
         }
 
@@ -607,7 +800,6 @@
         window.addEventListener("scroll", reveal);
         reveal();
 
-        // LOGICA INVIO FIREBASE (SITO WEB)
         function togglePreventivoType() {
             const val = document.getElementById('pr-tipo').value;
             const aAz = document.getElementById('pr-area-azienda');
@@ -638,6 +830,7 @@
             btn.disabled = true;
 
             const isAzienda = document.getElementById('pr-tipo').value === 'Azienda';
+            const isIore = document.getElementById('pr-servizio').value.includes('iORE');
             const reqId = Date.now();
 
             const data = {
@@ -662,6 +855,11 @@
                 sdi: isAzienda ? document.getElementById('pr-sdi').value : '',
                 pec: isAzienda ? document.getElementById('pr-pec').value : '',
                 cfPrivato: !isAzienda && document.getElementById('pr-cf-pr') ? document.getElementById('pr-cf-pr').value.toUpperCase() : '',
+                
+                // Raccolta dati utenze condizionali per tracciamento DB
+                podLuce: isIore ? document.getElementById('pr-pod-luce').value : '',
+                podAcqua: isIore ? document.getElementById('pr-pod-acqua').value : '',
+                pdrGas: isIore ? document.getElementById('pr-pdr-gas').value : '',
                 
                 dettagli: document.getElementById('pr-note').value,
                 stato: 'Nuovo Ordine'
