@@ -40,11 +40,10 @@
             --bg-dark: #020617; 
             --primary: #3b82f6;
             --accent: #06b6d4;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.05);
         }
 
-        /* Fix scorrimento orizzontale mobile */
         html, body {
             overflow-x: hidden !important;
             width: 100%;
@@ -56,6 +55,7 @@
             background-color: var(--bg-dark);
             color: #f1f5f9;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            text-align: center;
         }
 
         h1, h2, h3, .logo-font { font-family: 'Product Sans', sans-serif; }
@@ -68,15 +68,22 @@
 
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
             border: 1px solid var(--glass-border);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: 2.5rem;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
         
         .glass-card:hover {
-            border-color: rgba(59, 130, 246, 0.4);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(-8px) scale(1.02);
         }
 
         #mobile-menu {
@@ -85,13 +92,13 @@
         }
         #mobile-menu.open { transform: translateX(0); }
 
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
 
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal { opacity: 0; transform: translateY(50px) scale(0.95); transition: all 1s cubic-bezier(0.25, 1, 0.5, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0) scale(1); }
 
         .bg-grid-animate {
             background-size: 50px 50px;
@@ -99,6 +106,37 @@
                               linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
         }
 
+        /* Modifiche: Scorrimento Infinito CSS */
+        .auto-scroll-wrapper {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+            padding: 1.5rem 0 3rem 0;
+            mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+        }
+
+        .auto-scroll-track {
+            display: flex;
+            gap: 1.5rem; /* Corrisponde a gap-6 */
+            width: max-content;
+            /* La durata (es. 40s) rende lo scorrimento lento e fluido */
+            animation: scroll-loop 45s linear infinite;
+        }
+
+        /* Pausa al passaggio del mouse o al tocco */
+        .auto-scroll-track:hover, .auto-scroll-track:active {
+            animation-play-state: paused;
+            cursor: grab;
+        }
+
+        @keyframes scroll-loop {
+            0% { transform: translateX(0); }
+            /* Si sposta esattamente a metà (essendo i contenuti duplicati da JS) - 0.75rem (metà gap) */
+            100% { transform: translateX(calc(-50% - 0.75rem)); }
+        }
+
+        /* Marquee clienti */
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .animate-marquee-container { display: flex; width: 200%; animation: marquee 35s linear infinite; }
         .animate-marquee-container:hover { animation-play-state: paused; }
@@ -111,16 +149,13 @@
         .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 3px solid #fff; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        .promo-badge {
-            animation: pulse-promo 2s infinite;
-        }
+        .promo-badge { animation: pulse-promo 2s infinite; }
         @keyframes pulse-promo {
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        /* Stile pagina interna HUB Corporate */
         .page-separator {
             border-top: 2px dashed rgba(59, 130, 246, 0.3);
             margin: 4rem 0;
@@ -141,21 +176,20 @@
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased text-center">
 
-    <nav class="fixed w-full z-[100] bg-[#020617]/85 backdrop-blur-xl border-b border-white/5">
+    <nav class="fixed w-full z-[100] bg-[#020617]/70 backdrop-blur-3xl border-b border-white/5 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3 cursor-pointer group" onclick="window.scrollTo(0,0)">
-                <div class="w-9 h-9 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-blue-500/20">
-                    <i data-lucide="layers" class="w-5 h-5 text-white"></i>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-xl md:text-2xl font-bold tracking-tighter leading-none logo-font">HORIZON <span class="text-blue-500">GLOBAL</span></span>
-                    <span class="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Divisione Italia</span>
-                </div>
+            
+            <button onclick="toggleMobileMenu()" class="lg:hidden text-white p-2 focus:outline-none">
+                <i data-lucide="menu" class="w-7 h-7"></i>
+            </button>
+
+            <div class="flex items-center justify-center cursor-pointer group flex-grow lg:flex-grow-0" onclick="window.scrollTo(0,0)">
+                <img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" alt="Horizon Global Logo" class="h-10 sm:h-12 w-auto object-contain hover:scale-105 transition-transform">
             </div>
 
-            <div class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
+            <div class="hidden lg:flex items-center justify-center gap-8 text-sm font-semibold text-slate-300 flex-grow">
                 <a href="#orion-ai" class="hover:text-blue-400 transition">Orion AI</a>
                 <a href="#servizi-rapidi" class="hover:text-blue-400 transition text-white font-bold">Servizi & Hosting</a>
                 <a href="#divisioni" class="hover:text-blue-400 transition">Le Divisioni</a>
@@ -163,309 +197,276 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <a href="#servizi-rapidi" class="hidden md:flex bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all shadow-lg shadow-blue-900/30">
+                <a href="#servizi-rapidi" class="hidden md:flex bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600 text-blue-400 hover:text-white px-6 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all shadow-lg backdrop-blur-xl">
                     SCOPRI I SERVIZI
                 </a>
-                <button onclick="toggleMobileMenu()" class="lg:hidden text-white p-2 focus:outline-none">
-                    <i data-lucide="menu" class="w-7 h-7"></i>
-                </button>
             </div>
         </div>
     </nav>
 
-    <div id="mobile-menu" class="fixed inset-0 z-[110] bg-[#020617]/95 backdrop-blur-2xl flex flex-col p-6 lg:hidden">
+    <div id="mobile-menu" class="fixed inset-0 z-[110] bg-[#020617]/95 backdrop-blur-3xl flex flex-col p-6 lg:hidden">
         <div class="flex justify-between items-center mb-10 pt-4">
-            <span class="text-xl font-bold logo-font text-white">MENU GLOBAL</span>
-            <button onclick="toggleMobileMenu()" class="p-2 bg-white/10 rounded-full text-white"><i data-lucide="x"></i></button>
+            <span class="text-xl font-bold logo-font text-white mx-auto">MENU GLOBAL</span>
+            <button onclick="toggleMobileMenu()" class="p-2 bg-white/10 rounded-full text-white absolute right-6"><i data-lucide="x"></i></button>
         </div>
-        <div class="flex flex-col gap-6 text-2xl font-black text-slate-200">
-            <a href="#orion-ai" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Orion AI</a>
-            <a href="#servizi-rapidi" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 text-blue-400">Servizi Web & Internet</a>
-            <a href="#divisioni" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4">Tutte le Divisioni</a>
-            <a href="#hub-corporate" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 text-emerald-400">HUB Corporate B2B</a>
+        <div class="flex flex-col items-center gap-6 text-2xl font-black text-slate-200">
+            <a href="#orion-ai" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Orion AI</a>
+            <a href="#servizi-rapidi" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 text-blue-400 w-full text-center">Servizi Web & Internet</a>
+            <a href="#divisioni" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Tutte le Divisioni</a>
+            <a href="#hub-corporate" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 text-emerald-400 w-full text-center">HUB Corporate B2B</a>
         </div>
         <div class="mt-auto pb-6">
             <a href="#servizi-rapidi" onclick="toggleMobileMenu();" class="block text-center w-full bg-blue-600 py-4 rounded-2xl font-black tracking-widest text-white shadow-xl shadow-blue-600/20">SCOPRI I SERVIZI</a>
         </div>
     </div>
 
-    <!-- HERO SECTION -->
-    <section class="relative min-h-[90vh] flex items-center pt-28 pb-16 px-4 sm:px-6 overflow-hidden">
+    <section class="relative min-h-[90vh] flex flex-col items-center justify-center pt-28 pb-16 px-4 sm:px-6 overflow-hidden">
         <div class="absolute inset-0 bg-grid-animate z-0 opacity-30"></div>
-        <div class="absolute top-0 right-0 w-[300px] md:w-[600px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full"></div>
-        <div class="absolute bottom-0 left-0 w-[300px] md:w-[600px] h-[600px] bg-cyan-600/10 blur-[120px] rounded-full"></div>
+        <div class="absolute top-1/4 right-1/4 w-[300px] md:w-[600px] h-[600px] bg-blue-600/10 blur-[150px] rounded-full"></div>
+        <div class="absolute bottom-1/4 left-1/4 w-[300px] md:w-[600px] h-[600px] bg-cyan-600/10 blur-[150px] rounded-full"></div>
 
-        <div class="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
-            <div class="reveal active">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] sm:text-xs font-black text-blue-400 uppercase tracking-widest mb-6">
-                    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span></span>
-                    Conglomerato Tecnologico | Italia
-                </div>
-                <h1 class="text-4xl sm:text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tighter text-white">
-                    Il Futuro, <br><span class="text-gradient">Connesso da Horizon.</span>
-                </h1>
-                <p class="text-base md:text-xl text-slate-400 mb-8 leading-relaxed max-w-xl">
-                    Benvenuto nell'ecosistema <strong>Global Horizon</strong>. Dalla connettività satellitare all'hosting cloud, fino all'infrastruttura ERP avanzata per aziende. Trova il servizio su misura per te o per la tua impresa.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 mb-5">
-                    <a href="#servizi-rapidi" class="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-2xl text-center font-bold text-white transition-all shadow-xl shadow-blue-900/40">
-                        Servizi per Piccole Imprese
-                    </a>
-                    <a href="#hub-corporate" class="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 px-8 py-4 rounded-2xl text-center font-bold text-white transition-all shadow-xl shadow-emerald-900/40">
-                        HUB Corporate (Grandi Aziende)
-                    </a>
-                </div>
-                
-                <button onclick="openModal('hiringModal')" class="w-full sm:w-max bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-3 rounded-xl text-center font-bold text-slate-300 transition-all flex items-center justify-center gap-2 mt-2">
-                    <i data-lucide="briefcase" class="w-5 h-5"></i> Lavora nel Gruppo
-                </button>
+        <div class="max-w-5xl mx-auto w-full flex flex-col items-center relative z-10 reveal active">
+            <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] sm:text-xs font-black text-blue-400 uppercase tracking-widest mb-6 backdrop-blur-md">
+                <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span></span>
+                Conglomerato Tecnologico | Italia
             </div>
+            <h1 class="text-5xl sm:text-6xl md:text-8xl font-black mb-6 leading-tight tracking-tighter text-white">
+                Il Futuro, <br><span class="text-gradient">Connesso da Horizon.</span>
+            </h1>
+            <p class="text-base md:text-xl text-slate-400 mb-8 leading-relaxed max-w-2xl mx-auto">
+                Benvenuto nell'ecosistema <strong>Global Horizon</strong>. Dalla connettività satellitare all'hosting cloud, fino all'infrastruttura ERP avanzata per aziende. Trova il servizio su misura per te o per la tua impresa.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8 w-full max-w-3xl">
+                <a href="#servizi-rapidi" class="flex-1 bg-blue-600/20 border border-blue-500/40 backdrop-blur-xl hover:bg-blue-500 px-8 py-4 rounded-[2rem] text-center font-bold text-white transition-all shadow-xl">
+                    Servizi per Piccole Imprese
+                </a>
+                <a href="#hub-corporate" class="flex-1 bg-gradient-to-r from-emerald-600/20 to-emerald-500/20 border border-emerald-500/40 backdrop-blur-xl hover:bg-emerald-500 px-8 py-4 rounded-[2rem] text-center font-bold text-white transition-all shadow-xl">
+                    HUB Corporate (Grandi Aziende)
+                </a>
+            </div>
+            
+            <button onclick="openModal('hiringModal')" class="w-full sm:w-max bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-[2rem] text-center font-bold text-slate-300 transition-all flex items-center justify-center gap-2 backdrop-blur-md">
+                <i data-lucide="briefcase" class="w-5 h-5"></i> Lavora nel Gruppo
+            </button>
+        </div>
 
-            <div class="hidden lg:block relative float-anim">
-                <div class="glass-card p-8 rounded-[2rem] border-blue-500/20 shadow-2xl relative z-10 overflow-hidden bg-black/40">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400"><i data-lucide="globe"></i></div>
-                            <div>
-                                <h4 class="font-bold text-white text-lg">Stato dell'Ecosistema</h4>
-                                <p class="text-[10px] text-emerald-400 font-mono tracking-widest mt-1">TUTTE LE RETI OPERATIVE: 100%</p>
-                            </div>
+        <div class="w-full max-w-4xl mx-auto mt-16 relative z-10 reveal delay-100">
+            <div class="glass-card p-8 bg-black/40 w-full">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                <div class="flex flex-col md:flex-row justify-between items-center w-full mb-8 border-b border-white/10 pb-6 gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-[1.5rem] flex items-center justify-center text-blue-400"><i data-lucide="globe"></i></div>
+                        <div class="text-left">
+                            <h4 class="font-bold text-white text-lg">Stato dell'Ecosistema</h4>
+                            <p class="text-[10px] text-emerald-400 font-mono tracking-widest mt-1">TUTTE LE RETI OPERATIVE: 100%</p>
                         </div>
                     </div>
-                    <div class="space-y-5">
-                        <div>
-                            <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Orion AI (Rete FWA & ISP)</span><span class="text-blue-400">Online</span></div>
-                            <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[100%]"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Net-Orion (Cloud Server)</span><span class="text-cyan-400">Zero Latenza</span></div>
-                            <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-[98%]"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Aura Network (Streaming)</span><span class="text-purple-400">Realtime</span></div>
-                            <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[100%]"></div></div>
-                        </div>
+                </div>
+                <div class="w-full space-y-5">
+                    <div>
+                        <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Orion AI (Rete FWA)</span><span class="text-blue-400">Online</span></div>
+                        <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[100%]"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Net-Orion (Cloud Server)</span><span class="text-cyan-400">Zero Latenza</span></div>
+                        <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-[98%]"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Aura Network</span><span class="text-purple-400">Realtime</span></div>
+                        <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[100%]"></div></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ORION AI SECTION -->
-    <section id="orion-ai" class="py-24 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-blue-900/10 border-y border-white/5 overflow-hidden">
+    <section id="orion-ai" class="py-24 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-blue-900/10 border-y border-white/5 overflow-hidden flex flex-col items-center">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] bg-blue-500/5 blur-[150px] rounded-full pointer-events-none"></div>
-        <div class="max-w-7xl mx-auto relative z-10">
-            <div class="flex flex-col lg:flex-row items-center gap-12">
-                <div class="lg:w-1/2 reveal">
-                    <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Provider Internet di Nuova Generazione</span>
-                    <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">ORION AI.<br><span class="text-blue-400">La Connettività del Futuro.</span></h2>
-                    <p class="text-slate-400 text-lg leading-relaxed mb-8">
-                        Orion AI è la punta di diamante di Horizon Global per le telecomunicazioni. Connettiamo privati e aziende nelle zone più remote tramite reti FWA, ponti radio ad alta frequenza, internet satellitare e un'infrastruttura governata dall'Intelligenza Artificiale per l'azzeramento della latenza.
-                    </p>
-                    <ul class="space-y-4 mb-8">
-                        <li class="flex items-start gap-4">
-                            <i data-lucide="satellite" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
-                            <div>
-                                <strong class="text-white">Rete Satellitare Costellare</strong>
-                                <p class="text-sm text-slate-400">Copertura totale ovunque ti trovi, indipendente dalle centraline terrestri.</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-4">
-                            <i data-lucide="cpu" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
-                            <div>
-                                <strong class="text-white">AI Routing Adattivo</strong>
-                                <p class="text-sm text-slate-400">L'IA reindirizza i pacchetti dati in millisecondi per evitare congestioni di rete.</p>
-                            </div>
-                        </li>
-                    </ul>
-                    <a href="https://orion-ai.it" target="_blank" class="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-blue-500/10 text-blue-400 font-bold border border-blue-500/30 hover:bg-blue-500/20 transition-all">
-                        Visita il portale Orion AI <i data-lucide="external-link" class="w-4 h-4"></i>
-                    </a>
+        <div class="max-w-5xl mx-auto relative z-10 flex flex-col items-center text-center">
+            <div class="reveal">
+                <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 font-bold tracking-widest uppercase text-xs mb-6">Provider Internet di Nuova Generazione</span>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">ORION AI.<br><span class="text-blue-400">La Connettività del Futuro.</span></h2>
+                <p class="text-slate-400 text-lg leading-relaxed mb-8 max-w-3xl mx-auto">
+                    Orion AI è la punta di diamante di Horizon Global per le telecomunicazioni. Connettiamo privati e aziende nelle zone più remote tramite reti FWA, ponti radio ad alta frequenza, internet satellitare e un'infrastruttura governata dall'Intelligenza Artificiale per l'azzeramento della latenza.
+                </p>
+                
+                <div class="grid sm:grid-cols-2 gap-6 w-full max-w-4xl mx-auto mb-10 reveal delay-100">
+                    <div class="glass-card p-6 bg-black/40">
+                        <i data-lucide="satellite" class="w-10 h-10 text-blue-400 mx-auto mb-4"></i>
+                        <strong class="text-white block mb-2">Rete Satellitare Costellare</strong>
+                        <p class="text-sm text-slate-400">Copertura totale ovunque ti trovi, indipendente dalle centraline terrestri.</p>
+                    </div>
+                    <div class="glass-card p-6 bg-black/40">
+                        <i data-lucide="cpu" class="w-10 h-10 text-cyan-400 mx-auto mb-4"></i>
+                        <strong class="text-white block mb-2">AI Routing Adattivo</strong>
+                        <p class="text-sm text-slate-400">L'IA reindirizza i pacchetti dati in millisecondi per evitare congestioni di rete.</p>
+                    </div>
                 </div>
-                <div class="lg:w-1/2 w-full grid grid-cols-2 gap-4 reveal delay-100">
-                    <div class="glass-card p-6 rounded-3xl border-blue-500/20 bg-black/40 text-center">
-                        <i data-lucide="radio" class="w-10 h-10 text-blue-400 mx-auto mb-4"></i>
-                        <h4 class="text-white font-bold mb-2">FWA Alta Potenza</h4>
-                        <p class="text-xs text-slate-400">Ponti radio fino a 1.8 Gbps.</p>
+
+                <a href="https://orion-ai.it" target="_blank" class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-[2rem] bg-blue-500/10 text-blue-400 font-bold border border-blue-500/30 hover:bg-blue-500 hover:text-white transition-all backdrop-blur-md">
+                    Visita il portale Orion AI <i data-lucide="external-link" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="servizi-rapidi" class="py-24 px-0 relative overflow-hidden bg-slate-900/30">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-10 reveal">
+                <span class="inline-block px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold tracking-widest uppercase text-xs mb-6">Soluzioni Pronta Consegna</span>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">Servizi per <span class="text-emerald-400">PMI e Privati</span></h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto leading-relaxed">
+                    Scegli la comodità. Scorri e configura il servizio desiderato, ti garantiamo un setup rapido ospitato sui server proprietari Horizon.
+                </p>
+            </div>
+        </div>
+
+        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw] px-4">
+            <div class="auto-scroll-track">
+                
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[360px] p-8 border-blue-500/20 bg-black/20 group cursor-default">
+                    <div class="w-16 h-16 bg-blue-500/10 rounded-3xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="layout-template" class="w-8 h-8"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Sito Web + Cloud</h3>
+                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Realizzazione sito web e hosting gestito in Cloud Proprietario Horizon.</p>
+                    <div class="mb-6 flex-grow flex flex-col items-center justify-center w-full">
+                        <div class="flex items-end justify-center gap-1 mb-1">
+                            <span class="text-5xl font-black text-white">€ 66</span><span class="text-slate-400 font-medium mb-2">/mese</span>
+                        </div>
+                        <span class="text-emerald-400 text-xs font-bold block bg-emerald-500/10 px-3 py-1 rounded-full mt-2">+ € 100 Tantum Iniziale</span>
                     </div>
-                    <div class="glass-card p-6 rounded-3xl border-cyan-500/20 bg-black/40 text-center mt-8">
-                        <i data-lucide="zap" class="w-10 h-10 text-cyan-400 mx-auto mb-4"></i>
-                        <h4 class="text-white font-bold mb-2">Zero Latenza</h4>
-                        <p class="text-xs text-slate-400">Ottimizzato per cloud e trading.</p>
+                    <ul class="space-y-3 text-sm text-slate-300 mb-8 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Sito Web Vetrina</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Hosting Cloud Horizon</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Dominio Ryzn Incluso</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Sito Web + Hosting Cloud Horizon (Piccole Imprese)')" class="w-full bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-blue-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Servizio</button>
+                </div>
+
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[360px] p-8 border-purple-500/30 bg-purple-900/10 relative shadow-lg shadow-purple-900/20 group cursor-default">
+                    <div class="absolute -top-4 bg-purple-500 text-white px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg z-10">Sponsorizzato</div>
+                    <div class="w-16 h-16 bg-purple-500/10 rounded-3xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="smartphone" class="w-8 h-8"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Web + App PWA</h3>
+                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Sito Web e Progressive Web App dedicata per i tuoi clienti.</p>
+                    <div class="mb-6 flex-grow flex flex-col items-center justify-center w-full">
+                        <div class="flex items-end justify-center gap-1 mb-1">
+                            <span class="text-5xl font-black text-white">€ 78</span><span class="text-slate-400 font-medium mb-2">/mese</span>
+                        </div>
+                        <span class="text-emerald-400 text-xs font-bold block bg-emerald-500/10 px-3 py-1 rounded-full mt-2">+ € 180 Tantum Iniziale</span>
                     </div>
+                    <ul class="space-y-3 text-sm text-slate-300 mb-8 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Sito + Hosting Gestito</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> App PWA Installabile</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Notifiche Push Base</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Sito Web + App PWA + Hosting')" class="w-full bg-purple-600 hover:bg-purple-500 text-white py-4 rounded-2xl font-bold transition-all shadow-md mt-auto z-10 relative">Richiedi Servizio</button>
+                </div>
+
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[360px] p-8 border-cyan-500/20 bg-black/20 group cursor-default">
+                    <div class="w-16 h-16 bg-cyan-500/10 rounded-3xl flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="home" class="w-8 h-8"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Orion Sat Privato</h3>
+                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Connettività satellitare veloce e stabile per abitazioni private.</p>
+                    <div class="mb-6 flex-grow flex flex-col items-center justify-center w-full">
+                        <div class="flex items-end justify-center gap-1 mb-1">
+                            <span class="text-5xl font-black text-white">€ 45</span><span class="text-slate-400 font-medium mb-2">/mese</span>
+                        </div>
+                        <span class="text-cyan-400 text-xs font-bold block bg-cyan-500/10 px-3 py-1 rounded-full mt-2">+ € 38,90 Tantum Parabola</span>
+                    </div>
+                    <ul class="space-y-3 text-sm text-slate-300 mb-8 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Rete Satellitare Orion</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Parabola + Installazione</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Ideale per streaming</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Orion Internet Satellitare (Privato)')" class="w-full bg-cyan-600/20 hover:bg-cyan-600 text-cyan-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-cyan-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Privato</button>
+                </div>
+
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[360px] p-8 border-orange-500/20 bg-black/20 group cursor-default">
+                    <div class="w-16 h-16 bg-orange-500/10 rounded-3xl flex items-center justify-center text-orange-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="building" class="w-8 h-8"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Orion Sat Business</h3>
+                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Connettività ridondata ad altissima affidabilità per aziende.</p>
+                    <div class="mb-6 flex-grow flex flex-col items-center justify-center w-full">
+                        <div class="flex items-end justify-center gap-1 mb-1">
+                            <span class="text-5xl font-black text-white">€ 68</span><span class="text-slate-400 font-medium mb-2">/mese</span>
+                        </div>
+                        <span class="text-orange-400 text-xs font-bold block bg-orange-500/10 px-3 py-1 rounded-full mt-2">+ € 78 Tantum (2 Parabole)</span>
+                    </div>
+                    <ul class="space-y-3 text-sm text-slate-300 mb-8 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> 2 Parabole Ridondanti</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Installazione Business</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Uptime Garantito (SLA)</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Orion Internet Satellitare (Business 2 Parabole)')" class="w-full bg-orange-600/20 hover:bg-orange-600 text-orange-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-orange-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Business</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SERVIZI DIGITALI E INTERNET IN PRIMO PIANO -->
-    <section id="servizi-rapidi" class="py-24 px-4 sm:px-6 relative overflow-hidden bg-slate-900/30">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <span class="text-emerald-400 font-bold tracking-widest uppercase text-sm mb-2 block">Soluzioni Pronta Consegna</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Servizi per <span class="text-emerald-400">Piccole Imprese e Privati</span></h2>
+    <section id="divisioni" class="py-24 px-0 relative bg-gradient-to-b from-[#020617] to-slate-900/40 border-y border-white/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-10 reveal">
+                <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 font-bold tracking-widest uppercase text-xs mb-6">Il Nostro Impero</span>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">Le Divisioni di <span class="text-gradient">Horizon</span></h2>
                 <p class="text-slate-400 text-lg max-w-3xl mx-auto leading-relaxed">
-                    Presenza web professionale ospitata sui nostri server proprietari e connettività garantita Orion. Configura subito il tuo servizio.
+                    Operiamo in molteplici settori chiave dello sviluppo globale. Scopri i brand e le piattaforme che compongono la nostra rete interattiva.
                 </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Servizio 1 -->
-                <div class="glass-card rounded-[2rem] p-8 flex flex-col reveal border-blue-500/20 hover:border-blue-500/50 transition-all bg-black/20 relative group">
-                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="layout-template"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-2">Sito Web + Cloud</h3>
-                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Realizzazione sito web e hosting gestito in Cloud Proprietario Horizon.</p>
-                    <div class="mb-6 flex-grow">
-                        <div class="flex items-end gap-1 mb-1">
-                            <span class="text-4xl font-black text-white">€ 66</span><span class="text-slate-400 font-medium mb-1">/mese</span>
-                        </div>
-                        <span class="text-emerald-400 text-xs font-bold block">+ € 100 Tantum Iniziale</span>
-                    </div>
-                    <ul class="space-y-3 text-sm text-slate-300 mb-8">
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Sito Web Vetrina</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Hosting Cloud Horizon</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Dominio Ryzn Incluso</li>
-                    </ul>
-                    <button onclick="selezionaPiano('Sito Web + Hosting Cloud Horizon (Piccole Imprese)')" class="w-full bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white py-3 rounded-xl font-bold transition-all border border-blue-500/30 hover:border-transparent">Richiedi Servizio</button>
-                </div>
-
-                <!-- Servizio 2 -->
-                <div class="glass-card rounded-[2rem] p-8 flex flex-col reveal delay-100 border-purple-500/30 hover:border-purple-500/60 transition-all bg-purple-900/5 relative shadow-lg shadow-purple-900/10 group">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-purple-500 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Raccomandato</div>
-                    <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="smartphone"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-2">Web + App PWA</h3>
-                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Sito Web e Progressive Web App dedicata per i tuoi clienti.</p>
-                    <div class="mb-6 flex-grow">
-                        <div class="flex items-end gap-1 mb-1">
-                            <span class="text-4xl font-black text-white">€ 78</span><span class="text-slate-400 font-medium mb-1">/mese</span>
-                        </div>
-                        <span class="text-emerald-400 text-xs font-bold block">+ € 180 Tantum Iniziale</span>
-                    </div>
-                    <ul class="space-y-3 text-sm text-slate-300 mb-8">
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Sito + Hosting Gestito</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> App PWA Installabile</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Notifiche Push Base</li>
-                    </ul>
-                    <button onclick="selezionaPiano('Sito Web + App PWA + Hosting')" class="w-full bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold transition-all shadow-md shadow-purple-900/30">Richiedi Servizio</button>
-                </div>
-
-                <!-- Servizio 3 -->
-                <div class="glass-card rounded-[2rem] p-8 flex flex-col reveal delay-200 border-cyan-500/20 hover:border-cyan-500/50 transition-all bg-black/20 relative group">
-                    <div class="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="home"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-2">Orion Sat Privato</h3>
-                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Connettività satellitare veloce e stabile per abitazioni private.</p>
-                    <div class="mb-6 flex-grow">
-                        <div class="flex items-end gap-1 mb-1">
-                            <span class="text-4xl font-black text-white">€ 45</span><span class="text-slate-400 font-medium mb-1">/mese</span>
-                        </div>
-                        <span class="text-cyan-400 text-xs font-bold block">+ € 38,90 Tantum Parabola</span>
-                    </div>
-                    <ul class="space-y-3 text-sm text-slate-300 mb-8">
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Rete Satellitare Orion</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Parabola + Installazione Base</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Ideale per streaming e casa</li>
-                    </ul>
-                    <button onclick="selezionaPiano('Orion Internet Satellitare (Privato)')" class="w-full bg-cyan-600/20 hover:bg-cyan-600 text-cyan-400 hover:text-white py-3 rounded-xl font-bold transition-all border border-cyan-500/30 hover:border-transparent">Richiedi Privato</button>
-                </div>
-
-                <!-- Servizio 4 -->
-                <div class="glass-card rounded-[2rem] p-8 flex flex-col reveal delay-300 border-orange-500/20 hover:border-orange-500/50 transition-all bg-black/20 relative group">
-                    <div class="w-12 h-12 bg-orange-500/10 rounded-xl flex items-center justify-center text-orange-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="building"></i></div>
-                    <h3 class="text-xl font-bold text-white mb-2">Orion Sat Business</h3>
-                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Connettività ridondata ad altissima affidabilità per aziende.</p>
-                    <div class="mb-6 flex-grow">
-                        <div class="flex items-end gap-1 mb-1">
-                            <span class="text-4xl font-black text-white">€ 68</span><span class="text-slate-400 font-medium mb-1">/mese</span>
-                        </div>
-                        <span class="text-orange-400 text-xs font-bold block">+ € 78 Tantum (2 Parabole)</span>
-                    </div>
-                    <ul class="space-y-3 text-sm text-slate-300 mb-8">
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Setup 2 Parabole Ridondanti</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Installazione Business Inclusa</li>
-                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i> Uptime Garantito (SLA)</li>
-                    </ul>
-                    <button onclick="selezionaPiano('Orion Internet Satellitare (Business 2 Parabole)')" class="w-full bg-orange-600/20 hover:bg-orange-600 text-orange-400 hover:text-white py-3 rounded-xl font-bold transition-all border border-orange-500/30 hover:border-transparent">Richiedi Business</button>
-                </div>
             </div>
         </div>
-    </section>
 
-    <!-- LE DIVISIONI (Spostate dopo i servizi) -->
-    <section id="divisioni" class="py-24 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-slate-900/40 border-y border-white/5 overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Il Nostro Impero</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Le Divisioni di <span class="text-gradient">Horizon</span></h2>
-                <p class="text-slate-400 text-lg max-w-3xl mx-auto leading-relaxed">
-                    Operiamo in molteplici settori chiave dello sviluppo globale. Scopri i brand e le piattaforme che compongono la nostra rete infrastrutturale e di servizi.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Aura -->
-                <div class="glass-card p-8 rounded-3xl reveal border-pink-500/20 hover:border-pink-500/50 group">
-                    <div class="w-14 h-14 bg-pink-500/10 rounded-2xl flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="music" class="w-7 h-7"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-3">Global Aura</h3>
-                    <p class="text-sm text-slate-400 mb-6 leading-relaxed">La piattaforma di streaming musicale e social network innovativo. L'hub dell'intrattenimento audio di nuova generazione che connette gli artisti ai fan.</p>
-                    <a href="https://pl-globalaura.com" target="_blank" class="inline-flex items-center gap-2 text-pink-400 font-bold text-sm hover:gap-3 transition-all">Visita Aura <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw] px-4">
+            <div class="auto-scroll-track" style="animation-duration: 60s;"> <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-pink-500/20 group cursor-default">
+                    <div class="w-20 h-20 bg-pink-500/10 rounded-[2rem] flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="music" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Global Aura</h3>
+                    <p class="text-sm text-slate-400 mb-8 leading-relaxed">La piattaforma di streaming musicale e social network innovativo. L'hub dell'intrattenimento audio di nuova generazione che connette gli artisti ai fan.</p>
+                    <a href="https://pl-globalaura.com" target="_blank" class="inline-flex items-center justify-center gap-2 text-pink-400 font-bold bg-pink-500/10 px-6 py-3 rounded-full hover:bg-pink-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Aura <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <!-- Orion -->
-                <div class="glass-card p-8 rounded-3xl reveal delay-100 border-blue-500/20 hover:border-blue-500/50 group">
-                    <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="satellite" class="w-7 h-7"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-3">Orion AI</h3>
-                    <p class="text-sm text-slate-400 mb-6 leading-relaxed">Provider Internet Next-Gen. Connettività estrema tramite reti FWA, ponti radio e Intelligenza Artificiale applicata alle telecomunicazioni.</p>
-                    <a href="https://orion-ai.it" target="_blank" class="inline-flex items-center gap-2 text-blue-400 font-bold text-sm hover:gap-3 transition-all">Visita Orion <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-blue-500/20 group cursor-default">
+                    <div class="w-20 h-20 bg-blue-500/10 rounded-[2rem] flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="satellite" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Orion AI</h3>
+                    <p class="text-sm text-slate-400 mb-8 leading-relaxed">Provider Internet Next-Gen. Connettività estrema tramite reti FWA, ponti radio e Intelligenza Artificiale applicata alle telecomunicazioni.</p>
+                    <a href="https://orion-ai.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-blue-400 font-bold bg-blue-500/10 px-6 py-3 rounded-full hover:bg-blue-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Orion <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <!-- Net-Orion -->
-                <div class="glass-card p-8 rounded-3xl reveal delay-200 border-cyan-500/20 hover:border-cyan-500/50 group">
-                    <div class="w-14 h-14 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="server" class="w-7 h-7"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-3">Net-Orion</h3>
-                    <p class="text-sm text-slate-400 mb-6 leading-relaxed">Infrastruttura Cloud proprietaria. Datacenter ad altissime prestazioni per le esigenze enterprise, hosting avanzato e architettura server zero-latency.</p>
-                    <a href="https://net-orion.it" target="_blank" class="inline-flex items-center gap-2 text-cyan-400 font-bold text-sm hover:gap-3 transition-all">Visita Net-Orion <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-cyan-500/20 group cursor-default">
+                    <div class="w-20 h-20 bg-cyan-500/10 rounded-[2rem] flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="server" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Net-Orion</h3>
+                    <p class="text-sm text-slate-400 mb-8 leading-relaxed">Infrastruttura Cloud proprietaria. Datacenter ad altissime prestazioni per le esigenze enterprise, hosting avanzato e architettura server zero-latency.</p>
+                    <a href="https://net-orion.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-cyan-400 font-bold bg-cyan-500/10 px-6 py-3 rounded-full hover:bg-cyan-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Net-Orion <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <!-- iORE -->
-                <div class="glass-card p-8 rounded-3xl reveal border-emerald-500/20 hover:border-emerald-500/50 group">
-                    <div class="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="leaf" class="w-7 h-7"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-3">iORE Green</h3>
-                    <p class="text-sm text-slate-400 mb-6 leading-relaxed">La nostra divisione Utilities. Forniture di energia elettrica, idrica e gas integrate, con un focus totale sulla sostenibilità e tariffe flat esclusive.</p>
-                    <a href="https://ioregreen.it" target="_blank" class="inline-flex items-center gap-2 text-emerald-400 font-bold text-sm hover:gap-3 transition-all">Visita iORE <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-emerald-500/20 group cursor-default">
+                    <div class="w-20 h-20 bg-emerald-500/10 rounded-[2rem] flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="leaf" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">iORE Green</h3>
+                    <p class="text-sm text-slate-400 mb-8 leading-relaxed">La nostra divisione Utilities. Forniture di energia elettrica, idrica e gas integrate, con un focus totale sulla sostenibilità e tariffe flat esclusive.</p>
+                    <a href="https://ioregreen.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-emerald-400 font-bold bg-emerald-500/10 px-6 py-3 rounded-full hover:bg-emerald-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita iORE <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <!-- Ryzn -->
-                <div class="glass-card p-8 rounded-3xl reveal delay-100 border-orange-500/20 hover:border-orange-500/50 group">
-                    <div class="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="disc" class="w-7 h-7"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-3">Ryzn Music Group</h3>
-                    <p class="text-sm text-slate-400 mb-6 leading-relaxed">Etichetta discografica digitale e network di distribuzione indipendente. Lanciamo e gestiamo artisti nel panorama musicale globale.</p>
-                    <a href="http://ryznmusic.it/" target="_blank" class="inline-flex items-center gap-2 text-orange-400 font-bold text-sm hover:gap-3 transition-all">Visita Ryzn <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-orange-500/20 group cursor-default">
+                    <div class="w-20 h-20 bg-orange-500/10 rounded-[2rem] flex items-center justify-center text-orange-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="disc" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Ryzn Music Group</h3>
+                    <p class="text-sm text-slate-400 mb-8 leading-relaxed">Etichetta discografica digitale e network di distribuzione indipendente. Lanciamo e gestiamo artisti nel panorama musicale globale.</p>
+                    <a href="http://ryznmusic.it/" target="_blank" class="inline-flex items-center justify-center gap-2 text-orange-400 font-bold bg-orange-500/10 px-6 py-3 rounded-full hover:bg-orange-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Ryzn <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <!-- Aura TV -->
-                <div class="glass-card p-8 rounded-3xl reveal delay-200 border-indigo-500/20 hover:border-indigo-500/50 group">
-                    <div class="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="tv" class="w-7 h-7"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-3">Aura TV</h3>
-                    <p class="text-sm text-slate-400 mb-6 leading-relaxed">Broadcasting e streaming video in alta definizione. Il cinema, l'intrattenimento live e la TV ridisegnati per il digitale.</p>
-                    <a href="https://auratv.it" target="_blank" class="inline-flex items-center gap-2 text-indigo-400 font-bold text-sm hover:gap-3 transition-all">Visita Aura TV <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-indigo-500/20 group cursor-default">
+                    <div class="w-20 h-20 bg-indigo-500/10 rounded-[2rem] flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="tv" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Aura TV</h3>
+                    <p class="text-sm text-slate-400 mb-8 leading-relaxed">Broadcasting e streaming video in alta definizione. Il cinema, l'intrattenimento live e la TV ridisegnati per il digitale.</p>
+                    <a href="https://auratv.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-indigo-400 font-bold bg-indigo-500/10 px-6 py-3 rounded-full hover:bg-indigo-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Aura TV <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
                 
-                <!-- HC Institute -->
-                <div class="glass-card p-8 rounded-3xl reveal md:col-span-2 lg:col-span-3 max-w-3xl mx-auto border-yellow-500/20 hover:border-yellow-500/50 group w-full text-center">
-                    <div class="w-14 h-14 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-yellow-400 mb-6 mx-auto group-hover:scale-110 transition-transform"><i data-lucide="graduation-cap" class="w-7 h-7"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-3">HC Institute</h3>
-                    <p class="text-sm text-slate-400 mb-6 leading-relaxed">Horizon Corporate Institute. La nostra accademia di alta formazione tecnologica, manageriale e sviluppo delle competenze per formare i leader del domani.</p>
-                    <a href="https://hcinstitute.it/" target="_blank" class="inline-flex items-center gap-2 text-yellow-400 font-bold text-sm hover:gap-3 transition-all justify-center">Visita l'Istituto <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-yellow-500/20 group cursor-default">
+                    <div class="w-20 h-20 bg-yellow-500/10 rounded-[2rem] flex items-center justify-center text-yellow-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="graduation-cap" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">HC Institute</h3>
+                    <p class="text-sm text-slate-400 mb-8 leading-relaxed">Horizon Corporate Institute. Accademia di alta formazione tecnologica, manageriale e sviluppo delle competenze per formare i leader del domani.</p>
+                    <a href="https://hcinstitute.it/" target="_blank" class="inline-flex items-center justify-center gap-2 text-yellow-400 font-bold bg-yellow-500/10 px-6 py-3 rounded-full hover:bg-yellow-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita l'Istituto <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- LOGHI CLIENTI -->
     <section class="py-8 bg-white/[0.01] overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 text-center mb-6">
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Aziende e Istituzioni che si affidano alla nostra infrastruttura B2B</span>
+            <span class="inline-block px-4 py-1 rounded-full bg-slate-800 border border-slate-700 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Aziende e Istituzioni che si affidano alla nostra infrastruttura B2B</span>
         </div>
         <div class="relative w-full overflow-hidden">
             <div class="animate-marquee-container items-center gap-12 sm:gap-20">
@@ -495,481 +496,498 @@
         </div>
     </section>
 
-    <!-- INIZIO NUOVA PAGINA/SEZIONE: HUB CORPORATE -->
     <div id="hub-corporate" class="page-separator"></div>
 
-    <section class="py-16 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-slate-900 border-t-4 border-blue-600">
-        <div class="max-w-7xl mx-auto text-center reveal">
-            <span class="inline-block px-4 py-1 rounded-full bg-blue-500/20 text-blue-400 font-bold tracking-widest uppercase text-xs mb-4 border border-blue-500/50">Ambiente Dedicato: Enterprise & PMI Strutturate</span>
-            <h1 class="text-5xl md:text-6xl font-black text-white mb-6">HUB Corporate <br><span class="text-gradient">Servizi Integrati B2B</span></h1>
-            <p class="text-slate-400 text-lg max-w-4xl mx-auto leading-relaxed">
+    <section class="py-16 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-slate-900 border-t-4 border-blue-600 flex flex-col items-center">
+        <div class="max-w-5xl mx-auto text-center reveal">
+            <span class="inline-block px-6 py-2 rounded-full bg-blue-500/10 text-blue-400 font-bold tracking-widest uppercase text-xs mb-6 border border-blue-500/30 backdrop-blur-md">Ambiente Dedicato: Enterprise & PMI Strutturate</span>
+            <h1 class="text-5xl md:text-7xl font-black text-white mb-8">HUB Corporate <br><span class="text-gradient">Servizi Integrati B2B</span></h1>
+            <p class="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
                 Questa sezione è interamente dedicata all'ecosistema ERP Dev.Ryzn e alle infrastrutture hardware fisiche per grandi aziende. Soluzioni chiavi in mano per la digitalizzazione totale.
             </p>
         </div>
     </section>
 
     <section id="tecnologia" class="py-24 px-4 sm:px-6 relative overflow-hidden bg-slate-900">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-7xl mx-auto flex flex-col items-center">
             <div class="text-center mb-16 reveal">
-                <span class="text-purple-500 font-bold tracking-widest uppercase text-sm mb-2 block">Divisione Servizi B2B Avanzati</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Tecnologia Proprietaria <span class="text-gradient">Aziendale</span></h2>
+                <span class="inline-block px-4 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 font-bold tracking-widest uppercase text-xs mb-6">Divisione Servizi B2B Avanzati</span>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">Tecnologia Proprietaria <span class="text-gradient">Aziendale</span></h2>
                 <p class="text-slate-400 text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
                     Per le PMI, non affittiamo server da terzi. Costruiamo e installiamo fisicamente l'infrastruttura nella tua azienda, interfacciandola direttamente con i nostri datacenter Net-Orion.
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="glass-card p-10 rounded-[2rem] border-blue-500/30 relative overflow-hidden group reveal">
+            <div class="grid md:grid-cols-2 gap-8 w-full">
+                <div class="glass-card p-10 border-blue-500/30 relative overflow-hidden group reveal">
                     <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity"><i data-lucide="cpu" class="w-32 h-32 text-blue-500"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-3"><i data-lucide="satellite-dish" class="text-blue-400"></i> Radiotrasmissione Veo3</h3>
-                    <p class="text-slate-400 leading-relaxed mb-6 relative z-10">
+                    <div class="w-20 h-20 bg-blue-500/10 rounded-3xl flex items-center justify-center text-blue-400 mb-6"><i data-lucide="satellite-dish" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4 relative z-10">Radiotrasmissione Veo3</h3>
+                    <p class="text-slate-400 leading-relaxed mb-8 relative z-10">
                         Installiamo un sistema di radiotrasmissione privato con antenna parabolica proprietaria sul tetto della tua azienda. Questo ponte radio crea un tunnel crittografato (VPN Hardware) diretto tra la tua sede e i server Horizon.
                     </p>
-                    <ul class="space-y-3 text-sm text-slate-300 font-medium relative z-10">
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Indipendenza dalle linee terrestri locali (fibra interrotta? Nessun problema)</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Latenza ultra-bassa per sincronizzazione dati real-time</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Manutenzione hardware inclusa a vita nell'abbonamento</li>
+                    <ul class="space-y-4 text-sm text-slate-300 font-medium relative z-10 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> Indipendenza linee terrestri (fibra interrotta ok)</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> Latenza ultra-bassa per sincronizzazione real-time</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> Manutenzione hardware inclusa a vita nell'abbonamento</li>
                     </ul>
                 </div>
 
-                <div class="glass-card p-10 rounded-[2rem] border-purple-500/30 relative overflow-hidden group reveal delay-100">
+                <div class="glass-card p-10 border-purple-500/30 relative overflow-hidden group reveal delay-100">
                     <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity"><i data-lucide="code-2" class="w-32 h-32 text-purple-500"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-3"><i data-lucide="monitor" class="text-purple-400"></i> ERP Dev.Ryzn & Net-Orion</h3>
-                    <p class="text-slate-400 leading-relaxed mb-6 relative z-10">
+                    <div class="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center text-purple-400 mb-6"><i data-lucide="monitor" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4 relative z-10">ERP Dev.Ryzn & Net-Orion</h3>
+                    <p class="text-slate-400 leading-relaxed mb-8 relative z-10">
                         Il cervello dell'operazione. Un gestionale aziendale (ERP) che fa girare la tua intera azienda, ospitato sui nostri server proprietari ad altissime prestazioni Net-Orion.
                     </p>
-                    <ul class="space-y-3 text-sm text-slate-300 font-medium relative z-10">
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Moduli Risorse Umane, Presenze (Totem), Fatturazione e Magazzino</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Sito web aziendale custom integrato direttamente nel gestionale</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Backup automatici geo-ridondati ogni 4 ore</li>
+                    <ul class="space-y-4 text-sm text-slate-300 font-medium relative z-10 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> Moduli Risorse Umane, Presenze (Totem), Fatturazione e Magazzino</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> Sito web aziendale custom integrato direttamente nel gestionale</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> Backup automatici geo-ridondati ogni 4 ore</li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="dettagli-infrastruttura" class="py-24 px-4 sm:px-6 bg-[#020617]/50 border-t border-white/5 relative overflow-hidden">
+    <section id="dettagli-infrastruttura" class="py-24 px-4 sm:px-6 bg-[#020617]/50 border-t border-white/5 relative overflow-hidden flex flex-col items-center">
         <div class="absolute top-1/2 left-0 w-[400px] h-[400px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none"></div>
         <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-600/10 blur-[150px] rounded-full pointer-events-none"></div>
 
-        <div class="max-w-7xl mx-auto relative z-10">
-            <div class="text-center mb-20 reveal">
-                <span class="text-emerald-400 font-bold tracking-widest uppercase text-sm mb-2 block">Deep Dive Architetturale B2B</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Come Funziona L'Infrastruttura <span class="text-blue-500">Dall'Interno</span>.</h2>
-                <p class="text-slate-400 text-base md:text-lg max-w-4xl mx-auto leading-relaxed">
+        <div class="max-w-7xl mx-auto relative z-10 flex flex-col items-center">
+            <div class="text-center mb-20 reveal w-full max-w-4xl">
+                <span class="inline-block px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold tracking-widest uppercase text-xs mb-6">Deep Dive Architetturale B2B</span>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">Come Funziona L'Infrastruttura <span class="text-blue-500">Dall'Interno</span>.</h2>
+                <p class="text-slate-400 text-base md:text-lg mx-auto leading-relaxed">
                     Per garantire SLA (Service Level Agreement) del 99.99% alle aziende, abbiamo dovuto reinventare il modo in cui i dati viaggiano, vengono archiviati e vengono elaborati.
                 </p>
             </div>
 
-            <div class="flex flex-col lg:flex-row items-center gap-12 mb-24 reveal">
-                <div class="lg:w-1/2 order-2 lg:order-1">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4">Livello Fisico (L1-L2)</div>
-                    <h3 class="text-3xl font-bold text-white mb-4">Rete Dati Veo3: <br>La Fine Dei Blackout Internet.</h3>
-                    <p class="text-slate-400 leading-relaxed mb-6">
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-12 mb-24 reveal w-full">
+                <div class="lg:w-1/2 order-2 lg:order-1 flex flex-col items-center text-center">
+                    <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6">Livello Fisico (L1-L2)</div>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-white mb-4">Rete Dati Veo3: <br>La Fine Dei Blackout Internet.</h3>
+                    <p class="text-slate-400 leading-relaxed mb-8 max-w-lg">
                         Le normali connessioni in fibra ottica (FTTH/FTTC) sono vulnerabili a scavi stradali, cabine saturate e guasti di zona. Il nostro approccio scavalca letteralmente il problema via etere.
                     </p>
-                    <ul class="space-y-4">
-                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
-                            <i data-lucide="radio-tower" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
+                    <ul class="space-y-4 w-full">
+                        <li class="flex flex-col items-center gap-3 p-6 rounded-[2rem] bg-black/40 border border-white/5 backdrop-blur-xl">
+                            <i data-lucide="radio-tower" class="w-8 h-8 text-blue-400 shrink-0"></i>
                             <div>
-                                <strong class="text-slate-200 block text-sm">Frequenze Dedicate (Licensed Band)</strong>
-                                <span class="text-slate-400 text-xs leading-relaxed">Utilizziamo spettri radio su licenza per evitare le interferenze dei classici ponti Wi-Fi 5GHz. Il risultato è un link simmetrico che può raggiungere i 1.8 Gbps reali.</span>
+                                <strong class="text-slate-200 block text-base mb-1">Frequenze Dedicate (Licensed Band)</strong>
+                                <span class="text-slate-400 text-sm leading-relaxed">Utilizziamo spettri radio su licenza per evitare le interferenze dei classici ponti Wi-Fi 5GHz. Il risultato è un link simmetrico che può raggiungere i 1.8 Gbps reali.</span>
                             </div>
                         </li>
-                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
-                            <i data-lucide="lock" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
+                        <li class="flex flex-col items-center gap-3 p-6 rounded-[2rem] bg-black/40 border border-white/5 backdrop-blur-xl">
+                            <i data-lucide="lock" class="w-8 h-8 text-blue-400 shrink-0"></i>
                             <div>
-                                <strong class="text-slate-200 block text-sm">Cifratura Hardware in Tempo Reale</strong>
-                                <span class="text-slate-400 text-xs leading-relaxed">Il flusso dati che esce dall'antenna sul tuo tetto non è leggibile. Viene applicata una cifratura AES-256 a livello hardware prima di essere sparato verso i nostri ripetitori.</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
-                            <i data-lucide="arrow-right-left" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
-                            <div>
-                                <strong class="text-slate-200 block text-sm">Failover Terrestre Ibrido (Solo Pacchetti Superiori)</strong>
-                                <span class="text-slate-400 text-xs leading-relaxed">Se richiesto, integriamo la tua connessione fibra pre-esistente nel nostro router aziendale. Se la pioggia torrenziale degrada il segnale, il sistema dirotta il traffico sulla fibra senza farti cadere la connessione (Seamless Failover).</span>
+                                <strong class="text-slate-200 block text-base mb-1">Cifratura Hardware in Tempo Reale</strong>
+                                <span class="text-slate-400 text-sm leading-relaxed">Il flusso dati che esce dall'antenna sul tuo tetto non è leggibile. Viene applicata una cifratura AES-256 a livello hardware prima di essere sparato verso i nostri ripetitori.</span>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <div class="lg:w-1/2 order-1 lg:order-2 w-full glass-card p-6 rounded-3xl border-blue-500/20">
-                    <img src="https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&q=80&w=1000" alt="Infrastruttura di Rete" class="w-full h-[400px] object-cover rounded-2xl opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
+                <div class="lg:w-1/2 order-1 lg:order-2 w-full glass-card p-6 border-blue-500/20">
+                    <img src="https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&q=80&w=1000" alt="Infrastruttura di Rete" class="w-full h-[400px] object-cover rounded-[2rem] opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
                 </div>
             </div>
 
-            <div class="flex flex-col lg:flex-row items-center gap-12 mb-24 reveal">
-                <div class="lg:w-1/2 w-full glass-card p-6 rounded-3xl border-purple-500/20">
-                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1000" alt="Server Data Center" class="w-full h-[400px] object-cover rounded-2xl opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-12 mb-24 reveal w-full">
+                <div class="lg:w-1/2 w-full glass-card p-6 border-purple-500/20">
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1000" alt="Server Data Center" class="w-full h-[400px] object-cover rounded-[2rem] opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
                 </div>
-                <div class="lg:w-1/2">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-[10px] font-black text-purple-400 uppercase tracking-widest mb-4">Livello Elaborazione (Cloud)</div>
-                    <h3 class="text-3xl font-bold text-white mb-4">Server Net-Orion: <br>Potenza Bruta e Geo-Ridondanza.</h3>
-                    <p class="text-slate-400 leading-relaxed mb-6">
-                        Non ci appoggiamo ad Amazon AWS o Google Cloud. Ospedare i tuoi dati su macchine fisiche di nostra proprietà ci permette di abbattere i costi e ottimizzare il kernel dei server esclusivamente per il nostro software ERP.
+                <div class="lg:w-1/2 flex flex-col items-center text-center">
+                    <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 text-[10px] font-black text-purple-400 uppercase tracking-widest mb-6">Livello Elaborazione (Cloud)</div>
+                    <h3 class="text-3xl lg:text-4xl font-bold text-white mb-4">Server Net-Orion: <br>Potenza Bruta e Geo-Ridondanza.</h3>
+                    <p class="text-slate-400 leading-relaxed mb-8 max-w-lg">
+                        Non ci appoggiamo ad Amazon AWS o Google Cloud. Ospitare i tuoi dati su macchine fisiche di nostra proprietà ci permette di abbattere i costi e ottimizzare il kernel dei server esclusivamente per il nostro software ERP.
                     </p>
-                    <ul class="space-y-4">
-                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
-                            <i data-lucide="database" class="w-6 h-6 text-purple-400 shrink-0 mt-1"></i>
+                    <ul class="space-y-4 w-full">
+                        <li class="flex flex-col items-center gap-3 p-6 rounded-[2rem] bg-black/40 border border-white/5 backdrop-blur-xl">
+                            <i data-lucide="database" class="w-8 h-8 text-purple-400 shrink-0"></i>
                             <div>
-                                <strong class="text-slate-200 block text-sm">Cluster NVMe Enterprise</strong>
-                                <span class="text-slate-400 text-xs leading-relaxed">Zero dischi meccanici, zero colli di bottiglia su database. Tutti i dati anagrafici, fatture e file aziendali risiedono su array di dischi a stato solido NVMe collegati via PCIe 4.0, garantendo query al database in meno di 2 millisecondi.</span>
+                                <strong class="text-slate-200 block text-base mb-1">Cluster NVMe Enterprise</strong>
+                                <span class="text-slate-400 text-sm leading-relaxed">Zero dischi meccanici, zero colli di bottiglia. Tutti i dati anagrafici, fatture e file aziendali risiedono su array NVMe collegati via PCIe 4.0 (query < 2ms).</span>
                             </div>
                         </li>
-                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
-                            <i data-lucide="shield-alert" class="w-6 h-6 text-purple-400 shrink-0 mt-1"></i>
+                        <li class="flex flex-col items-center gap-3 p-6 rounded-[2rem] bg-black/40 border border-white/5 backdrop-blur-xl">
+                            <i data-lucide="copy" class="w-8 h-8 text-purple-400 shrink-0"></i>
                             <div>
-                                <strong class="text-slate-200 block text-sm">Mitigazione DDoS e Firewall Edge</strong>
-                                <span class="text-slate-400 text-xs leading-relaxed">Il sito web aziendale incluso nei nostri piani non può essere mandato offline da attacchi hacker di forza bruta. Filtriamo il traffico "sporco" ai margini della nostra rete prima ancora che raggiunga il tuo server virtuale.</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
-                            <i data-lucide="copy" class="w-6 h-6 text-purple-400 shrink-0 mt-1"></i>
-                            <div>
-                                <strong class="text-slate-200 block text-sm">Triplice Backup ogni 4 Ore</strong>
-                                <span class="text-slate-400 text-xs leading-relaxed">Niente più ansia per i ransomware. Scattiamo una "fotografia" (Snapshot) esatta del tuo gestionale ogni 4 ore e la replichiamo su tre datacenter geograficamente distanti in Europa.</span>
+                                <strong class="text-slate-200 block text-base mb-1">Triplice Backup ogni 4 Ore</strong>
+                                <span class="text-slate-400 text-sm leading-relaxed">Scattiamo una Snapshot esatta del tuo gestionale ogni 4 ore e la replichiamo su tre datacenter geograficamente distanti in Europa.</span>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-8 reveal">
-                <div class="glass-card p-8 rounded-[2rem] border-emerald-500/20 bg-black/20 relative">
-                    <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 mb-6"><i data-lucide="layout-template"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-4">L'Ecosistema Software Dev.Ryzn</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed mb-6">
+            <div class="grid lg:grid-cols-2 gap-8 reveal w-full">
+                <div class="glass-card p-10 border-emerald-500/20 bg-black/20">
+                    <div class="w-20 h-20 bg-emerald-500/20 rounded-3xl flex items-center justify-center text-emerald-400 mb-6"><i data-lucide="layout-template" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">L'Ecosistema Software Dev.Ryzn</h3>
+                    <p class="text-base text-slate-400 leading-relaxed mb-8">
                         L'hardware è inutile senza un "cervello". Dev.Ryzn non è solo un gestionale, è il sistema operativo della tua PMI. Si compone di diversi macro-moduli che comunicano tra loro all'istante:
                     </p>
-                    <ul class="space-y-3 text-sm text-slate-300">
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Totem Presenze Integrato:</strong> Quando un dipendente timbra fisicamente in azienda sul totem NFC Horizon, il dato appare istantaneamente sul cloud dell'amministrazione per le buste paga.</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Integrazione Sito Vetrina:</strong> Il catalogo prodotti o le news che aggiorni dentro al gestionale si riflettono automaticamente sul sito web pubblico della tua azienda (fornito da noi).</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Fatturazione SDI Automatica:</strong> Nessun software di terze parti. Ricevi, emetti e conservi a norma le fatture elettroniche direttamente dentro la dashboard principale.</li>
+                    <ul class="space-y-4 text-sm text-slate-300 w-full flex flex-col items-center">
+                        <li class="flex flex-col items-center gap-2"><i data-lucide="check" class="w-6 h-6 text-emerald-500 shrink-0"></i> <strong>Totem Presenze Integrato:</strong> Il dato appare istantaneamente sul cloud per le buste paga.</li>
+                        <li class="flex flex-col items-center gap-2"><i data-lucide="check" class="w-6 h-6 text-emerald-500 shrink-0"></i> <strong>Integrazione Sito Vetrina:</strong> Il catalogo prodotti si riflette automaticamente sul sito web pubblico.</li>
+                        <li class="flex flex-col items-center gap-2"><i data-lucide="check" class="w-6 h-6 text-emerald-500 shrink-0"></i> <strong>Fatturazione SDI Automatica:</strong> Nessun software di terze parti. Ricevi, emetti e conservi a norma.</li>
                     </ul>
                 </div>
 
-                <div class="glass-card p-8 rounded-[2rem] border-cyan-500/20 bg-gradient-to-br from-cyan-900/10 to-blue-900/10 relative">
-                    <div class="absolute top-0 right-0 px-4 py-2 bg-cyan-500/20 rounded-bl-3xl rounded-tr-[2rem] text-[10px] font-black text-cyan-400 tracking-widest uppercase">Supportato da iORE Green</div>
-                    <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400 mb-6"><i data-lucide="zap"></i></div>
-                    <h3 class="text-2xl font-bold text-white mb-4">Progetto iORE: Utilities IT Integrate</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed mb-6">
+                <div class="glass-card p-10 border-cyan-500/20 bg-gradient-to-br from-cyan-900/10 to-blue-900/10 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 px-6 py-2 bg-cyan-500/20 rounded-bl-3xl text-xs font-black text-cyan-400 tracking-widest uppercase backdrop-blur-md">Supportato da iORE Green</div>
+                    <div class="w-20 h-20 bg-cyan-500/20 rounded-3xl flex items-center justify-center text-cyan-400 mb-6 mt-4"><i data-lucide="zap" class="w-10 h-10"></i></div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Progetto iORE: Utilities IT Integrate</h3>
+                    <p class="text-base text-slate-400 leading-relaxed mb-8">
                         Abbiamo trasformato il costo dell'energia in una variabile fissa aziendale. Scegliendo il pacchetto Master All-Inclusive, diventi un nodo della rete energetica agevolata <strong>iORE</strong>.
                     </p>
-                    <ul class="space-y-3 text-sm text-slate-300">
-                        <li class="flex items-start gap-3"><i data-lucide="battery-charging" class="w-5 h-5 text-cyan-400 shrink-0"></i> <strong>Modello Flat Reale:</strong> Horizon copre la fornitura elettrica, del gas e idrica della tua sede legale entro i limiti della fascia PMI, offrendoti un costo aziendale bloccato, slegato dalle fluttuazioni di borsa (PUN/PSV).</li>
-                        <li class="flex items-start gap-3"><i data-lucide="monitor-off" class="w-5 h-5 text-cyan-400 shrink-0"></i> <strong>Burocrazia Zero:</strong> Le bollette scompaiono. Tutto (Antenna radiotrasmissione, server, software ERP, e fornitura energia/acqua/gas) è raggruppato in un'unica fattura mensile Horizon.</li>
-                        <li class="flex items-start gap-3"><i data-lucide="bar-chart-3" class="w-5 h-5 text-cyan-400 shrink-0"></i> <strong>Telemetria:</strong> Il gestionale Dev.Ryzn leggerà in tempo reale i consumi energetici per aiutarti ad ottimizzare i cicli produttivi.</li>
+                    <ul class="space-y-4 text-sm text-slate-300 w-full flex flex-col items-center">
+                        <li class="flex flex-col items-center gap-2"><i data-lucide="battery-charging" class="w-6 h-6 text-cyan-400 shrink-0"></i> <strong>Modello Flat Reale:</strong> Costo aziendale bloccato e slegato dalle fluttuazioni di borsa (PUN/PSV).</li>
+                        <li class="flex flex-col items-center gap-2"><i data-lucide="monitor-off" class="w-6 h-6 text-cyan-400 shrink-0"></i> <strong>Burocrazia Zero:</strong> Server, ERP e fornitura energia raggruppati in un'unica fattura.</li>
+                        <li class="flex flex-col items-center gap-2"><i data-lucide="bar-chart-3" class="w-6 h-6 text-cyan-400 shrink-0"></i> <strong>Telemetria:</strong> Il gestionale Dev.Ryzn leggerà in tempo reale i consumi energetici.</li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="aziende20" class="py-24 px-4 sm:px-6 bg-slate-900/30 border-t border-white/5 overflow-hidden">
-        <div class="max-w-7xl mx-auto text-center mb-16 reveal">
-            <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Soluzioni Integrate B2B</span>
-            <h2 class="text-4xl md:text-5xl font-black mb-6 text-white">Cosa include l'Ecosistema ERP?</h2>
+    <section id="aziende20" class="py-24 px-4 sm:px-6 bg-slate-900/30 border-t border-white/5 overflow-hidden flex flex-col items-center">
+        <div class="max-w-7xl mx-auto text-center mb-16 reveal w-full">
+            <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 font-bold tracking-widest uppercase text-xs mb-6">Soluzioni Integrate B2B</span>
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">Cosa include l'Ecosistema ERP?</h2>
         </div>
-        <div class="max-w-7xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="glass-card p-8 rounded-3xl reveal hover:border-blue-500/50">
-                <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mb-6"><i data-lucide="layout-dashboard"></i></div>
-                <h3 class="text-xl font-bold text-white mb-3">Gestionale ERP</h3>
-                <p class="text-sm text-slate-400">Software cloud su misura per HR, fatture, e buste paga automatizzate.</p>
+        <div class="max-w-7xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+            <div class="glass-card p-10 reveal border-blue-500/20">
+                <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 mb-6"><i data-lucide="layout-dashboard" class="w-8 h-8"></i></div>
+                <h3 class="text-2xl font-bold text-white mb-3">Gestionale ERP</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Software cloud su misura per HR, fatture, e buste paga automatizzate.</p>
             </div>
-            <div class="glass-card p-8 rounded-3xl reveal delay-100 hover:border-cyan-500/50">
-                <div class="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center text-cyan-400 mb-6"><i data-lucide="globe"></i></div>
-                <h3 class="text-xl font-bold text-white mb-3">Sito & Dominio</h3>
-                <p class="text-sm text-slate-400">Progettazione web custom ospitata sui server Net-Orion iper-veloci.</p>
+            <div class="glass-card p-10 reveal delay-100 border-cyan-500/20">
+                <div class="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 mb-6"><i data-lucide="globe" class="w-8 h-8"></i></div>
+                <h3 class="text-2xl font-bold text-white mb-3">Sito & Dominio</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Progettazione web custom ospitata sui server Net-Orion iper-veloci.</p>
             </div>
-            <div class="glass-card p-8 rounded-3xl reveal delay-200 hover:border-emerald-500/50">
-                <div class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 mb-6"><i data-lucide="satellite-dish"></i></div>
-                <h3 class="text-xl font-bold text-white mb-3">Rete B2B</h3>
-                <p class="text-sm text-slate-400">Antenne dedicate per una connessione aziendale inarrestabile by Orion.</p>
+            <div class="glass-card p-10 reveal delay-200 border-emerald-500/20">
+                <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 mb-6"><i data-lucide="satellite-dish" class="w-8 h-8"></i></div>
+                <h3 class="text-2xl font-bold text-white mb-3">Rete B2B</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Antenne dedicate per una connessione aziendale inarrestabile by Orion.</p>
             </div>
-            <div class="glass-card p-8 rounded-3xl reveal delay-300 hover:border-purple-500/50">
-                <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 mb-6"><i data-lucide="tablet-smartphone"></i></div>
-                <h3 class="text-xl font-bold text-white mb-3">Totem Badge</h3>
-                <p class="text-sm text-slate-400">Totem fisico NFC/QR e App per timbrature smart collegate all'ERP.</p>
+            <div class="glass-card p-10 reveal delay-300 border-purple-500/20">
+                <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 mb-6"><i data-lucide="tablet-smartphone" class="w-8 h-8"></i></div>
+                <h3 class="text-2xl font-bold text-white mb-3">Totem Badge</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Totem fisico NFC/QR e App per timbrature smart collegate all'ERP.</p>
             </div>
         </div>
     </section>
 
-    <!-- LISTINO B2B CORPORATE -->
-    <section id="prezzi" class="py-24 px-4 sm:px-6 relative border-t border-white/5 bg-[#020617] overflow-hidden">
+    <section id="prezzi" class="py-24 px-0 relative border-t border-white/5 bg-[#020617] overflow-hidden">
         <div class="absolute top-0 right-1/2 translate-x-1/2 w-[800px] h-[500px] bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none"></div>
         
-        <div class="max-w-7xl mx-auto relative z-10">
-            <div class="text-center mb-12 reveal">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-xs font-black text-emerald-400 uppercase tracking-widest mb-6 promo-badge">
-                    <i data-lucide="tag" class="w-4 h-4"></i> Promozione Inaugurazione: -30% Sul Primo Anno
+        <div class="max-w-7xl mx-auto relative z-10 px-4">
+            <div class="text-center mb-10 reveal">
+                <div class="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-xs font-black text-emerald-400 uppercase tracking-widest mb-6 promo-badge backdrop-blur-md mx-auto">
+                    <i data-lucide="tag" class="w-4 h-4"></i> Promo Inaugurazione: -30% Primo Anno
                 </div>
-                <h2 class="text-4xl md:text-5xl font-black mb-4 text-white">Listino Piani Corporate (HUB B2B)</h2>
-                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Seleziona il piano avanzato adatto alla tua PMI o Multinazionale. Il nostro gestionale aprirà subito la pratica tecnica e sarai contattato da un project manager.</p>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">Listino Corporate (HUB B2B)</h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto leading-relaxed">Seleziona il piano avanzato adatto alla tua PMI o Multinazionale. Il nostro gestionale aprirà subito la pratica tecnica e sarai contattato da un project manager.</p>
             </div>
 
-            <div class="max-w-4xl mx-auto glass-card border-blue-500/40 rounded-3xl p-6 md:p-8 mb-16 flex flex-col md:flex-row items-center justify-between gap-6 reveal">
-                <div class="flex items-center gap-5">
-                    <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 shrink-0"><i data-lucide="hard-drive" class="w-8 h-8"></i></div>
+            <div class="max-w-4xl mx-auto glass-card border-blue-500/40 p-8 md:p-10 mb-12 flex flex-col md:flex-row items-center justify-center gap-6 reveal">
+                <div class="flex flex-col items-center text-center gap-5 md:flex-row md:text-left">
+                    <div class="w-20 h-20 bg-blue-500/20 rounded-[2rem] flex items-center justify-center text-blue-400 shrink-0"><i data-lucide="hard-drive" class="w-10 h-10"></i></div>
                     <div>
-                        <h3 class="text-xl font-bold text-white">Setup e Installazione Hardware (Corporate Una Tantum)</h3>
-                        <p class="text-sm text-slate-400 mt-1">Include uscita tecnici, posa Antenna Radiotrasmissione, Totem Presenze fisico e setup Server Net-Orion.</p>
+                        <h3 class="text-2xl font-bold text-white mb-2">Setup e Installazione (Corporate Una Tantum)</h3>
+                        <p class="text-base text-slate-400">Include uscita tecnici, posa Antenna Radiotrasmissione, Totem Presenze fisico e setup Server Net-Orion.</p>
                     </div>
                 </div>
-                <div class="text-right shrink-0">
-                    <div class="text-slate-500 line-through text-sm font-bold">€ 1.500,00</div>
-                    <div class="text-3xl font-black text-blue-400">€ 1.050<span class="text-sm font-medium text-slate-400">/una tantum</span></div>
+                <div class="text-center shrink-0 w-full md:w-auto mt-6 md:mt-0">
+                    <div class="text-slate-500 line-through text-base font-bold">€ 1.500,00</div>
+                    <div class="text-4xl font-black text-blue-400">€ 1.050<span class="text-base font-medium text-slate-400 block mt-1">/una tantum</span></div>
                 </div>
             </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-                <div class="glass-card rounded-[2.5rem] p-6 flex flex-col reveal hover:border-slate-500 transition-all">
-                    <h4 class="text-xl font-bold text-white mb-2">Starter 2.0</h4>
-                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Per piccole imprese che vogliono digitalizzarsi.</p>
-                    <div class="mb-6">
-                        <span class="text-slate-500 line-through text-sm font-bold block mb-1">€ 199,00 / mese</span>
-                        <div class="flex items-end gap-1">
-                            <span class="text-4xl font-black text-white">€ 139</span><span class="text-slate-400 font-medium mb-1">/mese</span>
-                        </div>
-                    </div>
-                    <ul class="space-y-4 text-sm text-slate-300 mb-8 flex-grow">
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> ERP Dev.Ryzn (Fino a 5 Utenti)</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Sito Vetrina Base (Server Condiviso)</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> App Timbrature Base</li>
-                        <li class="flex items-start gap-3 opacity-50"><i data-lucide="x" class="w-5 h-5 text-red-500 shrink-0"></i> Rete Satellitare Esclusa</li>
-                    </ul>
-                    <button onclick="selezionaPiano('Piano Starter 2.0')" class="w-full bg-white/10 hover:bg-white/20 py-4 rounded-xl font-bold text-white transition-colors border border-white/10">Ordina Starter</button>
-                </div>
-
-                <div class="glass-card rounded-[2.5rem] p-6 flex flex-col reveal delay-100 border-emerald-500/50 shadow-2xl shadow-emerald-900/20 relative transform lg:-translate-y-4">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500 text-white px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">Più Richiesto</div>
-                    <h4 class="text-2xl font-bold text-emerald-400 mb-2">Professional</h4>
-                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">L'ecosistema completo per PMI strutturate.</p>
-                    <div class="mb-6">
-                        <span class="text-slate-500 line-through text-sm font-bold block mb-1">€ 399,00 / mese</span>
-                        <div class="flex items-end gap-1">
-                            <span class="text-5xl font-black text-white">€ 279</span><span class="text-slate-400 font-medium mb-1">/mese</span>
-                        </div>
-                    </div>
-                    <ul class="space-y-4 text-sm text-slate-300 mb-8 flex-grow">
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> ERP Dev.Ryzn (Fino a 25 Utenti)</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Sito Web Custom + E-Commerce</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Rete Radiotrasmissione Inclusa</strong></li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Modulo HR e Fatturazione Elettronica</li>
-                    </ul>
-                    <button onclick="selezionaPiano('Piano Professional')" class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-black text-white transition-all shadow-lg shadow-emerald-600/30">Ordina Professional</button>
-                </div>
-
-                <div class="glass-card rounded-[2.5rem] p-6 flex flex-col reveal delay-200 hover:border-slate-500 transition-all">
-                    <h4 class="text-xl font-bold text-white mb-2">Enterprise</h4>
-                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">Per grandi volumi di dati e multinazionali.</p>
-                    <div class="mb-6">
-                        <span class="text-slate-500 line-through text-sm font-bold block mb-1">€ 799,00 / mese</span>
-                        <div class="flex items-end gap-1">
-                            <span class="text-4xl font-black text-white">€ 559</span><span class="text-slate-400 font-medium mb-1">/mese</span>
-                        </div>
-                    </div>
-                    <ul class="space-y-4 text-sm text-slate-300 mb-8 flex-grow">
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Utenti ERP Illimitati</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Server Net-Orion Dedicato</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Doppia Antenna per Ridondanza 100%</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0"></i> Assistenza Prioritaria 24/7</li>
-                    </ul>
-                    <button onclick="selezionaPiano('Piano Enterprise')" class="w-full bg-white/10 hover:bg-white/20 py-4 rounded-xl font-bold text-white transition-colors border border-white/10">Ordina Enterprise</button>
-                </div>
-
-                <div class="glass-card rounded-[2.5rem] p-6 flex flex-col reveal delay-300 border-cyan-500/50 hover:border-cyan-400 transition-all shadow-2xl shadow-cyan-900/20 relative transform lg:-translate-y-4">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap">Master All-Inclusive</div>
-                    <h4 class="text-2xl font-bold text-cyan-400 mb-2">Enterprise + iORE</h4>
-                    <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6">L'intero ecosistema Enterprise unito alla fornitura utenze flat aziendali.</p>
-                    <div class="mb-6">
-                        <span class="text-slate-500 line-through text-xs font-bold block mb-1">Valore: € 1.339,00 / mese</span>
-                        <div class="flex items-end gap-1">
-                            <span class="text-4xl lg:text-5xl font-black text-white">€ 890</span><span class="text-slate-400 font-medium mb-1">/mese</span>
-                        </div>
-                    </div>
-                    <ul class="space-y-4 text-sm text-slate-300 mb-8 flex-grow">
-                        <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500 shrink-0"></i> <strong>Tutto il Piano Enterprise Incluso</strong></li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400 shrink-0"></i> Fornitura Elettrica Aziendale tramite iORE</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400 shrink-0"></i> Fornitura Gas e Idrica tramite iORE</li>
-                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400 shrink-0"></i> <strong>Indipendente dai Consumi Effettivi</strong></li>
-                    </ul>
-                    <button onclick="selezionaPiano('Pacchetto Master Enterprise + iORE Utilities')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 py-4 rounded-xl font-black text-white transition-all shadow-lg shadow-cyan-600/30">Ordina Master iORE</button>
-                </div>
-            </div>
-            
-            <p class="text-center text-xs text-slate-500 mt-8 font-medium">I prezzi si intendono IVA esclusa. Il contratto ha una durata minima di 12 mesi. Il Tantum per l'installazione verrà fatturato all'accettazione del progetto.</p>
         </div>
+
+        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw] px-4">
+            <div class="auto-scroll-track" style="animation-duration: 40s;">
+                
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-8 border-white/10 hover:border-slate-500 group cursor-default">
+                    <h4 class="text-3xl font-bold text-white mb-3">Starter 2.0</h4>
+                    <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">Per piccole imprese che vogliono digitalizzarsi.</p>
+                    <div class="mb-8 flex flex-col items-center">
+                        <span class="text-slate-500 line-through text-sm font-bold block mb-2">€ 199,00 / mese</span>
+                        <div class="flex items-end justify-center gap-1">
+                            <span class="text-6xl font-black text-white">€ 139</span><span class="text-slate-400 font-medium mb-2">/mese</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-sm text-slate-300 mb-10 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> ERP Dev.Ryzn (Fino a 5 Utenti)</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Sito Vetrina Base (Server Condiviso)</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> App Timbrature Base</li>
+                        <li class="flex items-center gap-3 opacity-50"><i data-lucide="x" class="w-5 h-5 text-red-500"></i> Rete Satellitare Esclusa</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Piano Starter 2.0')" class="w-full bg-white/10 hover:bg-white/20 py-5 rounded-[1.5rem] font-bold text-white border border-white/10 mt-auto transition-all z-10 relative">Ordina Starter</button>
+                </div>
+
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-8 border-emerald-500/50 shadow-2xl shadow-emerald-900/20 relative group cursor-default">
+                    <div class="absolute -top-4 bg-emerald-500 text-white px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg z-10">Più Richiesto</div>
+                    <h4 class="text-3xl font-bold text-emerald-400 mb-3 mt-4">Professional</h4>
+                    <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">L'ecosistema completo per PMI strutturate.</p>
+                    <div class="mb-8 flex flex-col items-center">
+                        <span class="text-slate-500 line-through text-sm font-bold block mb-2">€ 399,00 / mese</span>
+                        <div class="flex items-end justify-center gap-1">
+                            <span class="text-6xl font-black text-white">€ 279</span><span class="text-slate-400 font-medium mb-2">/mese</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-sm text-slate-300 mb-10 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> ERP Dev.Ryzn (Fino a 25 Utenti)</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Sito Web Custom + E-Commerce</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> <strong>Rete Radiotrasmissione Inclusa</strong></li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> HR e Fatturazione Elettronica</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Piano Professional')" class="w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-[1.5rem] font-black text-white shadow-xl shadow-emerald-600/30 mt-auto transition-all z-10 relative">Ordina Professional</button>
+                </div>
+
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-8 border-white/10 hover:border-slate-500 group cursor-default">
+                    <h4 class="text-3xl font-bold text-white mb-3">Enterprise</h4>
+                    <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">Per grandi volumi di dati e multinazionali.</p>
+                    <div class="mb-8 flex flex-col items-center">
+                        <span class="text-slate-500 line-through text-sm font-bold block mb-2">€ 799,00 / mese</span>
+                        <div class="flex items-end justify-center gap-1">
+                            <span class="text-6xl font-black text-white">€ 559</span><span class="text-slate-400 font-medium mb-2">/mese</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-sm text-slate-300 mb-10 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Utenti ERP Illimitati</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Server Net-Orion Dedicato</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Doppia Antenna per Ridondanza</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Assistenza Prioritaria 24/7</li>
+                    </ul>
+                    <button onclick="selezionaPiano('Piano Enterprise')" class="w-full bg-white/10 hover:bg-white/20 py-5 rounded-[1.5rem] font-bold text-white border border-white/10 mt-auto transition-all z-10 relative">Ordina Enterprise</button>
+                </div>
+
+                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-8 border-cyan-500/50 shadow-2xl shadow-cyan-900/20 relative group cursor-default">
+                    <div class="absolute -top-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg z-10">Master All-Inclusive</div>
+                    <h4 class="text-3xl font-bold text-cyan-400 mb-3 mt-4">Enterprise + iORE</h4>
+                    <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">Ecosistema Enterprise unito a fornitura utenze flat.</p>
+                    <div class="mb-8 flex flex-col items-center">
+                        <span class="text-slate-500 line-through text-xs font-bold block mb-2">Valore: € 1.339,00 / mese</span>
+                        <div class="flex items-end justify-center gap-1">
+                            <span class="text-6xl font-black text-white">€ 890</span><span class="text-slate-400 font-medium mb-2">/mese</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-sm text-slate-300 mb-10 w-full flex flex-col items-center">
+                        <li class="flex items-center gap-3"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> <strong>Tutto il Piano Enterprise Incluso</strong></li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400"></i> Fornitura Elettrica tramite iORE</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400"></i> Fornitura Gas e Idrica iORE</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-cyan-400"></i> <strong>Indipendente dai Consumi</strong></li>
+                    </ul>
+                    <button onclick="selezionaPiano('Pacchetto Master Enterprise + iORE Utilities')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 py-5 rounded-[1.5rem] font-black text-white shadow-xl shadow-cyan-600/30 mt-auto transition-all z-10 relative">Ordina Master iORE</button>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-500 mt-10 font-medium max-w-3xl mx-auto px-4">I prezzi si intendono IVA esclusa. Il contratto ha una durata minima di 12 mesi. Il Tantum per l'installazione verrà fatturato all'accettazione del progetto.</p>
     </section>
 
-    <!-- SICUREZZA -->
-    <section id="sicurezza" class="py-16 border-y border-white/5 bg-slate-900/50 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="grid lg:grid-cols-3 gap-10 items-center">
-                <div class="lg:col-span-1 reveal">
-                    <h2 class="text-3xl font-black text-white mb-4"><i data-lucide="shield-check" class="inline w-8 h-8 text-blue-500 mr-2 mb-1"></i> Sicurezza & GDPR</h2>
-                    <p class="text-sm text-slate-400 leading-relaxed mb-6">
+    <section id="sicurezza" class="py-20 border-y border-white/5 bg-slate-900/50 overflow-hidden flex flex-col items-center">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 w-full">
+            <div class="grid lg:grid-cols-3 gap-12 items-center text-center lg:text-left">
+                <div class="lg:col-span-1 reveal flex flex-col items-center lg:items-start">
+                    <h2 class="text-4xl font-black text-white mb-6 flex items-center justify-center lg:justify-start gap-3"><i data-lucide="shield-check" class="w-10 h-10 text-blue-500"></i> Sicurezza & GDPR</h2>
+                    <p class="text-base text-slate-400 leading-relaxed mb-8">
                         I tuoi dati aziendali, anagrafiche dipendenti e flussi finanziari non viaggiano su server pubblici. L'infrastruttura Horizon garantisce il pieno rispetto del <strong>Regolamento UE 2016/679 (GDPR)</strong>.
                     </p>
-                    <a href="#hub-corporate" class="text-blue-400 text-sm font-bold hover:underline">Attiva la tua infrastruttura sicura &rarr;</a>
+                    <a href="#hub-corporate" class="inline-block px-6 py-3 rounded-full bg-blue-500/10 text-blue-400 text-sm font-bold hover:bg-blue-500 hover:text-white transition-all border border-blue-500/30">Attiva infrastruttura sicura &rarr;</a>
                 </div>
-                <div class="lg:col-span-2 grid sm:grid-cols-2 gap-6 reveal delay-100">
-                    <div class="bg-black/30 p-6 rounded-2xl border border-white/5">
-                        <i data-lucide="server" class="w-6 h-6 text-emerald-500 mb-3"></i>
-                        <h4 class="font-bold text-white mb-2">Data Center Nazionali</h4>
-                        <p class="text-xs text-slate-400">I server fisici Net-Orion sono localizzati in Italia e nell'Unione Europea, prevenendo il trasferimento dati verso paesi extra-UE non sicuri.</p>
+                <div class="lg:col-span-2 grid sm:grid-cols-2 gap-8 reveal delay-100 w-full">
+                    <div class="glass-card p-8 border-emerald-500/20 bg-black/40 text-center">
+                        <i data-lucide="server" class="w-10 h-10 text-emerald-500 mb-6 mx-auto"></i>
+                        <h4 class="text-xl font-bold text-white mb-4">Data Center Nazionali</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">I server fisici Net-Orion sono localizzati in Italia e nell'Unione Europea, prevenendo il trasferimento dati verso paesi extra-UE non sicuri.</p>
                     </div>
-                    <div class="bg-black/30 p-6 rounded-2xl border border-white/5">
-                        <i data-lucide="lock" class="w-6 h-6 text-emerald-500 mb-3"></i>
-                        <h4 class="font-bold text-white mb-2">Crittografia AES-256</h4>
-                        <p class="text-xs text-slate-400">Qualsiasi dato trasmesso tra la sede della tua azienda e i nostri server via ponte radio è criptato con standard militare.</p>
+                    <div class="glass-card p-8 border-blue-500/20 bg-black/40 text-center">
+                        <i data-lucide="lock" class="w-10 h-10 text-emerald-500 mb-6 mx-auto"></i>
+                        <h4 class="text-xl font-bold text-white mb-4">Crittografia AES-256</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">Qualsiasi dato trasmesso tra la sede della tua azienda e i nostri server via ponte radio è criptato con standard militare.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-[#01030a] py-16 px-6 border-t border-blue-900/30 mt-10 overflow-hidden">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <div class="lg:col-span-2">
-                <span class="text-3xl font-black logo-font text-white">HORIZON <span class="text-blue-500">GLOBAL</span></span>
-                <p class="text-sm text-slate-500 mt-4 max-w-md leading-relaxed">
+    <footer class="bg-[#01030a] py-20 px-6 border-t border-blue-900/30 mt-10 overflow-hidden text-center">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div class="lg:col-span-2 flex flex-col items-center lg:items-start text-center lg:text-left">
+                <span class="text-4xl font-black logo-font text-white">HORIZON <span class="text-blue-500">GLOBAL</span></span>
+                <p class="text-base text-slate-500 mt-6 max-w-md leading-relaxed mx-auto lg:mx-0">
                     Il conglomerato tecnologico del futuro. Guidiamo l'innovazione dall'infrastruttura B2B (Horizon Servizi), alle telecomunicazioni globali (Orion), fino all'intrattenimento e alle utilities (iORE).
                 </p>
             </div>
-            <div>
-                <h5 class="text-xs font-black uppercase text-white mb-6 tracking-widest">Soluzioni</h5>
-                <ul class="text-sm text-slate-400 space-y-3 font-medium">
+            <div class="flex flex-col items-center lg:items-start">
+                <h5 class="text-sm font-black uppercase text-white mb-8 tracking-widest">Soluzioni</h5>
+                <ul class="text-base text-slate-400 space-y-4 font-medium flex flex-col items-center lg:items-start">
                     <li><a href="#servizi-rapidi" class="hover:text-blue-400 transition">Servizi Digitali e Web</a></li>
                     <li><a href="#divisioni" class="hover:text-blue-400 transition">Le Nostre Divisioni</a></li>
                     <li><a href="#prezzi" class="hover:text-blue-400 transition">Piani HUB Corporate B2B</a></li>
                     <li><button onclick="openModal('hiringModal')" class="hover:text-emerald-400 transition text-emerald-500 font-bold">Lavora con Noi</button></li>
                 </ul>
             </div>
-            <div>
-                <h5 class="text-xs font-black uppercase text-white mb-6 tracking-widest">Aziendale</h5>
-                <ul class="text-sm text-slate-400 space-y-3 font-medium">
+            <div class="flex flex-col items-center lg:items-start">
+                <h5 class="text-sm font-black uppercase text-white mb-8 tracking-widest">Aziendale</h5>
+                <ul class="text-base text-slate-400 space-y-4 font-medium flex flex-col items-center lg:items-start">
                     <li><a href="#sicurezza" class="hover:text-blue-400 transition">Informativa Privacy & GDPR</a></li>
-                    <li><button onclick="selezionaPiano('Richiesta Contatto Generico')" class="hover:text-blue-400 transition text-left">Contattaci</button></li>
+                    <li><button onclick="selezionaPiano('Richiesta Contatto Generico')" class="hover:text-blue-400 transition">Contattaci</button></li>
                 </ul>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto text-center border-t border-white/5 pt-8">
-            <p class="text-[10px] text-slate-600 uppercase tracking-[0.2em] font-bold">&copy; 2024-2030 Horizon Global. L'architettura del domani. Tutti i diritti riservati.</p>
+        <div class="max-w-7xl mx-auto text-center border-t border-white/5 pt-10">
+            <p class="text-xs text-slate-600 uppercase tracking-[0.2em] font-bold">&copy; 2024-2030 Horizon Global. L'architettura del domani. Tutti i diritti riservati.</p>
         </div>
     </footer>
 
-    <!-- PULSANTE FLOATING -->
-    <a href="tel:+390305409202" class="fixed bottom-6 right-6 z-[90] bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:scale-110 transition-transform duration-300 flex items-center justify-center group border border-emerald-400/50">
-        <i data-lucide="phone" class="w-6 h-6 animate-pulse"></i>
-        <span class="absolute right-full mr-4 bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-700 shadow-xl">
+    <a href="tel:+390305409202" class="fixed bottom-8 right-8 z-[90] bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-5 rounded-full shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:scale-110 transition-transform duration-300 flex items-center justify-center group border border-emerald-400/50 backdrop-blur-xl">
+        <i data-lucide="phone" class="w-7 h-7 animate-pulse"></i>
+        <span class="absolute right-full mr-4 bg-slate-900/90 backdrop-blur-md text-white text-sm font-bold px-4 py-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-700 shadow-2xl">
             Chiama 030 540 9202
         </span>
     </a>
 
-    <!-- MODALE CONTATTI -->
-    <div id="contactModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
-        <div class="glass-card w-full max-w-4xl rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto" id="contactModalContent">
-            <button onclick="closeModal('contactModal')" class="absolute top-6 right-6 text-slate-500 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div id="contactModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl opacity-0 transition-opacity duration-500">
+        <div class="glass-card w-full max-w-4xl rounded-[3rem] p-8 sm:p-12 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-blue-500/30 text-center" id="contactModalContent">
+            <button onclick="closeModal('contactModal')" class="absolute top-8 right-8 text-slate-500 hover:text-white bg-white/5 hover:bg-white/20 p-3 rounded-full transition-colors backdrop-blur-md"><i data-lucide="x" class="w-6 h-6"></i></button>
             
-            <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">Checkout & <span class="text-blue-500">Setup.</span></h3>
-            <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-4">Modulo di attivazione commerciale e raccolta dati di fatturazione (GDPR Compliant). Completando l'invio si aprirà la pratica tecnica senza obbligo di pagamento immediato.</p>
+            <h3 class="text-3xl sm:text-4xl font-black mb-4 text-white">Checkout & <span class="text-blue-500">Setup.</span></h3>
+            <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-6">Modulo di attivazione commerciale e raccolta dati di fatturazione (GDPR Compliant). Completando l'invio si aprirà la pratica tecnica senza obbligo di pagamento immediato.</p>
             
-            <form id="contactForm" class="space-y-6" onsubmit="inviaPreventivo(event)">
+            <form id="contactForm" class="space-y-8 w-full" onsubmit="inviaPreventivo(event)">
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-900/10 p-5 rounded-2xl border border-blue-500/20">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-blue-900/10 p-6 rounded-[2rem] border border-blue-500/20 backdrop-blur-md">
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Servizio/Piano Selezionato *</label>
-                        <input type="text" id="pr-servizio" required readonly class="w-full bg-black/40 border border-blue-500/30 rounded-xl px-4 py-3 text-sm text-emerald-400 font-bold outline-none cursor-not-allowed">
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Servizio/Piano Selezionato *</label>
+                        <input type="text" id="pr-servizio" required readonly class="w-full bg-black/40 border border-blue-500/30 rounded-2xl px-5 py-4 text-base text-emerald-400 font-bold outline-none cursor-not-allowed text-center">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Natura Giuridica *</label>
-                        <select id="pr-tipo" onchange="togglePreventivoType()" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors">
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Natura Giuridica *</label>
+                        <select id="pr-tipo" onchange="togglePreventivoType()" required class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none focus:border-blue-500 transition-colors text-center appearance-none">
                             <option value="Azienda">Azienda / P.IVA (B2B)</option>
                             <option value="Privato">Privato / Cittadino (B2C)</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Nome Referente *</label><input type="text" id="pr-nome" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                    <div><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Cognome Referente *</label><input type="text" id="pr-cognome" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                    <div><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Email *</label><input type="email" id="pr-email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                    <div><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Telefono *</label><input type="tel" id="pr-tel" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div><label class="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Nome Referente *</label><input type="text" id="pr-nome" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                    <div><label class="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Cognome Referente *</label><input type="text" id="pr-cognome" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                    <div><label class="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Email *</label><input type="email" id="pr-email" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                    <div><label class="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Telefono *</label><input type="tel" id="pr-tel" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
                 </div>
 
-                <div id="pr-area-azienda" class="bg-white/5 border border-white/5 p-5 rounded-2xl">
-                    <h4 class="text-blue-400 font-bold mb-4 text-sm"><i data-lucide="building-2" class="inline w-4 h-4 mr-1"></i> Dati Fatturazione Elettronica Azienda</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="sm:col-span-2"><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Ragione Sociale Completa *</label><input type="text" id="pr-ragione" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Partita IVA *</label><input type="text" id="pr-piva" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Codice Fiscale (se diverso)</label><input type="text" id="pr-cf-az" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Codice Destinatario (SDI) *</label><input type="text" id="pr-sdi" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Indirizzo PEC *</label><input type="email" id="pr-pec" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                <div id="pr-area-azienda" class="bg-white/5 border border-white/5 p-6 rounded-[2rem] backdrop-blur-md">
+                    <h4 class="text-blue-400 font-bold mb-6 text-base flex justify-center items-center gap-2"><i data-lucide="building-2" class="w-5 h-5"></i> Dati Fatturazione Elettronica Azienda</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="sm:col-span-2"><label class="block text-xs font-black uppercase text-slate-500 mb-2">Ragione Sociale Completa *</label><input type="text" id="pr-ragione" class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                        <div><label class="block text-xs font-black uppercase text-slate-500 mb-2">Partita IVA *</label><input type="text" id="pr-piva" class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                        <div><label class="block text-xs font-black uppercase text-slate-500 mb-2">Codice Fiscale (se diverso)</label><input type="text" id="pr-cf-az" class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                        <div><label class="block text-xs font-black uppercase text-slate-500 mb-2">Codice Destinatario (SDI) *</label><input type="text" id="pr-sdi" class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                        <div><label class="block text-xs font-black uppercase text-slate-500 mb-2">Indirizzo PEC *</label><input type="email" id="pr-pec" class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
                     </div>
                 </div>
 
-                <div id="pr-area-privato" class="hidden bg-emerald-900/10 border border-emerald-500/20 p-5 rounded-2xl">
-                    <h4 class="text-emerald-400 font-bold mb-4 text-sm"><i data-lucide="user" class="inline w-4 h-4 mr-1"></i> Dati Fiscali Privato</h4>
-                    <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Codice Fiscale Personale (16 Caratteri) *</label><input type="text" id="pr-cf-pr" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                <div id="pr-area-privato" class="hidden bg-emerald-900/10 border border-emerald-500/20 p-6 rounded-[2rem] backdrop-blur-md">
+                    <h4 class="text-emerald-400 font-bold mb-6 text-base flex justify-center items-center gap-2"><i data-lucide="user" class="w-5 h-5"></i> Dati Fiscali Privato</h4>
+                    <div><label class="block text-xs font-black uppercase text-slate-500 mb-2">Codice Fiscale Personale (16 Caratteri) *</label><input type="text" id="pr-cf-pr" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
                 </div>
 
-                <div id="pr-area-utenzes" class="hidden bg-cyan-900/20 border border-cyan-500/40 p-5 rounded-2xl">
-                    <h4 class="text-cyan-400 font-bold mb-4 text-sm"><i data-lucide="zap" class="inline w-4 h-4 mr-1"></i> Identificativi Utenze iORE (Obbligatori)</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div id="pr-area-utenzes" class="hidden bg-cyan-900/20 border border-cyan-500/40 p-6 rounded-[2rem] backdrop-blur-md">
+                    <h4 class="text-cyan-400 font-bold mb-6 text-base flex justify-center items-center gap-2"><i data-lucide="zap" class="w-5 h-5"></i> Identificativi Utenze iORE (Obbligatori)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div>
-                            <label class="block text-[10px] font-black uppercase text-slate-500 mb-1">POD Luce *</label>
-                            <input type="text" id="pr-pod-luce" placeholder="Es. IT001E..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-cyan-500">
+                            <label class="block text-xs font-black uppercase text-slate-500 mb-2">POD Luce *</label>
+                            <input type="text" id="pr-pod-luce" placeholder="Es. IT001E..." class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none focus:border-cyan-500 text-center">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-black uppercase text-slate-500 mb-1">POD Acqua *</label>
-                            <input type="text" id="pr-pod-acqua" placeholder="Codice Presa/POD Acqua" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-cyan-500">
+                            <label class="block text-xs font-black uppercase text-slate-500 mb-2">POD Acqua *</label>
+                            <input type="text" id="pr-pod-acqua" placeholder="Codice Presa/POD" class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none focus:border-cyan-500 text-center">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-black uppercase text-slate-500 mb-1">PDR Gas *</label>
-                            <input type="text" id="pr-pdr-gas" placeholder="Es. 002000..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-cyan-500">
+                            <label class="block text-xs font-black uppercase text-slate-500 mb-2">PDR Gas *</label>
+                            <input type="text" id="pr-pdr-gas" placeholder="Es. 002000..." class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none focus:border-cyan-500 text-center">
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white/5 border border-white/5 p-5 rounded-2xl">
-                    <h4 class="text-slate-300 font-bold mb-4 text-sm"><i data-lucide="map-pin" class="inline w-4 h-4 mr-1"></i> Sede Installazione / Legale</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="col-span-2 md:col-span-4"><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Indirizzo completo (Via, Civico) *</label><input type="text" id="pr-via" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                        <div class="col-span-2"><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Città *</label><input type="text" id="pr-citta" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">CAP *</label><input type="text" id="pr-cap" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
-                        <div><label class="block text-[10px] font-black uppercase text-slate-500 mb-1">Prov (Sigla) *</label><input type="text" id="pr-prov" required placeholder="Es. RM" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                <div class="bg-white/5 border border-white/5 p-6 rounded-[2rem] backdrop-blur-md">
+                    <h4 class="text-slate-300 font-bold mb-6 text-base flex justify-center items-center gap-2"><i data-lucide="map-pin" class="w-5 h-5"></i> Sede Installazione / Legale</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="col-span-2 md:col-span-4"><label class="block text-xs font-black uppercase text-slate-500 mb-2">Indirizzo completo (Via, Civico) *</label><input type="text" id="pr-via" required class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                        <div class="col-span-2"><label class="block text-xs font-black uppercase text-slate-500 mb-2">Città *</label><input type="text" id="pr-citta" required class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                        <div><label class="block text-xs font-black uppercase text-slate-500 mb-2">CAP *</label><input type="text" id="pr-cap" required class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                        <div><label class="block text-xs font-black uppercase text-slate-500 mb-2">Prov (Sigla) *</label><input type="text" id="pr-prov" required placeholder="Es. RM" class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Note Opzionali per i Tecnici</label>
-                    <textarea id="pr-note" rows="2" placeholder="Es. L'edificio ha 3 piani, necessità di totem addizionali..." class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-blue-500 transition-colors resize-none"></textarea>
+                    <label class="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Note Opzionali per i Tecnici</label>
+                    <textarea id="pr-note" rows="3" placeholder="Es. L'edificio ha 3 piani..." class="w-full bg-white/5 border border-white/10 rounded-[2rem] px-5 py-4 text-base text-white outline-none focus:border-blue-500 transition-colors resize-none text-center"></textarea>
                 </div>
 
-                <div class="flex items-start gap-3 mt-2 p-4 bg-black/30 rounded-xl border border-white/5">
-                    <input type="checkbox" id="pr-privacy" required class="mt-1 w-4 h-4 accent-blue-500">
-                    <label for="pr-privacy" class="text-[11px] text-slate-400 leading-relaxed">
-                        <strong>Consenso GDPR:</strong> Acconsento al trattamento dei miei dati sui server Horizon Europe per la gestione dell'ordine. Dichiaro di aver preso visione dell'informativa sulla privacy e delle specifiche sull'infrastruttura proprietaria. *
+                <div class="flex items-center justify-center gap-4 mt-6 p-5 bg-black/30 rounded-[2rem] border border-white/5">
+                    <input type="checkbox" id="pr-privacy" required class="w-5 h-5 accent-blue-500 shrink-0">
+                    <label for="pr-privacy" class="text-sm text-slate-400 leading-relaxed text-left">
+                        <strong>Consenso GDPR:</strong> Acconsento al trattamento dei miei dati sui server Horizon Europe. Dichiaro di aver preso visione dell'informativa sulla privacy. *
                     </label>
                 </div>
 
-                <button type="submit" id="pr-btn" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 py-4 rounded-xl font-black text-sm tracking-[0.1em] text-white shadow-xl shadow-blue-900/40 mt-2 transition-all flex justify-center items-center gap-2">
-                    <i data-lucide="send" class="w-4 h-4"></i> CONFERMA ORDINE AL GESTIONALE
+                <button type="submit" id="pr-btn" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 py-6 rounded-[2rem] font-black text-lg tracking-[0.1em] text-white shadow-2xl shadow-blue-900/40 mt-6 transition-all flex justify-center items-center gap-3">
+                    <i data-lucide="send" class="w-6 h-6"></i> CONFERMA ORDINE
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MODALE ASSUNZIONI -->
-    <div id="hiringModal" class="fixed inset-0 z-[250] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300">
-        <div class="glass-card w-full max-w-4xl rounded-[2.5rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-300 max-h-[95vh] overflow-y-auto border-emerald-500/30 shadow-2xl shadow-emerald-900/20" id="hiringModalContent">
-            <button onclick="closeModal('hiringModal')" class="absolute top-6 right-6 text-slate-500 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">Unisciti al Team <span class="text-emerald-500">Horizon.</span></h3>
+    <div id="hiringModal" class="fixed inset-0 z-[250] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl opacity-0 transition-opacity duration-500">
+        <div class="glass-card w-full max-w-2xl rounded-[3rem] p-8 sm:p-12 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-emerald-500/30 shadow-2xl shadow-emerald-900/20 text-center" id="hiringModalContent">
+            <button onclick="closeModal('hiringModal')" class="absolute top-8 right-8 text-slate-500 hover:text-white bg-white/5 hover:bg-white/20 p-3 rounded-full transition-colors backdrop-blur-md"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <div class="w-20 h-20 bg-emerald-500/20 rounded-3xl flex items-center justify-center text-emerald-400 mb-6 mx-auto"><i data-lucide="briefcase" class="w-10 h-10"></i></div>
+            <h3 class="text-3xl sm:text-4xl font-black mb-4 text-white">Unisciti al Team <span class="text-emerald-500">Horizon.</span></h3>
+            <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-6 w-full">Invia la tua candidatura spontanea per entrare a far parte della divisione infrastrutturale e di sviluppo di Horizon Global.</p>
+            
+            <form id="hiringForm" class="space-y-6 w-full" onsubmit="event.preventDefault(); alert('Candidatura inviata con successo! Il nostro dipartimento HR ti contatterà a breve.'); closeModal('hiringModal'); this.reset();">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div><input type="text" required placeholder="Nome *" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                    <div><input type="text" required placeholder="Cognome *" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                    <div class="sm:col-span-2"><input type="email" required placeholder="Indirizzo Email *" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
+                    <div class="sm:col-span-2">
+                        <select required class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center appearance-none">
+                            <option value="" disabled selected>Seleziona Reparto di Interesse *</option>
+                            <option value="dev">Sviluppo Software & Web</option>
+                            <option value="net">Ingegneria di Rete (Orion)</option>
+                            <option value="hr">Risorse Umane</option>
+                            <option value="sales">Commerciale B2B</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <textarea rows="3" placeholder="Link al tuo Portfolio o LinkedIn (Opzionale)" class="w-full bg-white/5 border border-white/10 rounded-[2rem] px-5 py-4 text-base text-white outline-none text-center resize-none"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-[2rem] font-black text-lg text-white shadow-xl shadow-emerald-600/30 mt-4 transition-all flex justify-center items-center gap-3">
+                    <i data-lucide="file-check-2" class="w-6 h-6"></i> INVIA CANDIDATURA
+                </button>
+            </form>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
+
+        // Duplica dinamicamente i contenuti delle track di scorrimento per permettere un loop infinito senza vuoti
+        document.addEventListener("DOMContentLoaded", () => {
+            const tracks = document.querySelectorAll('.auto-scroll-track');
+            tracks.forEach(track => {
+                // Duplica l'HTML interno una volta per creare l'illusione di loop infinito
+                track.innerHTML += track.innerHTML;
+            });
+        });
 
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
@@ -1000,7 +1018,7 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
                 document.body.style.overflow = '';
-            }, 300);
+            }, 500);
         }
 
         function selezionaPiano(nomePiano) {
