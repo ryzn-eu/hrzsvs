@@ -106,28 +106,55 @@
                               linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
         }
 
-        /* Modifiche: Scorrimento Infinito CSS */
+        /* Modifiche: Scorrimento Infinito CSS (Desktop) e Swipe Manuale (Mobile) */
         .auto-scroll-wrapper {
-            overflow: hidden;
             width: 100%;
             position: relative;
             padding: 1.5rem 0 3rem 0;
-            mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
         }
 
         .auto-scroll-track {
             display: flex;
             gap: 1.5rem; /* Corrisponde a gap-6 */
             width: max-content;
-            /* La durata (es. 40s) rende lo scorrimento lento e fluido */
-            animation: scroll-loop 45s linear infinite;
         }
 
-        /* Pausa al passaggio del mouse o al tocco */
-        .auto-scroll-track:hover, .auto-scroll-track:active {
-            animation-play-state: paused;
-            cursor: grab;
+        /* Gestione Scorrimento per Desktop */
+        @media (min-width: 1024px) {
+            .auto-scroll-wrapper {
+                overflow: hidden;
+                mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+                -webkit-mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+            }
+            .auto-scroll-track {
+                animation: scroll-loop 45s linear infinite;
+            }
+            .auto-scroll-track:hover, .auto-scroll-track:active {
+                animation-play-state: paused;
+                cursor: grab;
+            }
+        }
+
+        /* Gestione Scorrimento per Mobile/Tablet (Swipe manuale fluido) */
+        @media (max-width: 1023px) {
+            .auto-scroll-wrapper {
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 2rem;
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none;  /* IE and Edge */
+            }
+            .auto-scroll-wrapper::-webkit-scrollbar {
+                display: none; /* Chrome, Safari, Opera */
+            }
+            .auto-scroll-track {
+                padding: 0 1.5rem; /* Margine per non attaccare la prima/ultima card ai bordi */
+            }
+            .auto-scroll-track > div {
+                scroll-snap-align: center; /* Ferma la card al centro quando si scorre col dito */
+            }
         }
 
         @keyframes scroll-loop {
@@ -321,10 +348,10 @@
             </div>
         </div>
 
-        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw] px-4">
+        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw]">
             <div class="auto-scroll-track">
                 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[360px] p-8 border-blue-500/20 bg-black/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[360px] p-8 border-blue-500/20 bg-black/20 group cursor-default">
                     <div class="w-16 h-16 bg-blue-500/10 rounded-3xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="layout-template" class="w-8 h-8"></i></div>
                     <h3 class="text-2xl font-bold text-white mb-2">Sito Web + Cloud</h3>
                     <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Realizzazione sito web e hosting gestito in Cloud Proprietario Horizon.</p>
@@ -342,7 +369,7 @@
                     <button onclick="selezionaPiano('Sito Web + Hosting Cloud Horizon (Piccole Imprese)')" class="w-full bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-blue-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Servizio</button>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[360px] p-8 border-purple-500/30 bg-purple-900/10 relative shadow-lg shadow-purple-900/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[360px] p-8 border-purple-500/30 bg-purple-900/10 relative shadow-lg shadow-purple-900/20 group cursor-default">
                     <div class="absolute -top-4 bg-purple-500 text-white px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg z-10">Sponsorizzato</div>
                     <div class="w-16 h-16 bg-purple-500/10 rounded-3xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="smartphone" class="w-8 h-8"></i></div>
                     <h3 class="text-2xl font-bold text-white mb-2">Web + App PWA</h3>
@@ -361,7 +388,7 @@
                     <button onclick="selezionaPiano('Sito Web + App PWA + Hosting')" class="w-full bg-purple-600 hover:bg-purple-500 text-white py-4 rounded-2xl font-bold transition-all shadow-md mt-auto z-10 relative">Richiedi Servizio</button>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[360px] p-8 border-cyan-500/20 bg-black/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[360px] p-8 border-cyan-500/20 bg-black/20 group cursor-default">
                     <div class="w-16 h-16 bg-cyan-500/10 rounded-3xl flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="home" class="w-8 h-8"></i></div>
                     <h3 class="text-2xl font-bold text-white mb-2">Orion Sat Privato</h3>
                     <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Connettività satellitare veloce e stabile per abitazioni private.</p>
@@ -379,7 +406,7 @@
                     <button onclick="selezionaPiano('Orion Internet Satellitare (Privato)')" class="w-full bg-cyan-600/20 hover:bg-cyan-600 text-cyan-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-cyan-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Privato</button>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[360px] p-8 border-orange-500/20 bg-black/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[360px] p-8 border-orange-500/20 bg-black/20 group cursor-default">
                     <div class="w-16 h-16 bg-orange-500/10 rounded-3xl flex items-center justify-center text-orange-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="building" class="w-8 h-8"></i></div>
                     <h3 class="text-2xl font-bold text-white mb-2">Orion Sat Business</h3>
                     <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Connettività ridondata ad altissima affidabilità per aziende.</p>
@@ -411,50 +438,52 @@
             </div>
         </div>
 
-        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw] px-4">
-            <div class="auto-scroll-track" style="animation-duration: 60s;"> <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-pink-500/20 group cursor-default">
+        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw]">
+            <div class="auto-scroll-track" style="animation-duration: 60s;"> 
+                
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-pink-500/20 group cursor-default">
                     <div class="w-20 h-20 bg-pink-500/10 rounded-[2rem] flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="music" class="w-10 h-10"></i></div>
                     <h3 class="text-3xl font-bold text-white mb-4">Global Aura</h3>
                     <p class="text-sm text-slate-400 mb-8 leading-relaxed">La piattaforma di streaming musicale e social network innovativo. L'hub dell'intrattenimento audio di nuova generazione che connette gli artisti ai fan.</p>
                     <a href="https://pl-globalaura.com" target="_blank" class="inline-flex items-center justify-center gap-2 text-pink-400 font-bold bg-pink-500/10 px-6 py-3 rounded-full hover:bg-pink-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Aura <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-blue-500/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-blue-500/20 group cursor-default">
                     <div class="w-20 h-20 bg-blue-500/10 rounded-[2rem] flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="satellite" class="w-10 h-10"></i></div>
                     <h3 class="text-3xl font-bold text-white mb-4">Orion AI</h3>
                     <p class="text-sm text-slate-400 mb-8 leading-relaxed">Provider Internet Next-Gen. Connettività estrema tramite reti FWA, ponti radio e Intelligenza Artificiale applicata alle telecomunicazioni.</p>
                     <a href="https://orion-ai.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-blue-400 font-bold bg-blue-500/10 px-6 py-3 rounded-full hover:bg-blue-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Orion <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-cyan-500/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-cyan-500/20 group cursor-default">
                     <div class="w-20 h-20 bg-cyan-500/10 rounded-[2rem] flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="server" class="w-10 h-10"></i></div>
                     <h3 class="text-3xl font-bold text-white mb-4">Net-Orion</h3>
                     <p class="text-sm text-slate-400 mb-8 leading-relaxed">Infrastruttura Cloud proprietaria. Datacenter ad altissime prestazioni per le esigenze enterprise, hosting avanzato e architettura server zero-latency.</p>
                     <a href="https://net-orion.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-cyan-400 font-bold bg-cyan-500/10 px-6 py-3 rounded-full hover:bg-cyan-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Net-Orion <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-emerald-500/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-emerald-500/20 group cursor-default">
                     <div class="w-20 h-20 bg-emerald-500/10 rounded-[2rem] flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="leaf" class="w-10 h-10"></i></div>
                     <h3 class="text-3xl font-bold text-white mb-4">iORE Green</h3>
                     <p class="text-sm text-slate-400 mb-8 leading-relaxed">La nostra divisione Utilities. Forniture di energia elettrica, idrica e gas integrate, con un focus totale sulla sostenibilità e tariffe flat esclusive.</p>
                     <a href="https://ioregreen.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-emerald-400 font-bold bg-emerald-500/10 px-6 py-3 rounded-full hover:bg-emerald-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita iORE <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-orange-500/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-orange-500/20 group cursor-default">
                     <div class="w-20 h-20 bg-orange-500/10 rounded-[2rem] flex items-center justify-center text-orange-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="disc" class="w-10 h-10"></i></div>
                     <h3 class="text-3xl font-bold text-white mb-4">Ryzn Music Group</h3>
                     <p class="text-sm text-slate-400 mb-8 leading-relaxed">Etichetta discografica digitale e network di distribuzione indipendente. Lanciamo e gestiamo artisti nel panorama musicale globale.</p>
                     <a href="http://ryznmusic.it/" target="_blank" class="inline-flex items-center justify-center gap-2 text-orange-400 font-bold bg-orange-500/10 px-6 py-3 rounded-full hover:bg-orange-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Ryzn <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-indigo-500/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-indigo-500/20 group cursor-default">
                     <div class="w-20 h-20 bg-indigo-500/10 rounded-[2rem] flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="tv" class="w-10 h-10"></i></div>
                     <h3 class="text-3xl font-bold text-white mb-4">Aura TV</h3>
                     <p class="text-sm text-slate-400 mb-8 leading-relaxed">Broadcasting e streaming video in alta definizione. Il cinema, l'intrattenimento live e la TV ridisegnati per il digitale.</p>
                     <a href="https://auratv.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-indigo-400 font-bold bg-indigo-500/10 px-6 py-3 rounded-full hover:bg-indigo-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Aura TV <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </div>
                 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-10 border-yellow-500/20 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-yellow-500/20 group cursor-default">
                     <div class="w-20 h-20 bg-yellow-500/10 rounded-[2rem] flex items-center justify-center text-yellow-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="graduation-cap" class="w-10 h-10"></i></div>
                     <h3 class="text-3xl font-bold text-white mb-4">HC Institute</h3>
                     <p class="text-sm text-slate-400 mb-8 leading-relaxed">Horizon Corporate Institute. Accademia di alta formazione tecnologica, manageriale e sviluppo delle competenze per formare i leader del domani.</p>
@@ -708,10 +737,10 @@
             </div>
         </div>
 
-        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw] px-4">
+        <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw]">
             <div class="auto-scroll-track" style="animation-duration: 40s;">
                 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-8 border-white/10 hover:border-slate-500 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-8 border-white/10 hover:border-slate-500 group cursor-default">
                     <h4 class="text-3xl font-bold text-white mb-3">Starter 2.0</h4>
                     <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">Per piccole imprese che vogliono digitalizzarsi.</p>
                     <div class="mb-8 flex flex-col items-center">
@@ -729,7 +758,7 @@
                     <button onclick="selezionaPiano('Piano Starter 2.0')" class="w-full bg-white/10 hover:bg-white/20 py-5 rounded-[1.5rem] font-bold text-white border border-white/10 mt-auto transition-all z-10 relative">Ordina Starter</button>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-8 border-emerald-500/50 shadow-2xl shadow-emerald-900/20 relative group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-8 border-emerald-500/50 shadow-2xl shadow-emerald-900/20 relative group cursor-default">
                     <div class="absolute -top-4 bg-emerald-500 text-white px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg z-10">Più Richiesto</div>
                     <h4 class="text-3xl font-bold text-emerald-400 mb-3 mt-4">Professional</h4>
                     <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">L'ecosistema completo per PMI strutturate.</p>
@@ -748,7 +777,7 @@
                     <button onclick="selezionaPiano('Piano Professional')" class="w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-[1.5rem] font-black text-white shadow-xl shadow-emerald-600/30 mt-auto transition-all z-10 relative">Ordina Professional</button>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-8 border-white/10 hover:border-slate-500 group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-8 border-white/10 hover:border-slate-500 group cursor-default">
                     <h4 class="text-3xl font-bold text-white mb-3">Enterprise</h4>
                     <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">Per grandi volumi di dati e multinazionali.</p>
                     <div class="mb-8 flex flex-col items-center">
@@ -766,7 +795,7 @@
                     <button onclick="selezionaPiano('Piano Enterprise')" class="w-full bg-white/10 hover:bg-white/20 py-5 rounded-[1.5rem] font-bold text-white border border-white/10 mt-auto transition-all z-10 relative">Ordina Enterprise</button>
                 </div>
 
-                <div class="glass-card flex-shrink-0 w-[85vw] sm:w-[380px] p-8 border-cyan-500/50 shadow-2xl shadow-cyan-900/20 relative group cursor-default">
+                <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-8 border-cyan-500/50 shadow-2xl shadow-cyan-900/20 relative group cursor-default">
                     <div class="absolute -top-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg z-10">Master All-Inclusive</div>
                     <h4 class="text-3xl font-bold text-cyan-400 mb-3 mt-4">Enterprise + iORE</h4>
                     <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">Ecosistema Enterprise unito a fornitura utenze flat.</p>
