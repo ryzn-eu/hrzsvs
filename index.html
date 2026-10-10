@@ -11,7 +11,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
         import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 
         // Configurazione Firebase Centrale (horizongls)
@@ -28,26 +28,13 @@
         const app = initializeApp(firebaseConfig);
         window.db = getDatabase(app);
         window.auth = getAuth(app);
-        window.provider = new GoogleAuthProvider();
         window.ref = ref;
         window.set = set;
         window.push = push;
         window.onValue = onValue;
         window.update = update;
 
-        // Gestione risultato redirect al ritorno da Google
-        getRedirectResult(window.auth).then((result) => {
-            if (result && result.user) {
-                window.currentUser = result.user;
-                window.updateUserBadgeUI();
-                window.listenUserData();
-                window.openPersonalPage();
-            }
-        }).catch((error) => {
-            console.error("Errore redirect auth:", error);
-        });
-
-        // Gestore Stato Login Utente Google
+        // Gestore Stato Login Utente Firebase
         window.currentUser = null;
         onAuthStateChanged(window.auth, (user) => {
             window.currentUser = user;
@@ -57,16 +44,40 @@
             }
         });
 
-        window.loginWithGoogle = async function(event) {
-            if (event) event.preventDefault();
+        // Funzione per Gestire Accesso o Registrazione Email/Password
+        window.submitAuthForm = async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const nome = document.getElementById('auth-nome').value;
+            const isRegistering = document.getElementById('authModeTitle').innerText.includes('Registrazione');
+
             try {
-                await signInWithRedirect(window.auth, window.provider);
+                if (isRegistering) {
+                    const userCredential = await createUserWithEmailAndPassword(window.auth, email, password);
+                    const user = userCredential.user;
+                    if (nome) {
+                        await updateProfile(user, { displayName: nome });
+                    }
+                    // Salva profilo iniziale nel database
+                    await set(window.ref(window.db, `utenti_profilo/${user.uid}`), {
+                        nome: nome || email.split('@')[0],
+                        email: email,
+                        dataRegistrazione: new Date().toISOString()
+                    });
+                    alert("Registrazione completata con successo!");
+                } else {
+                    await signInWithEmailAndPassword(window.auth, email, password);
+                    alert("Accesso effettuato con successo!");
+                }
+                closeModal('authModal');
+                document.getElementById('authForm').reset();
             } catch (error) {
-                alert("Errore durante l'accesso Google: " + error.message);
+                alert("Errore Autenticazione: " + error.message);
             }
         };
 
-        window.logoutGoogle = async function() {
+        window.logoutFirebase = async function() {
             await signOut(window.auth);
             window.currentUser = null;
             window.updateUserBadgeUI();
@@ -239,7 +250,7 @@
 </head>
 <body class="antialiased text-center">
 
-    <!-- BARRA DI NAVIGAZIONE CON BOLLINO UTENTE GOOGLE IN ALTO -->
+    <!-- BARRA DI NAVIGAZIONE CON BOLLINO UTENTE IN ALTO -->
     <nav class="fixed w-full z-[100] bg-[#020617]/70 backdrop-blur-3xl border-b border-white/5 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
             
@@ -264,7 +275,7 @@
                 </a>
 
                 <!-- BOLLINO UTENTE ACCOUNT IN ALTO IN HOME -->
-                <button id="userBadgeBtn" onclick="openPersonalPage(event)" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 p-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-bold text-slate-200 transition-all backdrop-blur-md">
+                <button id="userBadgeBtn" onclick="handleUserBadgeClick(event)" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 p-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-bold text-slate-200 transition-all backdrop-blur-md">
                     <div id="userBadgeAvatar" class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white font-black overflow-hidden">
                         <i data-lucide="user" class="w-4 h-4"></i>
                     </div>
@@ -629,7 +640,7 @@
     <section class="py-16 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-slate-900 border-t-4 border-blue-600 flex flex-col items-center">
         <!-- BOLLINO ACCOUNT ANCHE NELLA SEZIONE AGENZIA B2B -->
         <div class="w-full max-w-5xl flex justify-end mb-4">
-            <button onclick="openPersonalPage(event)" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 px-4 py-2 rounded-full text-xs font-bold text-blue-400 transition-all backdrop-blur-md">
+            <button onclick="handleUserBadgeClick(event)" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 px-4 py-2 rounded-full text-xs font-bold text-blue-400 transition-all backdrop-blur-md">
                 <i data-lucide="user-check" class="w-4 h-4"></i>
                 <span>Area Personale Utente</span>
             </button>
@@ -997,6 +1008,44 @@
         </span>
     </a>
 
+    <!-- MODALE DI ACCESSO / REGISTRAZIONE FIREBASE EMAIL & PASSWORD -->
+    <div id="authModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl opacity-0 transition-opacity duration-500">
+        <div class="glass-card w-full max-w-md rounded-[3rem] p-8 relative transform scale-95 transition-transform duration-500 border-blue-500/30 text-center bg-slate-950">
+            <button onclick="closeModal('authModal')" class="absolute top-6 right-6 text-slate-500 hover:text-white bg-white/5 hover:bg-white/20 p-2.5 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            
+            <div class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 mx-auto mb-4 border border-blue-500/30">
+                <i data-lucide="lock" class="w-8 h-8"></i>
+            </div>
+            
+            <h3 id="authModeTitle" class="text-2xl font-black mb-1 text-white">Accesso Account</h3>
+            <p id="authModeDesc" class="text-xs text-slate-400 mb-6">Accedi o registrati per gestire i tuoi servizi.</p>
+
+            <form id="authForm" onsubmit="submitAuthForm(event)" class="space-y-4 text-left">
+                <div id="authNameField" class="hidden">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Nome o Nome Azienda *</label>
+                    <input type="text" id="auth-nome" placeholder="Il tuo nome" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Email *</label>
+                    <input type="email" id="auth-email" required placeholder="nome@email.it" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Password *</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none">
+                </div>
+
+                <button type="submit" id="authSubmitBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-lg mt-2">
+                    Accedi
+                </button>
+            </form>
+
+            <div class="mt-6 text-xs text-slate-400">
+                <span id="authSwitchText">Non hai un account?</span> 
+                <button type="button" onclick="toggleAuthMode()" id="authSwitchBtn" class="text-blue-400 font-bold ml-1 hover:underline">Registrati ora</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODALE 1: CHECKOUT & RICHIESTA SERVIZI B2B/B2C -->
     <div id="contactModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl opacity-0 transition-opacity duration-500">
         <div class="glass-card w-full max-w-4xl rounded-[3rem] p-8 sm:p-12 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-blue-500/30 text-center" id="contactModalContent">
@@ -1277,13 +1326,13 @@
             <!-- HEADER UTENTE LOGGATO -->
             <div class="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
                 <div class="flex items-center gap-4">
-                    <img id="userModalPhoto" src="" alt="" class="w-12 h-12 rounded-full border border-blue-500 hidden">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-lg">U</div>
                     <div>
                         <h3 id="userModalName" class="text-2xl font-black text-white">Area Personale</h3>
                         <p id="userModalEmail" class="text-xs text-slate-400"></p>
                     </div>
                 </div>
-                <button onclick="window.logoutGoogle()" class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                <button onclick="window.logoutFirebase()" class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all">
                     Logout
                 </button>
             </div>
@@ -1393,6 +1442,41 @@
             }
         }
 
+        // --- GESTIONE MODALITA' ACCESSO / REGISTRAZIONE EMAIL ---
+        function toggleAuthMode() {
+            const title = document.getElementById('authModeTitle');
+            const desc = document.getElementById('authModeDesc');
+            const nameField = document.getElementById('authNameField');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const switchText = document.getElementById('authSwitchText');
+            const switchBtn = document.getElementById('authSwitchBtn');
+
+            if (title.innerText.includes('Accesso')) {
+                title.innerText = 'Registrazione Account';
+                desc.innerText = 'Crea un nuovo account per richiedere i servizi.';
+                nameField.classList.remove('hidden');
+                submitBtn.innerText = 'Registrati';
+                switchText.innerText = 'Hai già un account?';
+                switchBtn.innerText = 'Accedi';
+            } else {
+                title.innerText = 'Accesso Account';
+                desc.innerText = 'Accedi o registrati per gestire i tuoi servizi.';
+                nameField.classList.add('hidden');
+                submitBtn.innerText = 'Accedi';
+                switchText.innerText = 'Non hai un account?';
+                switchBtn.innerText = 'Registrati ora';
+            }
+        }
+
+        function handleUserBadgeClick(event) {
+            if (event) event.preventDefault();
+            if (window.currentUser) {
+                openPersonalPage(event);
+            } else {
+                openModal('authModal');
+            }
+        }
+
         // --- AGGIORNAMENTO BOLLINO UTENTE IN HOMEPAGE ED AGENZIA ---
         window.updateUserBadgeUI = function() {
             const btnText = document.getElementById('userBadgeText');
@@ -1400,11 +1484,7 @@
             if (window.currentUser) {
                 if(btnText) btnText.innerText = window.currentUser.displayName || window.currentUser.email.split('@')[0];
                 if(avatar) {
-                    if (window.currentUser.photoURL) {
-                        avatar.innerHTML = `<img src="${window.currentUser.photoURL}" class="w-full h-full object-cover">`;
-                    } else {
-                        avatar.innerText = (window.currentUser.email || 'U').substring(0,1).toUpperCase();
-                    }
+                    avatar.innerText = (window.currentUser.email || 'U').substring(0,1).toUpperCase();
                 }
             } else {
                 if(btnText) btnText.innerText = "Accedi";
@@ -1421,8 +1501,8 @@
         // --- AVVIO CANDIDATURA DA BOTTONE SPECIFICO DELL'OFFERTA ---
         async function avviaCandidatura(posizioneTitle) {
             if (!window.currentUser) {
-                alert("Per candidarti effettua prima l'accesso con Google cliccando su 'Accedi' in alto.");
-                await window.loginWithGoogle();
+                alert("Per candidarti effettua prima l'accesso cliccando su 'Accedi' in alto.");
+                openModal('authModal');
                 return;
             }
 
@@ -1474,24 +1554,7 @@
                 const newRef = window.push(window.ref(window.db, 'candidature'));
                 await window.set(newRef, candData);
 
-                const emailPayload = {
-                    service_id: 'default_service',
-                    template_id: 'template_candidatura',
-                    user_id: 'public_key',
-                    template_params: {
-                        to_email: 'Dev.ryzn@gmail.com',
-                        subject: 'Nuova Candidatura HR: ' + candData.posizione,
-                        message: JSON.stringify(candData, null, 2)
-                    }
-                };
-
-                fetch('https://api.emailjs.com/api/v1.0/email/send', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(emailPayload)
-                }).catch(e => console.log("Direct mail queued", e));
-
-                alert("Candidatura trasmessa con successo! I tuoi dati sono stati registrati e inviati a Dev.ryzn@gmail.com.");
+                alert("Candidatura trasmessa con successo! I tuoi dati sono stati registrati.");
                 closeModal('candidateFormModal');
                 document.getElementById('fullCandidateForm').reset();
             } catch (err) {
@@ -1506,8 +1569,8 @@
         // --- SELEZIONE PIANO ED OBBLIGO ACCESSO ---
         async function selezionaPiano(piano) {
             if (!window.currentUser) {
-                alert("Per effettuare una richiesta di servizio effettua prima l'accesso con Google cliccando su 'Accedi' in alto.");
-                await window.loginWithGoogle();
+                alert("Per effettuare una richiesta di servizio effettua prima l'accesso cliccando su 'Accedi' in alto.");
+                openModal('authModal');
                 return;
             }
 
@@ -1553,7 +1616,7 @@
         async function inviaPreventivo(event) {
             event.preventDefault();
             if (!window.currentUser) {
-                alert("Devi essere loggato con Google per inviare una richiesta.");
+                alert("Devi effettuare l'accesso per inviare una richiesta.");
                 return;
             }
 
@@ -1606,20 +1669,12 @@
         async function openPersonalPage(event) {
             if (event) event.preventDefault();
             if (!window.currentUser) {
-                await window.loginWithGoogle();
+                openModal('authModal');
                 return;
             }
 
             document.getElementById('userModalName').innerText = window.currentUser.displayName || 'Utente Horizon';
             document.getElementById('userModalEmail').innerText = window.currentUser.email || '';
-            
-            const photoEl = document.getElementById('userModalPhoto');
-            if (window.currentUser.photoURL) {
-                photoEl.src = window.currentUser.photoURL;
-                photoEl.classList.remove('hidden');
-            } else {
-                photoEl.classList.add('hidden');
-            }
 
             openModal('personalPageModal');
         }
@@ -1703,7 +1758,7 @@
         async function salvaDatiFiscaliUtente() {
             if (!window.currentUser) return;
             const uid = window.currentUser.uid;
-            await window.set(window.ref(window.db, `utenti_profilo/${uid}`), {
+            await window.update(window.ref(window.db, `utenti_profilo/${uid}`), {
                 ragioneSociale: document.getElementById('u-ragione').value,
                 piva: document.getElementById('u-piva').value,
                 sdi: document.getElementById('u-sdi').value,
