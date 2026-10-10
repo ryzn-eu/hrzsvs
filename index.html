@@ -11,7 +11,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
         import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 
         // Configurazione Firebase Centrale (horizongls)
@@ -35,12 +35,13 @@
         window.onValue = onValue;
         window.update = update;
 
-        // Gestione risultato redirect se il popup browser è bloccato
+        // Gestione risultato redirect al ritorno da Google
         getRedirectResult(window.auth).then((result) => {
             if (result && result.user) {
                 window.currentUser = result.user;
                 window.updateUserBadgeUI();
                 window.listenUserData();
+                window.openPersonalPage();
             }
         }).catch((error) => {
             console.error("Errore redirect auth:", error);
@@ -59,18 +60,9 @@
         window.loginWithGoogle = async function(event) {
             if (event) event.preventDefault();
             try {
-                const result = await signInWithPopup(window.auth, window.provider);
-                window.currentUser = result.user;
-                window.updateUserBadgeUI();
-                return result.user;
+                await signInWithRedirect(window.auth, window.provider);
             } catch (error) {
-                console.warn("Popup bloccato o non disponibile, passaggio a signInWithRedirect...", error);
-                try {
-                    await signInWithRedirect(window.auth, window.provider);
-                } catch (err2) {
-                    alert("Errore durante l'accesso Google: " + err2.message);
-                }
-                return null;
+                alert("Errore durante l'accesso Google: " + error.message);
             }
         };
 
@@ -1099,7 +1091,7 @@
         </div>
     </div>
 
-    <!-- MODALE 2: SCHEDA PORTALE DEL LAVORO (HR HORIZON - OFFERTE BLOG) -->
+    <!-- MODALE 2: SCHEDA PORTALE DEL LAVORO (HR HORIZON) -->
     <div id="hrHorizonModal" class="fixed inset-0 z-[220] hidden items-center justify-center p-2 sm:p-6 bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500">
         <div class="glass-card w-full max-w-6xl rounded-[3rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-cyan-500/40 bg-slate-950 text-left">
             <button onclick="closeModal('hrHorizonModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/10 p-3 rounded-full transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -1429,9 +1421,9 @@
         // --- AVVIO CANDIDATURA DA BOTTONE SPECIFICO DELL'OFFERTA ---
         async function avviaCandidatura(posizioneTitle) {
             if (!window.currentUser) {
-                alert("Per candidarti è obbligatorio effettuare l'accesso con il tuo account Google.");
-                const user = await window.loginWithGoogle();
-                if (!user) return;
+                alert("Per candidarti effettua prima l'accesso con Google cliccando su 'Accedi' in alto.");
+                await window.loginWithGoogle();
+                return;
             }
 
             closeModal('hrHorizonModal');
@@ -1514,9 +1506,9 @@
         // --- SELEZIONE PIANO ED OBBLIGO ACCESSO ---
         async function selezionaPiano(piano) {
             if (!window.currentUser) {
-                alert("Per effettuare una richiesta di servizio è necessario autenticarsi con il tuo account Google.");
-                const user = await window.loginWithGoogle();
-                if (!user) return;
+                alert("Per effettuare una richiesta di servizio effettua prima l'accesso con Google cliccando su 'Accedi' in alto.");
+                await window.loginWithGoogle();
+                return;
             }
 
             const field = document.getElementById('pr-servizio');
@@ -1614,8 +1606,8 @@
         async function openPersonalPage(event) {
             if (event) event.preventDefault();
             if (!window.currentUser) {
-                const user = await window.loginWithGoogle();
-                if (!user) return;
+                await window.loginWithGoogle();
+                return;
             }
 
             document.getElementById('userModalName').innerText = window.currentUser.displayName || 'Utente Horizon';
