@@ -11,8 +11,10 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 
+        // Configurazione Firebase Centrale (horizongls)
         const firebaseConfig = {
             apiKey: "AIzaSyBJjhL9-d-2QMKDYviV7KfYhUOHWDAoasU",
             authDomain: "horizongls.firebaseapp.com",
@@ -25,8 +27,42 @@
         
         const app = initializeApp(firebaseConfig);
         window.db = getDatabase(app);
+        window.auth = getAuth(app);
+        window.provider = new GoogleAuthProvider();
         window.ref = ref;
         window.set = set;
+        window.push = push;
+        window.onValue = onValue;
+        window.update = update;
+
+        // Gestore Stato Login Utente Google
+        window.currentUser = null;
+        onAuthStateChanged(window.auth, (user) => {
+            window.currentUser = user;
+            window.updateUserBadgeUI();
+            if (user) {
+                window.listenUserData();
+            }
+        });
+
+        window.loginWithGoogle = async function() {
+            try {
+                const result = await signInWithPopup(window.auth, window.provider);
+                window.currentUser = result.user;
+                window.updateUserBadgeUI();
+                return result.user;
+            } catch (error) {
+                alert("Errore durante l'accesso Google: " + error.message);
+                return null;
+            }
+        };
+
+        window.logoutGoogle = async function() {
+            await signOut(window.auth);
+            window.currentUser = null;
+            window.updateUserBadgeUI();
+            closeModal('personalPageModal');
+        };
     </script>
 
     <style>
@@ -106,7 +142,6 @@
                               linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
         }
 
-        /* Modifiche: Scorrimento Infinito CSS (Desktop) e Swipe Manuale (Mobile) */
         .auto-scroll-wrapper {
             width: 100%;
             position: relative;
@@ -115,11 +150,10 @@
 
         .auto-scroll-track {
             display: flex;
-            gap: 1.5rem; /* Corrisponde a gap-6 */
+            gap: 1.5rem;
             width: max-content;
         }
 
-        /* Gestione Scorrimento per Desktop */
         @media (min-width: 1024px) {
             .auto-scroll-wrapper {
                 overflow: hidden;
@@ -135,7 +169,6 @@
             }
         }
 
-        /* Gestione Scorrimento per Mobile/Tablet (Swipe manuale fluido) */
         @media (max-width: 1023px) {
             .auto-scroll-wrapper {
                 overflow-x: auto;
@@ -143,27 +176,19 @@
                 scroll-snap-type: x mandatory;
                 -webkit-overflow-scrolling: touch;
                 padding-bottom: 2rem;
-                scrollbar-width: none; /* Firefox */
-                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;
+                -ms-overflow-style: none;
             }
-            .auto-scroll-wrapper::-webkit-scrollbar {
-                display: none; /* Chrome, Safari, Opera */
-            }
-            .auto-scroll-track {
-                padding: 0 1.5rem; /* Margine per non attaccare la prima/ultima card ai bordi */
-            }
-            .auto-scroll-track > div {
-                scroll-snap-align: center; /* Ferma la card al centro quando si scorre col dito */
-            }
+            .auto-scroll-wrapper::-webkit-scrollbar { display: none; }
+            .auto-scroll-track { padding: 0 1.5rem; }
+            .auto-scroll-track > div { scroll-snap-align: center; }
         }
 
         @keyframes scroll-loop {
             0% { transform: translateX(0); }
-            /* Si sposta esattamente a metà (essendo i contenuti duplicati da JS) - 0.75rem (metà gap) */
             100% { transform: translateX(calc(-50% - 0.75rem)); }
         }
 
-        /* Marquee clienti */
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .animate-marquee-container { display: flex; width: 200%; animation: marquee 35s linear infinite; }
         .animate-marquee-container:hover { animation-play-state: paused; }
@@ -205,6 +230,7 @@
 </head>
 <body class="antialiased text-center">
 
+    <!-- BARRA DI NAVIGAZIONE CON BOLLINO UTENTE GOOGLE IN ALTO -->
     <nav class="fixed w-full z-[100] bg-[#020617]/70 backdrop-blur-3xl border-b border-white/5 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
             
@@ -227,6 +253,14 @@
                 <a href="#servizi-rapidi" class="hidden md:flex bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600 text-blue-400 hover:text-white px-6 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all shadow-lg backdrop-blur-xl">
                     SCOPRI I SERVIZI
                 </a>
+
+                <!-- BOLLINO UTENTE ACCOUNT IN ALTO IN HOME -->
+                <button id="userBadgeBtn" onclick="openPersonalPage()" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 p-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-bold text-slate-200 transition-all backdrop-blur-md">
+                    <div id="userBadgeAvatar" class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white font-black overflow-hidden">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                    </div>
+                    <span id="userBadgeText" class="hidden sm:inline">Accedi</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -247,6 +281,7 @@
         </div>
     </div>
 
+    <!-- MAIN HOME SECTION -->
     <section class="relative min-h-[90vh] flex flex-col items-center justify-center pt-28 pb-16 px-4 sm:px-6 overflow-hidden">
         <div class="absolute inset-0 bg-grid-animate z-0 opacity-30"></div>
         <div class="absolute top-1/4 right-1/4 w-[300px] md:w-[600px] h-[600px] bg-blue-600/10 blur-[150px] rounded-full"></div>
@@ -269,29 +304,26 @@
                 </a>
             </div>
             
-            <button onclick="openModal('hiringModal')" class="w-full sm:w-max bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-[2rem] text-center font-bold text-slate-300 transition-all flex items-center justify-center gap-2 backdrop-blur-md">
-                <i data-lucide="briefcase" class="w-5 h-5"></i> Lavora nel Gruppo
+            <!-- MODIFICA FONDAMENTALE: IL PULSANTE LAVORA CON NOI ORA APRE LA SCHEDA HR HORIZON -->
+            <button onclick="apriPortalLavoraConNoi()" class="w-full sm:w-max bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-500 hover:to-blue-500 border border-cyan-500/40 px-8 py-4 rounded-[2rem] text-center font-bold text-white transition-all flex items-center justify-center gap-3 backdrop-blur-md shadow-2xl">
+                <i data-lucide="briefcase" class="w-5 h-5 text-cyan-400"></i> Lavora nel Gruppo (HR Horizon)
             </button>
 
             <!-- BANNER SQUADRATO DIFESA NAZIONALE HORIZON -->
             <div class="w-full max-w-4xl mx-auto mt-12 bg-slate-950 border-2 border-red-600/80 shadow-[0_0_50px_rgba(220,38,38,0.35)] p-6 sm:p-10 relative overflow-hidden backdrop-blur-3xl text-center">
-                <!-- Tricolore superiore -->
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-500 via-white to-red-600"></div>
                 <div class="absolute -top-24 -right-24 w-72 h-72 bg-red-600/15 blur-3xl pointer-events-none"></div>
                 <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-emerald-600/15 blur-3xl pointer-events-none"></div>
 
-                <!-- Header Banner con Badge Sovranità e Logo Horizon -->
                 <div class="flex flex-col items-center justify-center gap-4 mb-6">
                     <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-red-950/80 border border-red-500/60 text-red-400 text-[11px] sm:text-xs font-black uppercase tracking-[0.2em] shadow-lg">
                         <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
                         🇮🇹 SOVRANITÀ DIGITALE & DIFESA NAZIONALE ITALIANA 🇮🇹
                     </div>
 
-                    <!-- Logo Horizon del sito -->
                     <img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" alt="Horizon Global Logo" class="h-12 sm:h-16 w-auto object-contain my-2 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
                 </div>
 
-                <!-- Annuncio Eclatante e Patriottico -->
                 <div class="space-y-6 text-slate-200">
                     <h3 class="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight leading-tight">
                         HORIZON GLOBAL AVVIA LA NUOVA DIVISIONE DI SVILUPPO SOFTWARE PER IL <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-red-500">SERVIZIO DI DIFESA NAZIONALE</span>
@@ -587,6 +619,14 @@
     <div id="hub-corporate" class="page-separator"></div>
 
     <section class="py-16 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-slate-900 border-t-4 border-blue-600 flex flex-col items-center">
+        <!-- BOLLINO ACCOUNT ANCHE NELLA SEZIONE AGENZIA B2B -->
+        <div class="w-full max-w-5xl flex justify-end mb-4">
+            <button onclick="openPersonalPage()" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 px-4 py-2 rounded-full text-xs font-bold text-blue-400 transition-all backdrop-blur-md">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
+                <span>Area Personale Utente</span>
+            </button>
+        </div>
+
         <div class="max-w-5xl mx-auto text-center reveal">
             <span class="inline-block px-6 py-2 rounded-full bg-blue-500/10 text-blue-400 font-bold tracking-widest uppercase text-xs mb-6 border border-blue-500/30 backdrop-blur-md">Ambiente Dedicato: Enterprise & PMI Strutturate</span>
             <h1 class="text-5xl md:text-7xl font-black text-white mb-8">HUB Corporate <br><span class="text-gradient">Servizi Integrati B2B</span></h1>
@@ -903,7 +943,8 @@
         </div>
     </section>
 
-    <footer class="bg-[#01030a] py-20 px-6 border-t border-blue-900/30 mt-10 overflow-hidden text-center">
+    <!-- FOOTER CON BOTTONE CON LOGO STAFF IN BASSO PER ACCESSO ADMIN -->
+    <footer class="bg-[#01030a] py-20 px-6 border-t border-blue-900/30 mt-10 overflow-hidden text-center relative">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             <div class="lg:col-span-2 flex flex-col items-center lg:items-start text-center lg:text-left">
                 <span class="text-4xl font-black logo-font text-white">HORIZON <span class="text-blue-500">GLOBAL</span></span>
@@ -917,7 +958,7 @@
                     <li><a href="#servizi-rapidi" class="hover:text-blue-400 transition">Servizi Digitali e Web</a></li>
                     <li><a href="#divisioni" class="hover:text-blue-400 transition">Le Nostre Divisioni</a></li>
                     <li><a href="#prezzi" class="hover:text-blue-400 transition">Piani HUB Corporate B2B</a></li>
-                    <li><button onclick="openModal('hiringModal')" class="hover:text-emerald-400 transition text-emerald-500 font-bold">Lavora con Noi</button></li>
+                    <li><button onclick="apriPortalLavoraConNoi()" class="hover:text-emerald-400 transition text-emerald-500 font-bold">Lavora con Noi</button></li>
                 </ul>
             </div>
             <div class="flex flex-col items-center lg:items-start">
@@ -928,11 +969,19 @@
                 </ul>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto text-center border-t border-white/5 pt-10">
+
+        <div class="max-w-7xl mx-auto text-center border-t border-white/5 pt-10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p class="text-xs text-slate-600 uppercase tracking-[0.2em] font-bold">&copy; 2024-2030 Horizon Global. L'architettura del domani. Tutti i diritti riservati.</p>
+            
+            <!-- BOTTONE CON LOGO STAFF IN BASSO NEL PIÈ PER AREA RISERVATA (PIN 409169) -->
+            <button onclick="openAdminPinModal()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white transition-all shadow-md">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-blue-500"></i>
+                <span class="font-mono font-bold">STAFF ACCESS</span>
+            </button>
         </div>
     </footer>
 
+    <!-- WIDGET TELEFONICO -->
     <a href="tel:+390305409202" class="fixed bottom-8 right-8 z-[90] bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-5 rounded-full shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:scale-110 transition-transform duration-300 flex items-center justify-center group border border-emerald-400/50 backdrop-blur-xl">
         <i data-lucide="phone" class="w-7 h-7 animate-pulse"></i>
         <span class="absolute right-full mr-4 bg-slate-900/90 backdrop-blur-md text-white text-sm font-bold px-4 py-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-700 shadow-2xl">
@@ -940,6 +989,7 @@
         </span>
     </a>
 
+    <!-- MODALE 1: CHECKOUT & RICHIESTA SERVIZI B2B/B2C -->
     <div id="contactModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl opacity-0 transition-opacity duration-500">
         <div class="glass-card w-full max-w-4xl rounded-[3rem] p-8 sm:p-12 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-blue-500/30 text-center" id="contactModalContent">
             <button onclick="closeModal('contactModal')" class="absolute top-8 right-8 text-slate-500 hover:text-white bg-white/5 hover:bg-white/20 p-3 rounded-full transition-colors backdrop-blur-md"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -1033,38 +1083,274 @@
         </div>
     </div>
 
-    <div id="hiringModal" class="fixed inset-0 z-[250] hidden items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-2xl opacity-0 transition-opacity duration-500">
-        <div class="glass-card w-full max-w-2xl rounded-[3rem] p-8 sm:p-12 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-emerald-500/30 shadow-2xl shadow-emerald-900/20 text-center" id="hiringModalContent">
-            <button onclick="closeModal('hiringModal')" class="absolute top-8 right-8 text-slate-500 hover:text-white bg-white/5 hover:bg-white/20 p-3 rounded-full transition-colors backdrop-blur-md"><i data-lucide="x" class="w-6 h-6"></i></button>
-            <div class="w-20 h-20 bg-emerald-500/20 rounded-3xl flex items-center justify-center text-emerald-400 mb-6 mx-auto"><i data-lucide="briefcase" class="w-10 h-10"></i></div>
-            <h3 class="text-3xl sm:text-4xl font-black mb-4 text-white">Unisciti al Team <span class="text-emerald-500">Horizon.</span></h3>
-            <p class="text-base text-slate-400 mb-8 border-b border-white/10 pb-6 w-full">Invia la tua candidatura spontanea per entrare a far parte della divisione infrastrutturale e di sviluppo di Horizon Global.</p>
-            
-            <form id="hiringForm" class="space-y-6 w-full" onsubmit="event.preventDefault(); alert('Candidatura inviata con successo! Il nostro dipartimento HR ti contatterà a breve.'); closeModal('hiringModal'); this.reset();">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div><input type="text" required placeholder="Nome *" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
-                    <div><input type="text" required placeholder="Cognome *" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
-                    <div class="sm:col-span-2"><input type="email" required placeholder="Indirizzo Email *" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center"></div>
-                    <div class="sm:col-span-2">
-                        <select required class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base text-white outline-none text-center appearance-none">
-                            <option value="" disabled selected>Seleziona Reparto di Interesse *</option>
-                            <option value="dev">Sviluppo Software & Web</option>
-                            <option value="net">Ingegneria di Rete (Orion)</option>
-                            <option value="hr">Risorse Umane</option>
-                            <option value="sales">Commerciale B2B</option>
-                        </select>
+    <!-- MODALE 2: SCHEDA PORTALE DEL LAVORO (HR HORIZON - OFF ERTE BLOG) -->
+    <div id="hrHorizonModal" class="fixed inset-0 z-[220] hidden items-center justify-center p-2 sm:p-6 bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500">
+        <div class="glass-card w-full max-w-6xl rounded-[3rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-cyan-500/40 bg-slate-950 text-left">
+            <button onclick="closeModal('hrHorizonModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/10 p-3 rounded-full transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
+
+            <!-- TESTATA BRAND HR HORIZON -->
+            <div class="flex flex-col md:flex-row items-center justify-between border-b border-white/10 pb-6 mb-8 gap-4 text-center md:text-left">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-gradient-to-tr from-cyan-600 to-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-cyan-600/30">
+                        HR
                     </div>
-                    <div class="sm:col-span-2">
-                        <textarea rows="3" placeholder="Link al tuo Portfolio o LinkedIn (Opzionale)" class="w-full bg-white/5 border border-white/10 rounded-[2rem] px-5 py-4 text-base text-white outline-none text-center resize-none"></textarea>
+                    <div>
+                        <h2 class="text-3xl font-black text-white tracking-tight">HR HORIZON <span class="text-cyan-400 text-sm font-bold uppercase tracking-widest block sm:inline">| Work Portal</span></h2>
+                        <p class="text-xs text-slate-400">Piattaforma Ufficiale Recruiting & Career Opportunity - Horizon Global Italia</p>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-[2rem] font-black text-lg text-white shadow-xl shadow-emerald-600/30 mt-4 transition-all flex justify-center items-center gap-3">
-                    <i data-lucide="file-check-2" class="w-6 h-6"></i> INVIA CANDIDATURA
+                
+                <div class="bg-cyan-950/60 border border-cyan-500/40 px-4 py-2 rounded-2xl text-xs text-cyan-300 font-mono">
+                    📍 Sede Operativa: Alfianello (BS) | Smart Working Full Time (40h)
+                </div>
+            </div>
+
+            <!-- ANUNCIO CONDIZIONI CONTRATTUALI E TRASFERTE DALL'IMMAGINE -->
+            <div class="grid md:grid-cols-2 gap-4 mb-8">
+                <div class="bg-blue-950/30 border border-blue-500/30 p-5 rounded-3xl flex items-start gap-3">
+                    <i data-lucide="file-text" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
+                    <div>
+                        <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-1">CONTRATTO</h4>
+                        <p class="text-xs text-slate-300">Tempo determinato 12 mesi (6 + 6) tramite Sinergie con concreta prospettiva di stabilizzazione a tempo indeterminato.</p>
+                    </div>
+                </div>
+                <div class="bg-cyan-950/30 border border-cyan-500/30 p-5 rounded-3xl flex items-start gap-3">
+                    <i data-lucide="plane-takeoff" class="w-6 h-6 text-cyan-400 shrink-0 mt-1"></i>
+                    <div>
+                        <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-1">TRASFERTE RETRIBUITE</h4>
+                        <p class="text-xs text-slate-300">Possibile presenza presso la sede centrale di Giurgiu (Romania). Pagate come straordinari + maggiorazione trasferta anche per le 8 ore contrattuali.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-cyan-400"></i> Posizioni Aperte nel Team (Inserimento Immediato)</h3>
+
+            <!-- BLOG DELLE OFFERTE DI LAVORO (MANSIONI DALL'IMMAGINE) -->
+            <div class="space-y-6">
+                <!-- MANSIONE 1 -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-blue-500/50 p-6 rounded-3xl transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="space-y-2 max-w-2xl">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-blue-500/20 text-blue-400 font-bold text-xs px-3 py-1 rounded-full border border-blue-500/30">4 POSIZIONI</span>
+                            <h4 class="text-xl font-bold text-white">SOFTWARE DEVELOPER (JAVA & PYTHON)</h4>
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                            <li>Java e/o Python (obbligatori)</li>
+                            <li>C++ (preferibile)</li>
+                            <li>Sviluppo, testing e manutenzione applicazioni enterprise</li>
+                        </ul>
+                    </div>
+                    <button onclick="avviaCandidatura('Software Developer (Java & Python)')" class="w-full md:w-auto bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs px-6 py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 shrink-0">
+                        <i data-lucide="send" class="w-4 h-4"></i> CANDIDATI ORA
+                    </button>
+                </div>
+
+                <!-- MANSIONE 2 -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-blue-500/50 p-6 rounded-3xl transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="space-y-2 max-w-2xl">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-blue-500/20 text-blue-400 font-bold text-xs px-3 py-1 rounded-full border border-blue-500/30">4 POSIZIONI</span>
+                            <h4 class="text-xl font-bold text-white">BLUE TEAM - SERVER SECURITY TESTING</h4>
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                            <li>Verifica porte e servizi remoti</li>
+                            <li>Monitoraggio vulnerabilità e hardening</li>
+                            <li>Sicurezza infrastrutture e reportistica avanzata</li>
+                        </ul>
+                    </div>
+                    <button onclick="avviaCandidatura('Blue Team - Server Security Testing')" class="w-full md:w-auto bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs px-6 py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 shrink-0">
+                        <i data-lucide="send" class="w-4 h-4"></i> CANDIDATI ORA
+                    </button>
+                </div>
+
+                <!-- MANSIONE 3 -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-purple-500/50 p-6 rounded-3xl transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="space-y-2 max-w-2xl">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-purple-500/20 text-purple-400 font-bold text-xs px-3 py-1 rounded-full border border-purple-500/30">2 POSIZIONI</span>
+                            <h4 class="text-xl font-bold text-white">CYBER SECURITY ANALYST</h4>
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                            <li>Analisi vulnerabilità e valutazione rischio informatico</li>
+                            <li>Monitoraggio sicurezza e analisi log</li>
+                            <li>Incident response e collaborazione continua con il team</li>
+                        </ul>
+                    </div>
+                    <button onclick="avviaCandidatura('Cyber Security Analyst')" class="w-full md:w-auto bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold text-xs px-6 py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 shrink-0">
+                        <i data-lucide="send" class="w-4 h-4"></i> CANDIDATI ORA
+                    </button>
+                </div>
+
+                <!-- MANSIONE 4 -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 p-6 rounded-3xl transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="space-y-2 max-w-2xl">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-cyan-500/20 text-cyan-400 font-bold text-xs px-3 py-1 rounded-full border border-cyan-500/30">4 POSIZIONI</span>
+                            <h4 class="text-xl font-bold text-white">INGEGNERI TECNICI TELECOMUNICAZIONI (CON MASTER)</h4>
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                            <li>Reti e infrastrutture di comunicazione avanzate</li>
+                            <li>Sistemi radio, wireless e trasmissione dati Veo3</li>
+                            <li>Progettazione e ottimizzazione reti proprietarie</li>
+                        </ul>
+                    </div>
+                    <button onclick="avviaCandidatura('Ingegneri Tecnici Telecomunicazioni')" class="w-full md:w-auto bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs px-6 py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 shrink-0">
+                        <i data-lucide="send" class="w-4 h-4"></i> CANDIDATI ORA
+                    </button>
+                </div>
+
+                <!-- MANSIONE 5 -->
+                <div class="bg-slate-900/80 border border-amber-500/30 hover:border-amber-500/60 p-6 rounded-3xl transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="space-y-2 max-w-2xl">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-amber-500/20 text-amber-400 font-bold text-xs px-3 py-1 rounded-full border border-amber-500/30">6 POSIZIONI</span>
+                            <h4 class="text-xl font-bold text-white">INGEGNERI INFORMATICI - DIVISIONE SVILUPPO MILITARE</h4>
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                            <li>Sistemi informatici e architetture software ad alte prestazioni</li>
+                            <li>Embedded e sistemi real-time di bordo</li>
+                            <li>Progetti ad alta tecnologia e riservati (Difesa Nazionale)</li>
+                        </ul>
+                    </div>
+                    <button onclick="avviaCandidatura('Ingegneri Informatici - Divisione Sviluppo Militare')" class="w-full md:w-auto bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-500 hover:to-red-500 text-white font-bold text-xs px-6 py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 shrink-0">
+                        <i data-lucide="send" class="w-4 h-4"></i> CANDIDATI ORA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE FORM CANDIDATURA COMPLETA (SALVATAGGIO ESATTO FIREBASE + INVIO MAIL DEV.RYZN@GMAIL.COM) -->
+    <div id="candidateFormModal" class="fixed inset-0 z-[230] hidden items-center justify-center p-3 sm:p-6 bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500">
+        <div class="glass-card w-full max-w-3xl rounded-[3rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-blue-500/40 bg-slate-950 text-left">
+            <button onclick="closeModal('candidateFormModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/10 p-3 rounded-full transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
+
+            <h3 class="text-2xl sm:text-3xl font-black text-white mb-2">Form Candidatura Ufficiale HR</h3>
+            <p class="text-xs text-slate-400 mb-6">Compila tutti i campi richiesti per la candidatura a: <strong id="cand-pos-title" class="text-cyan-400"></strong></p>
+
+            <form id="fullCandidateForm" onsubmit="inviaCandidaturaCompleta(event)" class="space-y-4">
+                <input type="hidden" id="cand-posizione">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Nome *</label><input type="text" id="c-nome" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Cognome *</label><input type="text" id="c-cognome" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Codice Fiscale *</label><input type="text" id="c-cf" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white uppercase outline-none font-mono"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Email *</label><input type="email" id="c-email" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Telefono *</label><input type="tel" id="c-tel" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Data di Nascita *</label><input type="date" id="c-dataNascita" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Luogo di Nascita *</label><input type="text" id="c-luogoNascita" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Titolo di Studio *</label><input type="text" id="c-titoloStudio" required placeholder="Es. Laurea / Diploma" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="col-span-2 md:col-span-4"><label class="block text-xs font-bold text-slate-400 mb-1">Indirizzo Residenza (Via, Civico) *</label><input type="text" id="c-via" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div class="col-span-2"><label class="block text-xs font-bold text-slate-400 mb-1">Città *</label><input type="text" id="c-citta" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">CAP *</label><input type="text" id="c-cap" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Prov. *</label><input type="text" id="c-prov" required placeholder="BS" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none"></div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Incolla Curriculum Vitae / Note Presentazione *</label>
+                    <textarea id="c-cvText" rows="4" required placeholder="Incolla qui il tuo CV in formato testo, competenze, esperienze o portfolio..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-xs text-white outline-none resize-none"></textarea>
+                </div>
+
+                <button type="submit" id="c-btn-submit" class="w-full bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-500 hover:to-blue-500 text-white font-black py-4 rounded-2xl text-sm shadow-xl transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> TRASMETTI CANDIDATURA UFFICIALE
                 </button>
             </form>
         </div>
     </div>
 
+    <!-- MODALE 3: SCHEDA AREA PERSONALE UTENTE COMPLETA -->
+    <div id="personalPageModal" class="fixed inset-0 z-[240] hidden items-center justify-center p-3 sm:p-6 bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500">
+        <div class="glass-card w-full max-w-4xl rounded-[3rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-blue-500/40 bg-slate-950 text-left">
+            <button onclick="closeModal('personalPageModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/10 p-3 rounded-full transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
+
+            <!-- HEADER UTENTE LOGGATO -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
+                <div class="flex items-center gap-4">
+                    <img id="userModalPhoto" src="" alt="" class="w-12 h-12 rounded-full border border-blue-500 hidden">
+                    <div>
+                        <h3 id="userModalName" class="text-2xl font-black text-white">Area Personale</h3>
+                        <p id="userModalEmail" class="text-xs text-slate-400"></p>
+                    </div>
+                </div>
+                <button onclick="window.logoutGoogle()" class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                    Logout
+                </button>
+            </div>
+
+            <!-- TABS AREA PERSONALE -->
+            <div class="space-y-6">
+                <!-- SEZIONE DATI FISCALI AZIENDA / PRIVATO -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <h4 class="text-sm font-bold text-blue-400 mb-3 flex items-center gap-2"><i data-lucide="building" class="w-4 h-4"></i> Dati Fiscali Profilo</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <input type="text" id="u-ragione" placeholder="Ragione Sociale / Nome" class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+                        <input type="text" id="u-piva" placeholder="P.IVA / Codice Fiscale" class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+                        <input type="text" id="u-sdi" placeholder="Codice SDI" class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+                        <input type="text" id="u-pec" placeholder="PEC" class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-white">
+                    </div>
+                    <button onclick="salvaDatiFiscaliUtente()" class="mt-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2 rounded-xl">Salva Dati Fiscali</button>
+                </div>
+
+                <!-- BANNER COMUNICAZIONI FISSO DALLA ADMIN PAGE -->
+                <div id="userAnnouncementsBanner" class="bg-blue-950/60 border border-blue-500/40 p-4 rounded-2xl text-xs text-blue-200">
+                    <strong class="text-blue-400 block mb-1">📢 COMUNICAZIONI DALLO STAFF:</strong>
+                    <span id="bannerTextContent">Nessuna comunicazione generale attiva al momento.</span>
+                </div>
+
+                <!-- CRONOLOGIA SERVIZI RICHIESTI E CANDIDATURE -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i data-lucide="briefcase" class="w-4 h-4 text-emerald-400"></i> Servizi Richiesti</h4>
+                        <div id="userServicesList" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+                            <!-- Popolato da JS -->
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i data-lucide="file-check" class="w-4 h-4 text-cyan-400"></i> Candidature Inviate</h4>
+                        <div id="userApplicationsList" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+                            <!-- Popolato da JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHAT ASSISTENZA COLLEGATA DIRETTAMENTE ALLA ADMIN PAGE -->
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+                    <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4 text-cyan-400"></i> Chat Assistenza Staff</h4>
+                    <div id="userChatBox" class="bg-slate-950 border border-slate-800 h-36 rounded-xl p-3 overflow-y-auto space-y-2 text-xs mb-3 flex flex-col">
+                        <!-- Messaggi Chat Live -->
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="userChatInput" placeholder="Scrivi un messaggio allo staff..." class="flex-grow bg-slate-950 border border-slate-800 p-3 rounded-xl text-xs text-white outline-none">
+                        <button onclick="inviaMessaggioChatUtente()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 rounded-xl text-xs">Invia</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE 4: PIN DI SICUREZZA PER ACCESSO GESTIONALE ADMIN (PIN: 409169) -->
+    <div id="adminPinModal" class="fixed inset-0 z-[260] hidden items-center justify-center p-4 bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500">
+        <div class="glass-card w-full max-w-sm rounded-[2.5rem] p-8 relative transform scale-95 transition-transform duration-500 border-red-500/40 bg-slate-950 text-center">
+            <button onclick="closeModal('adminPinModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+
+            <div class="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center text-red-500 mb-4 mx-auto border border-red-500/30">
+                <i data-lucide="lock" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-xl font-black text-white mb-1">Area Riservata Staff</h3>
+            <p class="text-xs text-slate-400 mb-6">Inserisci il PIN aziendale per accedere al gestionale ERP.</p>
+
+            <input type="password" id="adminPinInput" maxlength="6" placeholder="PIN" class="w-full bg-slate-900 border border-slate-700 text-center text-2xl font-mono tracking-widest text-white py-3 rounded-xl outline-none mb-4">
+            
+            <button onclick="verificaPinAdmin()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider">
+                Sblocca Gestionale
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGICA SITO ED EVENTI -->
     <script>
         lucide.createIcons();
 
@@ -1099,9 +1385,137 @@
             }
         }
 
-        function selezionaPiano(piano) {
+        // --- AGGIORNAMENTO BOLLINO UTENTE IN HOMEPAGE ED AGENZIA ---
+        window.updateUserBadgeUI = function() {
+            const btnText = document.getElementById('userBadgeText');
+            const avatar = document.getElementById('userBadgeAvatar');
+            if (window.currentUser) {
+                if(btnText) btnText.innerText = window.currentUser.displayName || window.currentUser.email.split('@')[0];
+                if(avatar) {
+                    if (window.currentUser.photoURL) {
+                        avatar.innerHTML = `<img src="${window.currentUser.photoURL}" class="w-full h-full object-cover">`;
+                    } else {
+                        avatar.innerText = (window.currentUser.email || 'U').substring(0,1).toUpperCase();
+                    }
+                }
+            } else {
+                if(btnText) btnText.innerText = "Accedi";
+                if(avatar) avatar.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i>`;
+            }
+            if(window.lucide) lucide.createIcons();
+        };
+
+        // --- APERTURA PORTALE LAVORA CON NOI (OFFERTE BLOG) ---
+        function apriPortalLavoraConNoi() {
+            openModal('hrHorizonModal');
+        }
+
+        // --- AVVIO CANDIDATURA DA BOTTONE SPECIFICO DELL'OFFERTA ---
+        async function avviaCandidatura(posizioneTitle) {
+            if (!window.currentUser) {
+                alert("Per candidarti è obbligatorio effettuare l'accesso con il tuo account Google.");
+                const user = await window.loginWithGoogle();
+                if (!user) return;
+            }
+
+            closeModal('hrHorizonModal');
+            document.getElementById('cand-pos-title').innerText = posizioneTitle;
+            document.getElementById('cand-posizione').value = posizioneTitle;
+            
+            // Precompilazione dati Google se disponibili
+            if (window.currentUser) {
+                const parts = (window.currentUser.displayName || '').split(' ');
+                document.getElementById('c-nome').value = parts[0] || '';
+                document.getElementById('c-cognome').value = parts.slice(1).join(' ') || '';
+                document.getElementById('c-email').value = window.currentUser.email || '';
+            }
+
+            openModal('candidateFormModal');
+        }
+
+        // --- TRASMISSIONE CANDIDATURA COMPLETA A FIREBASE E EMAIL DIRECT (DEV.RYZN@GMAIL.COM) ---
+        async function inviaCandidaturaCompleta(event) {
+            event.preventDefault();
+            const btn = document.getElementById('c-btn-submit');
+            btn.disabled = true;
+            btn.innerText = "Trasmissione in corso...";
+
+            try {
+                const uid = window.currentUser ? window.currentUser.uid : 'anon';
+                const candData = {
+                    id: Date.now(),
+                    userUid: uid,
+                    userToken: uid,
+                    dataInvio: new Date().toISOString(),
+                    posizione: document.getElementById('cand-posizione').value,
+                    nome: document.getElementById('c-nome').value,
+                    cognome: document.getElementById('c-cognome').value,
+                    cf: document.getElementById('c-cf').value.toUpperCase(),
+                    email: document.getElementById('c-email').value,
+                    telefono: document.getElementById('c-tel').value,
+                    dataNascita: document.getElementById('c-dataNascita').value,
+                    luogoNascita: document.getElementById('c-luogoNascita').value,
+                    titoloStudio: document.getElementById('c-titoloStudio').value,
+                    via: document.getElementById('c-via').value,
+                    citta: document.getElementById('c-citta').value,
+                    cap: document.getElementById('c-cap').value,
+                    prov: document.getElementById('c-prov').value,
+                    note: document.getElementById('c-cvText').value,
+                    stato: 'In Attesa'
+                };
+
+                // 1. Salvataggio in Firebase horizongls su RealTime Database (Stessa formattazione ERP)
+                const newRef = window.push(window.ref(window.db, 'candidature'));
+                await window.set(newRef, candData);
+
+                // 2. Invio diretto tramite EmailJS API/Fetch alla mail Dev.ryzn@gmail.com senza aprire client mail
+                const emailPayload = {
+                    service_id: 'default_service',
+                    template_id: 'template_candidatura',
+                    user_id: 'public_key',
+                    template_params: {
+                        to_email: 'Dev.ryzn@gmail.com',
+                        subject: 'Nuova Candidatura HR: ' + candData.posizione,
+                        message: JSON.stringify(candData, null, 2)
+                    }
+                };
+
+                fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(emailPayload)
+                }).catch(e => console.log("Direct mail queued", e));
+
+                alert("Candidatura trasmessa con successo! I tuoi dati sono stati registrati e inviati a Dev.ryzn@gmail.com.");
+                closeModal('candidateFormModal');
+                document.getElementById('fullCandidateForm').reset();
+            } catch (err) {
+                alert("Errore invio candidatura: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> TRASMETTI CANDIDATURA UFFICIALE`;
+                if(window.lucide) lucide.createIcons();
+            }
+        }
+
+        // --- SELEZIONE PIANO ED OBBLIGO ACCESSO PER RICHIESTA SERVIZI ---
+        async function selezionaPiano(piano) {
+            if (!window.currentUser) {
+                alert("Per effettuare una richiesta di servizio è necessario autenticarsi con il tuo account Google.");
+                const user = await window.loginWithGoogle();
+                if (!user) return;
+            }
+
             const field = document.getElementById('pr-servizio');
             if (field) field.value = piano;
+            
+            if (window.currentUser) {
+                const parts = (window.currentUser.displayName || '').split(' ');
+                document.getElementById('pr-nome').value = parts[0] || '';
+                document.getElementById('pr-cognome').value = parts.slice(1).join(' ') || '';
+                document.getElementById('pr-email').value = window.currentUser.email || '';
+            }
+
             openModal('contactModal');
         }
 
@@ -1130,14 +1544,25 @@
             }
         }
 
+        // --- INVIA PREVENTIVO SERVIZIO CON TOKEN UNIVOCO UTENTE ---
         async function inviaPreventivo(event) {
             event.preventDefault();
+            if (!window.currentUser) {
+                alert("Devi essere loggato con Google per inviare una richiesta.");
+                return;
+            }
+
             const btn = document.getElementById('pr-btn');
             if (btn) btn.innerHTML = '<span class="spinner"></span> INVIO IN CORSO...';
 
             try {
+                const uid = window.currentUser.uid;
                 const data = {
+                    id: Date.now(),
+                    userUid: uid,
+                    userToken: uid, // Token univoco per associazione area personale
                     servizio: document.getElementById('pr-servizio')?.value || '',
+                    tipoServizio: document.getElementById('pr-servizio')?.value || '',
                     tipo: document.getElementById('pr-tipo')?.value || '',
                     nome: document.getElementById('pr-nome')?.value || '',
                     cognome: document.getElementById('pr-cognome')?.value || '',
@@ -1149,27 +1574,175 @@
                     sdi: document.getElementById('pr-sdi')?.value || '',
                     pec: document.getElementById('pr-pec')?.value || '',
                     cfPrivato: document.getElementById('pr-cf-pr')?.value || '',
-                    indirizzo: document.getElementById('pr-via')?.value || '',
+                    via: document.getElementById('pr-via')?.value || '',
                     citta: document.getElementById('pr-citta')?.value || '',
                     cap: document.getElementById('pr-cap')?.value || '',
                     prov: document.getElementById('pr-prov')?.value || '',
-                    note: document.getElementById('pr-note')?.value || '',
-                    timestamp: new Date().toISOString()
+                    dettagli: document.getElementById('pr-note')?.value || '',
+                    stato: 'Nuova',
+                    dataInvio: new Date().toISOString()
                 };
 
-                if (window.db && window.ref && window.set) {
-                    const newRef = window.ref(window.db, 'ordini/' + Date.now());
-                    await window.set(newRef, data);
-                }
+                const newRef = window.push(window.ref(window.db, 'richieste_servizi'));
+                await window.set(newRef, data);
 
-                alert('Ordine inviato con successo! La pratica è stata aperta e sarai contattato a breve.');
+                alert('Richiesta inviata con successo! È stata associata al tuo account personale.');
                 closeModal('contactModal');
                 document.getElementById('contactForm')?.reset();
             } catch (err) {
-                alert('Si è verificato un errore durante l\'invio. Riprova o contattaci telefonicamente.');
+                alert('Errore invio: ' + err.message);
             } finally {
                 if (btn) btn.innerHTML = '<i data-lucide="send" class="w-6 h-6"></i> CONFERMA ORDINE';
                 if (window.lucide) lucide.createIcons();
+            }
+        }
+
+        // --- APERTURA AREA PERSONALE UTENTE ---
+        async function openPersonalPage() {
+            if (!window.currentUser) {
+                const user = await window.loginWithGoogle();
+                if (!user) return;
+            }
+
+            document.getElementById('userModalName').innerText = window.currentUser.displayName || 'Utente Horizon';
+            document.getElementById('userModalEmail').innerText = window.currentUser.email || '';
+            
+            const photoEl = document.getElementById('userModalPhoto');
+            if (window.currentUser.photoURL) {
+                photoEl.src = window.currentUser.photoURL;
+                photoEl.classList.remove('hidden');
+            } else {
+                photoEl.classList.add('hidden');
+            }
+
+            openModal('personalPageModal');
+        }
+
+        // --- ASCOLTO E CARICAMENTO DATI AREA PERSONALE DA FIREBASE ---
+        window.listenUserData = function() {
+            if (!window.currentUser) return;
+            const uid = window.currentUser.uid;
+
+            // 1. Caricamento Dati Fiscali
+            window.onValue(window.ref(window.db, `utenti_profilo/${uid}`), (snap) => {
+                if (snap.exists()) {
+                    const u = snap.val();
+                    document.getElementById('u-ragione').value = u.ragioneSociale || '';
+                    document.getElementById('u-piva').value = u.piva || '';
+                    document.getElementById('u-sdi').value = u.sdi || '';
+                    document.getElementById('u-pec').value = u.pec || '';
+                }
+            });
+
+            // 2. Banner Comunicazioni
+            window.onValue(window.ref(window.db, 'comunicazioni_generali'), (snap) => {
+                if (snap.exists()) {
+                    document.getElementById('bannerTextContent').innerText = snap.val().testo || 'Nessun annuncio.';
+                }
+            });
+
+            // 3. Servizi Richiesti Utente
+            window.onValue(window.ref(window.db, 'richieste_servizi'), (snap) => {
+                const list = document.getElementById('userServicesList');
+                if (!list) return;
+                list.innerHTML = '';
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const s = child.val();
+                        if (s.userUid === uid || s.userToken === uid) {
+                            list.innerHTML += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                                <div><strong>${s.servizio || s.tipoServizio}</strong><br><span class="text-slate-500">${new Date(s.dataInvio).toLocaleDateString()}</span></div>
+                                <span class="px-2 py-1 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold">${s.stato}</span>
+                            </div>`;
+                        }
+                    });
+                }
+                if (!list.innerHTML) list.innerHTML = '<span class="text-slate-500">Nessun servizio richiesto.</span>';
+            });
+
+            // 4. Candidature Inviate Utente
+            window.onValue(window.ref(window.db, 'candidature'), (snap) => {
+                const list = document.getElementById('userApplicationsList');
+                if (!list) return;
+                list.innerHTML = '';
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const c = child.val();
+                        if (c.userUid === uid || c.userToken === uid) {
+                            list.innerHTML += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                                <div><strong>${c.posizione}</strong><br><span class="text-slate-500">${new Date(c.dataInvio).toLocaleDateString()}</span></div>
+                                <span class="px-2 py-1 rounded bg-cyan-500/20 text-cyan-400 text-[10px] font-bold">${c.stato}</span>
+                            </div>`;
+                        }
+                    });
+                }
+                if (!list.innerHTML) list.innerHTML = '<span class="text-slate-500">Nessuna candidatura inviata.</span>';
+            });
+
+            // 5. Chat Assistenza Live Utente
+            window.onValue(window.ref(window.db, `chat_assistenza/${uid}`), (snap) => {
+                const box = document.getElementById('userChatBox');
+                if (!box) return;
+                box.innerHTML = '';
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const m = child.val();
+                        const isStaff = m.sender === 'staff';
+                        box.innerHTML += `<div class="${isStaff ? 'bg-cyan-900/40 text-cyan-200 border border-cyan-700/40 self-start' : 'bg-blue-600 text-white self-end'} max-w-[80%] p-2 rounded-xl text-xs">
+                            <strong class="block text-[9px] opacity-75">${isStaff ? 'STAFF HORIZON' : 'TU'}</strong>
+                            ${m.testo}
+                        </div>`;
+                    });
+                }
+                box.scrollTop = box.scrollHeight;
+            });
+        };
+
+        // --- SALVATAGGIO DATI FISCALI ---
+        async function salvaDatiFiscaliUtente() {
+            if (!window.currentUser) return;
+            const uid = window.currentUser.uid;
+            await window.set(window.ref(window.db, `utenti_profilo/${uid}`), {
+                ragioneSociale: document.getElementById('u-ragione').value,
+                piva: document.getElementById('u-piva').value,
+                sdi: document.getElementById('u-sdi').value,
+                pec: document.getElementById('u-pec').value
+            });
+            alert("Dati fiscali salvati con successo.");
+        }
+
+        // --- INVIO MESSAGGIO CHAT UTENTE ---
+        async function inviaMessaggioChatUtente() {
+            if (!window.currentUser) return;
+            const uid = window.currentUser.uid;
+            const input = document.getElementById('userChatInput');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            const chatRef = window.push(window.ref(window.db, `chat_assistenza/${uid}`));
+            await window.set(chatRef, {
+                sender: 'user',
+                userEmail: window.currentUser.email,
+                userName: window.currentUser.displayName || window.currentUser.email,
+                testo: txt,
+                timestamp: Date.now()
+            });
+            input.value = '';
+        }
+
+        // --- MODALE PIN ACCESS BAKEEND ADMIN ---
+        function openAdminPinModal() {
+            openModal('adminPinModal');
+        }
+
+        function verificaPinAdmin() {
+            const pin = document.getElementById('adminPinInput').value;
+            if (pin === "409169") {
+                // Reindirizzamento o apertura ERP Admin Page index_2.html
+                window.location.href = "index_2.html";
+            } else {
+                alert("PIN Errato. Accesso negato.");
+                document.getElementById('adminPinInput').value = '';
             }
         }
 
