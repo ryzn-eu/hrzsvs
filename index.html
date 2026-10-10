@@ -11,7 +11,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
         import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 
         // Configurazione Firebase Centrale (horizongls)
@@ -35,6 +35,17 @@
         window.onValue = onValue;
         window.update = update;
 
+        // Gestione risultato redirect se il popup browser è bloccato
+        getRedirectResult(window.auth).then((result) => {
+            if (result && result.user) {
+                window.currentUser = result.user;
+                window.updateUserBadgeUI();
+                window.listenUserData();
+            }
+        }).catch((error) => {
+            console.error("Errore redirect auth:", error);
+        });
+
         // Gestore Stato Login Utente Google
         window.currentUser = null;
         onAuthStateChanged(window.auth, (user) => {
@@ -45,14 +56,20 @@
             }
         });
 
-        window.loginWithGoogle = async function() {
+        window.loginWithGoogle = async function(event) {
+            if (event) event.preventDefault();
             try {
                 const result = await signInWithPopup(window.auth, window.provider);
                 window.currentUser = result.user;
                 window.updateUserBadgeUI();
                 return result.user;
             } catch (error) {
-                alert("Errore durante l'accesso Google: " + error.message);
+                console.warn("Popup bloccato o non disponibile, passaggio a signInWithRedirect...", error);
+                try {
+                    await signInWithRedirect(window.auth, window.provider);
+                } catch (err2) {
+                    alert("Errore durante l'accesso Google: " + err2.message);
+                }
                 return null;
             }
         };
@@ -255,7 +272,7 @@
                 </a>
 
                 <!-- BOLLINO UTENTE ACCOUNT IN ALTO IN HOME -->
-                <button id="userBadgeBtn" onclick="openPersonalPage()" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 p-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-bold text-slate-200 transition-all backdrop-blur-md">
+                <button id="userBadgeBtn" onclick="openPersonalPage(event)" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 p-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-bold text-slate-200 transition-all backdrop-blur-md">
                     <div id="userBadgeAvatar" class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white font-black overflow-hidden">
                         <i data-lucide="user" class="w-4 h-4"></i>
                     </div>
@@ -304,7 +321,6 @@
                 </a>
             </div>
             
-            <!-- MODIFICA FONDAMENTALE: IL PULSANTE LAVORA CON NOI ORA APRE LA SCHEDA HR HORIZON -->
             <button onclick="apriPortalLavoraConNoi()" class="w-full sm:w-max bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-500 hover:to-blue-500 border border-cyan-500/40 px-8 py-4 rounded-[2rem] text-center font-bold text-white transition-all flex items-center justify-center gap-3 backdrop-blur-md shadow-2xl">
                 <i data-lucide="briefcase" class="w-5 h-5 text-cyan-400"></i> Lavora nel Gruppo (HR Horizon)
             </button>
@@ -621,7 +637,7 @@
     <section class="py-16 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-slate-900 border-t-4 border-blue-600 flex flex-col items-center">
         <!-- BOLLINO ACCOUNT ANCHE NELLA SEZIONE AGENZIA B2B -->
         <div class="w-full max-w-5xl flex justify-end mb-4">
-            <button onclick="openPersonalPage()" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 px-4 py-2 rounded-full text-xs font-bold text-blue-400 transition-all backdrop-blur-md">
+            <button onclick="openPersonalPage(event)" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 px-4 py-2 rounded-full text-xs font-bold text-blue-400 transition-all backdrop-blur-md">
                 <i data-lucide="user-check" class="w-4 h-4"></i>
                 <span>Area Personale Utente</span>
             </button>
@@ -1083,7 +1099,7 @@
         </div>
     </div>
 
-    <!-- MODALE 2: SCHEDA PORTALE DEL LAVORO (HR HORIZON - OFF ERTE BLOG) -->
+    <!-- MODALE 2: SCHEDA PORTALE DEL LAVORO (HR HORIZON - OFFERTE BLOG) -->
     <div id="hrHorizonModal" class="fixed inset-0 z-[220] hidden items-center justify-center p-2 sm:p-6 bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500">
         <div class="glass-card w-full max-w-6xl rounded-[3rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-cyan-500/40 bg-slate-950 text-left">
             <button onclick="closeModal('hrHorizonModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/10 p-3 rounded-full transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -1105,7 +1121,7 @@
                 </div>
             </div>
 
-            <!-- ANUNCIO CONDIZIONI CONTRATTUALI E TRASFERTE DALL'IMMAGINE -->
+            <!-- ANUNCIO CONDIZIONI CONTRATTUALI E TRASFERTE -->
             <div class="grid md:grid-cols-2 gap-4 mb-8">
                 <div class="bg-blue-950/30 border border-blue-500/30 p-5 rounded-3xl flex items-start gap-3">
                     <i data-lucide="file-text" class="w-6 h-6 text-blue-400 shrink-0 mt-1"></i>
@@ -1125,7 +1141,7 @@
 
             <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-cyan-400"></i> Posizioni Aperte nel Team (Inserimento Immediato)</h3>
 
-            <!-- BLOG DELLE OFFERTE DI LAVORO (MANSIONI DALL'IMMAGINE) -->
+            <!-- BLOG DELLE OFFERTE DI LAVORO -->
             <div class="space-y-6">
                 <!-- MANSIONE 1 -->
                 <div class="bg-slate-900/80 border border-slate-800 hover:border-blue-500/50 p-6 rounded-3xl transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -1220,7 +1236,7 @@
         </div>
     </div>
 
-    <!-- MODALE FORM CANDIDATURA COMPLETA (SALVATAGGIO ESATTO FIREBASE + INVIO MAIL DEV.RYZN@GMAIL.COM) -->
+    <!-- MODALE FORM CANDIDATURA COMPLETA -->
     <div id="candidateFormModal" class="fixed inset-0 z-[230] hidden items-center justify-center p-3 sm:p-6 bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500">
         <div class="glass-card w-full max-w-3xl rounded-[3rem] p-6 sm:p-10 relative transform scale-95 transition-transform duration-500 max-h-[95vh] overflow-y-auto border-blue-500/40 bg-slate-950 text-left">
             <button onclick="closeModal('candidateFormModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/10 p-3 rounded-full transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -1405,7 +1421,7 @@
             if(window.lucide) lucide.createIcons();
         };
 
-        // --- APERTURA PORTALE LAVORA CON NOI (OFFERTE BLOG) ---
+        // --- APERTURA PORTALE LAVORA CON NOI ---
         function apriPortalLavoraConNoi() {
             openModal('hrHorizonModal');
         }
@@ -1422,7 +1438,6 @@
             document.getElementById('cand-pos-title').innerText = posizioneTitle;
             document.getElementById('cand-posizione').value = posizioneTitle;
             
-            // Precompilazione dati Google se disponibili
             if (window.currentUser) {
                 const parts = (window.currentUser.displayName || '').split(' ');
                 document.getElementById('c-nome').value = parts[0] || '';
@@ -1433,7 +1448,7 @@
             openModal('candidateFormModal');
         }
 
-        // --- TRASMISSIONE CANDIDATURA COMPLETA A FIREBASE E EMAIL DIRECT (DEV.RYZN@GMAIL.COM) ---
+        // --- TRASMISSIONE CANDIDATURA COMPLETA ---
         async function inviaCandidaturaCompleta(event) {
             event.preventDefault();
             const btn = document.getElementById('c-btn-submit');
@@ -1464,11 +1479,9 @@
                     stato: 'In Attesa'
                 };
 
-                // 1. Salvataggio in Firebase horizongls su RealTime Database (Stessa formattazione ERP)
                 const newRef = window.push(window.ref(window.db, 'candidature'));
                 await window.set(newRef, candData);
 
-                // 2. Invio diretto tramite EmailJS API/Fetch alla mail Dev.ryzn@gmail.com senza aprire client mail
                 const emailPayload = {
                     service_id: 'default_service',
                     template_id: 'template_candidatura',
@@ -1498,7 +1511,7 @@
             }
         }
 
-        // --- SELEZIONE PIANO ED OBBLIGO ACCESSO PER RICHIESTA SERVIZI ---
+        // --- SELEZIONE PIANO ED OBBLIGO ACCESSO ---
         async function selezionaPiano(piano) {
             if (!window.currentUser) {
                 alert("Per effettuare una richiesta di servizio è necessario autenticarsi con il tuo account Google.");
@@ -1544,7 +1557,7 @@
             }
         }
 
-        // --- INVIA PREVENTIVO SERVIZIO CON TOKEN UNIVOCO UTENTE ---
+        // --- INVIA PREVENTIVO SERVIZIO ---
         async function inviaPreventivo(event) {
             event.preventDefault();
             if (!window.currentUser) {
@@ -1560,7 +1573,7 @@
                 const data = {
                     id: Date.now(),
                     userUid: uid,
-                    userToken: uid, // Token univoco per associazione area personale
+                    userToken: uid,
                     servizio: document.getElementById('pr-servizio')?.value || '',
                     tipoServizio: document.getElementById('pr-servizio')?.value || '',
                     tipo: document.getElementById('pr-tipo')?.value || '',
@@ -1598,7 +1611,8 @@
         }
 
         // --- APERTURA AREA PERSONALE UTENTE ---
-        async function openPersonalPage() {
+        async function openPersonalPage(event) {
+            if (event) event.preventDefault();
             if (!window.currentUser) {
                 const user = await window.loginWithGoogle();
                 if (!user) return;
@@ -1623,7 +1637,6 @@
             if (!window.currentUser) return;
             const uid = window.currentUser.uid;
 
-            // 1. Caricamento Dati Fiscali
             window.onValue(window.ref(window.db, `utenti_profilo/${uid}`), (snap) => {
                 if (snap.exists()) {
                     const u = snap.val();
@@ -1634,14 +1647,12 @@
                 }
             });
 
-            // 2. Banner Comunicazioni
             window.onValue(window.ref(window.db, 'comunicazioni_generali'), (snap) => {
                 if (snap.exists()) {
                     document.getElementById('bannerTextContent').innerText = snap.val().testo || 'Nessun annuncio.';
                 }
             });
 
-            // 3. Servizi Richiesti Utente
             window.onValue(window.ref(window.db, 'richieste_servizi'), (snap) => {
                 const list = document.getElementById('userServicesList');
                 if (!list) return;
@@ -1660,7 +1671,6 @@
                 if (!list.innerHTML) list.innerHTML = '<span class="text-slate-500">Nessun servizio richiesto.</span>';
             });
 
-            // 4. Candidature Inviate Utente
             window.onValue(window.ref(window.db, 'candidature'), (snap) => {
                 const list = document.getElementById('userApplicationsList');
                 if (!list) return;
@@ -1679,7 +1689,6 @@
                 if (!list.innerHTML) list.innerHTML = '<span class="text-slate-500">Nessuna candidatura inviata.</span>';
             });
 
-            // 5. Chat Assistenza Live Utente
             window.onValue(window.ref(window.db, `chat_assistenza/${uid}`), (snap) => {
                 const box = document.getElementById('userChatBox');
                 if (!box) return;
@@ -1730,7 +1739,7 @@
             input.value = '';
         }
 
-        // --- MODALE PIN ACCESS BAKEEND ADMIN ---
+        // --- MODALE PIN ACCESS BACKEND ADMIN ---
         function openAdminPinModal() {
             openModal('adminPinModal');
         }
@@ -1738,7 +1747,6 @@
         function verificaPinAdmin() {
             const pin = document.getElementById('adminPinInput').value;
             if (pin === "409169") {
-                // Reindirizzamento o apertura ERP Admin Page index_2.html
                 window.location.href = "index_2.html";
             } else {
                 alert("PIN Errato. Accesso negato.");
