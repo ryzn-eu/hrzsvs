@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Horizon Global Italia</title>
-    <meta name="description" content="Il conglomerato tecnologico Horizon Global: infrastrutture B2B, streaming, telecomunicazioni, intelligenza artificiale e utilities.">
+    <title>Horizon™ Italy — Gruppo Horizon</title>
+    <meta name="description" content="Horizon™ Italy: la sede italiana del Gruppo Horizon. Energia, telecomunicazioni, media, software e difesa digitale. Servizi e hosting nello Shop.">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://cdn.tailwindcss.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -246,36 +247,137 @@
             letter-spacing: 0.2em;
             font-size: 0.75rem;
         }
+    
+        /* ===== HORIZON ITALY — NEW INTERFACE LAYER (additive) ===== */
+        :root { --hz1:#8ab4ff; --hz2:#5eead4; --hz3:#c4b5fd; --ink:#05070d; }
+        body { font-family:'Inter',system-ui,sans-serif; }
+        .hz-h { font-family:'Sora','Product Sans',sans-serif; letter-spacing:-.03em; }
+        .hz-mono { font-family:'JetBrains Mono',ui-monospace,monospace; }
+        .hz-grad { background:linear-gradient(120deg,var(--hz1),var(--hz2) 55%,var(--hz3)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; background-size:200% auto; animation:hzshift 8s linear infinite; }
+        @keyframes hzshift { to { background-position:200% center; } }
+        .hz-page { display:none; }
+        .hz-page.on { display:block; animation:pgin .9s cubic-bezier(.2,.8,.2,1); }
+        @keyframes pgin { from { opacity:0; transform:translateY(24px); filter:blur(8px);} to { opacity:1; transform:none; filter:none;} }
+
+        /* loader + matrix pulse (solo caricamento, il sito NON è in stile matrix) */
+        #hz-loader { position:fixed; inset:0; z-index:500; background:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; transition:opacity .7s ease, visibility .7s; }
+        #hz-loader.off { opacity:0; visibility:hidden; pointer-events:none; }
+        #hz-rain { position:fixed; inset:0; z-index:480; width:100%; height:100%; background:rgba(5,7,13,.94); opacity:0; visibility:hidden; transition:opacity .25s; pointer-events:none; }
+        #hz-rain.on { opacity:1; visibility:visible; pointer-events:all; }
+        .hz-bar { width:min(260px,60vw); height:2px; background:rgba(255,255,255,.08); overflow:hidden; border-radius:2px; }
+        .hz-bar i { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--hz1),var(--hz2)); transition:width .3s; }
+
+        /* nav */
+        #hzNav { background:rgba(5,7,13,.55); backdrop-filter:blur(24px); border-bottom:1px solid rgba(255,255,255,.06); }
+        .hz-link { position:relative; font-size:.82rem; font-weight:600; color:#cbd5e1; padding:.4rem 0; transition:color .3s; }
+        .hz-link::after { content:""; position:absolute; left:0; bottom:-2px; height:1px; width:100%; background:linear-gradient(90deg,var(--hz1),var(--hz2)); transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.2,.8,.2,1); }
+        .hz-link:hover { color:#fff; } .hz-link:hover::after { transform:scaleX(1); }
+
+        /* hero */
+        .hz-aurora { position:absolute; inset:-20%; filter:blur(90px); opacity:.55; pointer-events:none;
+            background:radial-gradient(40% 40% at 25% 30%,rgba(138,180,255,.35),transparent 70%),radial-gradient(35% 35% at 75% 25%,rgba(94,234,212,.25),transparent 70%),radial-gradient(40% 40% at 60% 80%,rgba(196,181,253,.25),transparent 70%);
+            animation:aur 18s ease-in-out infinite alternate; }
+        @keyframes aur { to { transform:translate3d(4%,3%,0) rotate(8deg) scale(1.1);} }
+        #hzGlow { position:absolute; inset:0; pointer-events:none; background:radial-gradient(500px circle at var(--gx,50%) var(--gy,40%),rgba(138,180,255,.10),transparent 60%); }
+        .hz-orbit { position:relative; width:min(440px,82vw); aspect-ratio:1; margin:auto; }
+        .hz-ring { position:absolute; inset:0; border-radius:50%; border:1px dashed rgba(255,255,255,.14); animation:spin 40s linear infinite; }
+        .hz-ring:nth-child(2) { inset:14%; animation-duration:28s; animation-direction:reverse; border-color:rgba(138,180,255,.3); }
+        .hz-ring:nth-child(3) { inset:28%; animation-duration:18s; border-color:rgba(94,234,212,.3); }
+        .hz-ring b { position:absolute; top:-5px; left:50%; width:10px; height:10px; border-radius:50%; background:var(--hz2); box-shadow:0 0 18px var(--hz2); }
+        .hz-core { position:absolute; inset:38%; border-radius:50%; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle,rgba(138,180,255,.25),rgba(5,7,13,.9)); border:1px solid rgba(255,255,255,.14); box-shadow:0 0 80px rgba(138,180,255,.3); }
+        .hz-chip { position:absolute; padding:.45rem .8rem; border-radius:999px; font-size:.68rem; font-weight:700; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); backdrop-filter:blur(12px); animation:flt 6s ease-in-out infinite; white-space:nowrap; }
+        @keyframes flt { 50% { transform:translateY(-12px);} }
+        .hz-tick { display:flex; width:max-content; animation:marquee 40s linear infinite; }
+
+        /* bento cards with spotlight */
+        .hz-card { position:relative; text-align:left; padding:1.6rem; border-radius:1.6rem; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); overflow:hidden; transition:transform .5s cubic-bezier(.2,.8,.2,1), border-color .4s, opacity .4s; }
+        .hz-card::before { content:""; position:absolute; inset:0; background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),rgba(138,180,255,.16),transparent 60%); opacity:0; transition:opacity .4s; pointer-events:none; }
+        .hz-card:hover { transform:translateY(-6px); border-color:rgba(138,180,255,.4); } .hz-card:hover::before { opacity:1; }
+        .hz-card.dim { opacity:.15; transform:scale(.96); pointer-events:none; }
+        .hz-filter { padding:.5rem 1.1rem; border-radius:999px; font-size:.75rem; font-weight:700; border:1px solid rgba(255,255,255,.12); color:#94a3b8; transition:all .3s; }
+        .hz-filter.on, .hz-filter:hover { color:#05070d; background:linear-gradient(120deg,var(--hz1),var(--hz2)); border-color:transparent; }
+        .hz-sec { padding:6rem 1.25rem; position:relative; } .hz-wrap { max-width:80rem; margin:auto; }
+        .hz-eyebrow { display:inline-block; font-size:.68rem; font-weight:800; letter-spacing:.25em; text-transform:uppercase; color:var(--hz2); margin-bottom:1rem; }
+        .hz-line { height:1px; background:linear-gradient(90deg,transparent,rgba(138,180,255,.5),transparent); }
+
+        /* defense */
+        .hz-def { border:1px solid rgba(255,255,255,.09); border-radius:2rem; background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.01)); position:relative; overflow:hidden; }
+        .hz-def::before { content:""; position:absolute; left:0; top:0; height:3px; width:100%; background:linear-gradient(90deg,#16a34a 33%,#f8fafc 33% 66%,#dc2626 66%); opacity:.9; }
+        .hz-scan { position:absolute; left:0; width:100%; height:80px; background:linear-gradient(transparent,rgba(94,234,212,.08),transparent); animation:scan 6s linear infinite; pointer-events:none; }
+        @keyframes scan { from { top:-80px;} to { top:100%;} }
+        /* presence */
+        .hz-node { position:relative; text-align:center; flex:1; min-width:110px; }
+        .hz-dot { width:14px; height:14px; border-radius:50%; margin:0 auto 12px; background:var(--hz1); box-shadow:0 0 0 0 rgba(138,180,255,.6); animation:pls 2.4s infinite; }
+        .hz-dot.it { background:var(--hz2); } .hz-dot.soon { background:transparent; border:2px solid var(--hz3); }
+        @keyframes pls { 70% { box-shadow:0 0 0 14px rgba(138,180,255,0);} 100% { box-shadow:0 0 0 0 rgba(138,180,255,0);} }
+        .hz-sub a { font-size:.72rem; font-weight:700; padding:.45rem .9rem; border-radius:999px; border:1px solid rgba(255,255,255,.1); color:#cbd5e1; transition:all .3s; }
+        .hz-sub a:hover { background:rgba(138,180,255,.15); color:#fff; }
+        details.hz-faq { border-bottom:1px solid rgba(255,255,255,.08); padding:1.2rem 0; text-align:left; } details.hz-faq summary { cursor:pointer; font-weight:700; list-style:none; display:flex; justify-content:space-between; } details.hz-faq[open] summary { color:var(--hz2); }
+        @media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms!important;} }
+
+        /* ===== PERFORMANCE & MOTION (animazioni semplici e veloci) ===== */
+        .reveal{transform:translateY(14px);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.7,.2,1)}
+        .reveal.active{transform:none}
+        @keyframes pgin{from{opacity:0}to{opacity:1}}
+        .hz-page.on{animation:pgin .3s ease}
+        #hz-loader{transition:opacity .35s ease,visibility .35s}
+        .glass-card{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+        .glass-card:hover{transform:translateY(-4px)}
+        #hzNav{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+        .hz-aurora{filter:none;animation:none;opacity:.5}
+        .hz-grad{animation:none;background-size:100% auto}
+        .hz-scan{display:none}
+        .hz-dot{animation:none}
+        /* ===== LOOK PORTALE INTEGRATO ===== */
+        .hz-util{display:none;height:32px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(2,4,10,.65)}
+        @media(min-width:640px){.hz-util{display:block}}
+        .hz-util-in{max-width:80rem;margin:auto;padding:0 1.5rem;height:100%;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#94a3b8}
+        .hz-util a,.hz-util button{color:#94a3b8;transition:color .2s}.hz-util a:hover,.hz-util button:hover{color:#fff}
+        .hz-tile{display:flex;align-items:center;gap:.9rem;text-align:left;padding:1rem 1.1rem;border-radius:1.1rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);transition:transform .25s,border-color .25s,background .25s;cursor:pointer;width:100%}
+        .hz-tile:hover{transform:translateY(-3px);border-color:rgba(138,180,255,.45);background:rgba(138,180,255,.06)}
+        .hz-tile>i,.hz-tile>svg{flex:none;width:2.4rem;height:2.4rem;padding:.6rem;border-radius:.8rem;background:rgba(255,255,255,.06)}
+
+        section[id],div[id]{scroll-margin-top:7.5rem}
+        /* Ryzn Engine demo */
+        .hz-eng{position:relative;border:1px solid rgba(255,255,255,.1);border-radius:1.4rem;overflow:hidden;background:#05070d}
+        .hz-eng canvas{display:block;width:100%;height:auto;aspect-ratio:16/9}
+        .hz-btn{padding:.55rem 1rem;border-radius:999px;font-size:.72rem;font-weight:800;border:1px solid rgba(255,255,255,.15);color:#cbd5e1;transition:all .25s}
+        .hz-btn.on,.hz-btn:hover{background:linear-gradient(120deg,var(--hz1),var(--hz2));color:#05070d;border-color:transparent}
+        .hz-promo-price::after{content:attr(data-promo);display:block;font-size:11px;font-weight:800;letter-spacing:.08em;color:#fbbf24;text-transform:uppercase;line-height:1.5}
+        /* Natale */
+        .hz-snow{position:fixed;top:-10px;z-index:60;pointer-events:none;border-radius:50%;background:#fff;opacity:.8;animation:hzfall linear infinite;will-change:transform}
+        @keyframes hzfall{to{transform:translate3d(30px,105vh,0)}}
+        body.xmas #hzNav::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;z-index:2;background:repeating-linear-gradient(90deg,#ef4444 0 14px,#fbbf24 14px 28px,#22c55e 28px 42px,#60a5fa 42px 56px);animation:hztw 1.6s ease-in-out infinite alternate}
+        @keyframes hztw{from{opacity:1}to{opacity:.45}}
+        #auraModal{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,.85)}
+        #auraModal.on{display:flex}
     </style>
 </head>
 <body class="antialiased text-center">
 
     <!-- WRAPPER SITO PUBBLICO -->
     <div id="publicWebsiteContent">
-        <!-- BARRA DI NAVIGAZIONE CON BOLLINO UTENTE IN ALTO -->
-        <nav class="fixed w-full z-[100] bg-[#020617]/70 backdrop-blur-3xl border-b border-white/5 transition-all">
+        <div id="hz-loader"><img id="ldTitle" src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" alt="Horizon" class="h-16 sm:h-20 w-auto object-contain"><div class="hz-mono text-[11px] text-slate-500 tracking-widest h-4" id="ldLine"></div><div class="hz-bar"><i id="ldBar"></i></div></div>
+        <canvas id="hz-rain"></canvas>
+
+        <nav id="hzNav" class="fixed w-full z-[100]">
+            <div class="hz-util"><div class="hz-util-in"><span class="hz-mono flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#5eead4]"></span>PORTALE INTEGRATO · GRUPPO HORIZON</span><div class="flex items-center gap-5"><a href="#presenza" data-go="home" data-to="presenza">Sedi</a><a href="#net-orion" data-go="shop" data-to="net-orion">NET ORION™</a><button onclick="apriPortalLavoraConNoi()">Lavora con noi</button><a href="tel:+390305409202" class="hz-mono">030 540 9202</a></div></div></div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-                
-                <button onclick="toggleMobileMenu()" class="lg:hidden text-white p-2 focus:outline-none">
-                    <i data-lucide="menu" class="w-7 h-7"></i>
-                </button>
-
-                <div class="flex items-center justify-center cursor-pointer group flex-grow lg:flex-grow-0" onclick="window.scrollTo(0,0)">
-                    <img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" alt="Horizon Global Logo" class="h-10 sm:h-12 w-auto object-contain hover:scale-105 transition-transform">
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-white p-2"><i data-lucide="menu" class="w-7 h-7"></i></button>
+                <a href="#home" data-go="home" class="flex items-center gap-3 flex-grow lg:flex-grow-0 justify-center">
+                    <img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" alt="Horizon Logo" class="h-10 w-auto object-contain">
+                    
+                </a>
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#gruppo" data-go="home" data-to="gruppo" class="hz-link">Il Gruppo</a>
+                    <a href="#divisioni" data-go="home" data-to="divisioni" class="hz-link">Divisioni</a>
+                    <a href="#difesa" data-go="home" data-to="difesa" class="hz-link">Difesa</a>
+                    <a href="#struttura" data-go="home" data-to="struttura" class="hz-link">Struttura</a>
+                    <a href="#presenza" data-go="home" data-to="presenza" class="hz-link">Presenza</a>
+                    <a href="#tech" data-go="tech" class="hz-link">Tecnologia</a>
                 </div>
-
-                <div class="hidden lg:flex items-center justify-center gap-8 text-sm font-semibold text-slate-300 flex-grow">
-                    <a href="#orion-ai" class="hover:text-blue-400 transition">Orion AI</a>
-                    <a href="#servizi-rapidi" class="hover:text-blue-400 transition text-white font-bold">Servizi & Hosting</a>
-                    <a href="#divisioni" class="hover:text-blue-400 transition">Le Divisioni</a>
-                    <a href="#hub-corporate" class="hover:text-emerald-400 transition text-emerald-400 font-bold">HUB Corporate</a>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <a href="#servizi-rapidi" class="hidden md:flex bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600 text-blue-400 hover:text-white px-6 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all shadow-lg backdrop-blur-xl">
-                        SCOPRI I SERVIZI
-                    </a>
-
+                <div class="flex items-center gap-3">
+                    <a href="#shop" data-go="shop" class="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-[#05070d] bg-gradient-to-r from-[#8ab4ff] to-[#5eead4] hover:shadow-[0_0_30px_rgba(94,234,212,.4)] transition-all"><i data-lucide="shopping-bag" class="w-4 h-4"></i> SHOP</a>
                     <!-- BOLLINO UTENTE ACCOUNT IN ALTO IN HOME -->
                     <button id="userBadgeBtn" onclick="handleUserBadgeClick(event)" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 p-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-bold text-slate-200 transition-all backdrop-blur-md">
                         <div id="userBadgeAvatar" class="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white font-black overflow-hidden">
@@ -287,146 +389,201 @@
             </div>
         </nav>
 
-        <div id="mobile-menu" class="fixed inset-0 z-[110] bg-[#020617]/95 backdrop-blur-3xl flex flex-col p-6 lg:hidden">
-            <div class="flex justify-between items-center mb-10 pt-4">
-                <span class="text-xl font-bold logo-font text-white mx-auto">MENU GLOBAL</span>
-                <button onclick="toggleMobileMenu()" class="p-2 bg-white/10 rounded-full text-white absolute right-6"><i data-lucide="x"></i></button>
+        <div id="mobile-menu" class="fixed inset-0 z-[110] bg-[#05070d]/95 backdrop-blur-3xl flex flex-col p-6 lg:hidden">
+            <div class="flex justify-between items-center mb-10 pt-4"><img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" alt="Horizon" class="h-9 w-auto object-contain mx-auto"><button onclick="toggleMobileMenu()" class="p-2 bg-white/10 rounded-full text-white absolute right-6"><i data-lucide="x"></i></button></div>
+            <div class="flex flex-col items-center gap-6 text-2xl font-black text-slate-200 hz-h">
+                <a href="#gruppo" data-go="home" data-to="gruppo" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Il Gruppo</a>
+                <a href="#divisioni" data-go="home" data-to="divisioni" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Divisioni</a>
+                <a href="#difesa" data-go="home" data-to="difesa" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Difesa</a>
+                <a href="#presenza" data-go="home" data-to="presenza" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Presenza</a>
+                <a href="#tech" data-go="tech" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Tecnologia</a>
             </div>
-            <div class="flex flex-col items-center gap-6 text-2xl font-black text-slate-200">
-                <a href="#orion-ai" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Orion AI</a>
-                <a href="#servizi-rapidi" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 text-blue-400 w-full text-center">Servizi Web & Internet</a>
-                <a href="#divisioni" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 w-full text-center">Tutte le Divisioni</a>
-                <a href="#hub-corporate" onclick="toggleMobileMenu()" class="border-b border-white/5 pb-4 text-emerald-400 w-full text-center">HUB Corporate B2B</a>
-            </div>
-            <div class="mt-auto pb-6">
-                <a href="#servizi-rapidi" onclick="toggleMobileMenu();" class="block text-center w-full bg-blue-600 py-4 rounded-2xl font-black tracking-widest text-white shadow-xl shadow-blue-600/20">SCOPRI I SERVIZI</a>
-            </div>
+            <div class="mt-auto pb-6"><a href="#shop" data-go="shop" onclick="toggleMobileMenu()" class="block text-center w-full bg-gradient-to-r from-[#8ab4ff] to-[#5eead4] text-[#05070d] py-4 rounded-2xl font-black tracking-widest">APRI LO SHOP</a></div>
         </div>
 
-        <!-- MAIN HOME SECTION -->
-        <section class="relative min-h-[90vh] flex flex-col items-center justify-center pt-28 pb-16 px-4 sm:px-6 overflow-hidden">
-            <div class="absolute inset-0 bg-grid-animate z-0 opacity-30"></div>
-            <div class="absolute top-1/4 right-1/4 w-[300px] md:w-[600px] h-[600px] bg-blue-600/10 blur-[150px] rounded-full"></div>
-            <div class="absolute bottom-1/4 left-1/4 w-[300px] md:w-[600px] h-[600px] bg-cyan-600/10 blur-[150px] rounded-full"></div>
-
-            <div class="max-w-5xl mx-auto w-full flex flex-col items-center relative z-10 reveal active">
-                <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] sm:text-xs font-black text-blue-400 uppercase tracking-widest mb-6 backdrop-blur-md">
-                    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span></span>
-                    Conglomerato Tecnologico | Italia
-                </div>
-                
-                <img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/ChatGPT%20Image%2010%20lug%202026%2C%2010_26_02.png" alt="Horizon Global Hero" class="w-full max-w-4xl mx-auto mb-8 object-contain">
-
-                <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8 w-full max-w-3xl">
-                    <a href="#servizi-rapidi" class="flex-1 bg-blue-600/20 border border-blue-500/40 backdrop-blur-xl hover:bg-blue-500 px-8 py-4 rounded-[2rem] text-center font-bold text-white transition-all shadow-xl">
-                        Servizi per Piccole Imprese
-                    </a>
-                    <a href="#hub-corporate" class="flex-1 bg-gradient-to-r from-emerald-600/20 to-emerald-500/20 border border-emerald-500/40 backdrop-blur-xl hover:bg-emerald-500 px-8 py-4 rounded-[2rem] text-center font-bold text-white transition-all shadow-xl">
-                        HUB Corporate (Grandi Aziende)
-                    </a>
-                </div>
-                
-                <button onclick="apriPortalLavoraConNoi()" class="w-full sm:w-max bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-500 hover:to-blue-500 border border-cyan-500/40 px-8 py-4 rounded-[2rem] text-center font-bold text-white transition-all flex items-center justify-center gap-3 backdrop-blur-md shadow-2xl">
-                    <i data-lucide="briefcase" class="w-5 h-5 text-cyan-400"></i> Lavora nel Gruppo (HR Horizon)
-                </button>
-
-                <!-- BANNER SQUADRATO DIFESA NAZIONALE HORIZON -->
-                <div class="w-full max-w-4xl mx-auto mt-12 bg-slate-950 border-2 border-red-600/80 shadow-[0_0_50px_rgba(220,38,38,0.35)] p-6 sm:p-10 relative overflow-hidden backdrop-blur-3xl text-center">
-                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-500 via-white to-red-600"></div>
-                    <div class="absolute -top-24 -right-24 w-72 h-72 bg-red-600/15 blur-3xl pointer-events-none"></div>
-                    <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-emerald-600/15 blur-3xl pointer-events-none"></div>
-
-                    <div class="flex flex-col items-center justify-center gap-4 mb-6">
-                        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-red-950/80 border border-red-500/60 text-red-400 text-[11px] sm:text-xs font-black uppercase tracking-[0.2em] shadow-lg">
-                            <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
-                            🇮🇹 SOVRANITÀ DIGITALE & DIFESA NAZIONALE ITALIANA 🇮🇹
-                        </div>
-
-                        <img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" alt="Horizon Global Logo" class="h-12 sm:h-16 w-auto object-contain my-2 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
-                    </div>
-
-                    <div class="space-y-6 text-slate-200">
-                        <h3 class="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight leading-tight">
-                            HORIZON GLOBAL AVVIA LA NUOVA DIVISIONE DI SVILUPPO SOFTWARE PER IL <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-white to-red-500">SERVIZIO DI DIFESA NAZIONALE</span>
-                        </h3>
-
-                        <p class="text-base sm:text-lg text-slate-300 font-semibold max-w-3xl mx-auto leading-relaxed border-t border-b border-white/10 py-4">
-                            Con immensa fierezza, patriottismo e orgoglio industriale italiano, Horizon Global annuncia ufficialmente la nascita della sua nuova divisione ingegneristica ad altissima tecnologia dedicata alla sicurezza e sovranità della nostra Nazione!
-                        </p>
-
-                        <div class="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto text-left my-6">
-                            <div class="bg-black/60 border border-red-500/30 p-5 shadow-inner">
-                                <div class="flex items-center gap-3 text-red-400 font-bold mb-2 text-sm sm:text-base">
-                                    <i data-lucide="shield-check" class="w-6 h-6 shrink-0"></i>
-                                    IMPENETRABILITÀ DEI SISTEMI
-                                </div>
-                                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                                    Ingegnerizzazione di sistemi software avanzati di livello militare creati con lo scopo di far progredire e rendere <strong class="text-white">assolutamente impenetrabili e inattaccabili</strong> gli apparati informatici del <strong class="text-emerald-400">Ministero della Difesa</strong>.
-                                </p>
-                            </div>
-
-                            <div class="bg-black/60 border border-blue-500/30 p-5 shadow-inner">
-                                <div class="flex items-center gap-3 text-blue-400 font-bold mb-2 text-sm sm:text-base">
-                                    <i data-lucide="plane" class="w-6 h-6 shrink-0"></i>
-                                    POTENZIAMENTO DI BORDO
-                                </div>
-                                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                                    Aumento esponenziale delle <strong class="text-white">capacità digitali ed elaborative dei sistemi di bordo</strong> dei mezzi militari aeronautici e di terra della difesa italiana.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="p-4 bg-gradient-to-r from-red-950/80 via-slate-900 to-emerald-950/80 border border-red-500/40 text-center shadow-lg">
-                            <p class="text-xs sm:text-sm font-mono text-amber-300 font-bold tracking-wider uppercase">
-                                ⚡ IMPLEMENTAZIONE DEI NUOVI LINGUAGGI CRITTOGRAFATI IN FASE DI TESTING AVANZATO DA PARTE DEL TEAM DI RICERCA INFORMATICA DI HORIZON GLOBAL ⚡
-                            </p>
-                        </div>
-
-                        <p class="text-xs sm:text-sm text-slate-400 italic font-medium">
-                            Un traguardo storico che celebra il genio italiano e consolida Horizon Global come baluardo e fiore all'occhiello dell'innovazione tecnologica in Italia.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="w-full max-w-4xl mx-auto mt-16 relative z-10 reveal delay-100">
-                <div class="glass-card p-8 bg-black/40 w-full">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                    <div class="flex flex-col md:flex-row justify-between items-center w-full mb-8 border-b border-white/10 pb-6 gap-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-blue-500/20 rounded-[1.5rem] flex items-center justify-center text-blue-400"><i data-lucide="globe"></i></div>
-                            <div class="text-left">
-                                <h4 class="font-bold text-white text-lg">Stato dell'Ecosistema</h4>
-                                <p class="text-[10px] text-emerald-400 font-mono tracking-widest mt-1">TUTTE LE RETI OPERATIVE: 100%</p>
-                            </div>
+        <!-- ================= PAGINA HOME: IL GRUPPO ================= -->
+        <main id="page-home" class="hz-page on">
+            <section class="relative min-h-screen flex items-center pt-32 sm:pt-44 pb-16 px-5 overflow-hidden">
+                <div class="hz-aurora"></div><div id="hzGlow"></div>
+                <div class="absolute inset-0 bg-grid-animate opacity-40" style="mask-image:radial-gradient(ellipse at center,black 20%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at center,black 20%,transparent 70%)"></div>
+                <div class="hz-wrap w-full grid lg:grid-cols-2 gap-12 items-center relative z-10">
+                    <div class="text-left">
+                        <span class="hz-mono inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 text-[11px] text-slate-300 mb-8"><span class="w-2 h-2 rounded-full bg-[#5eead4] animate-pulse"></span>GRUPPO HORIZON · SEDE ITALIA</span>
+                        <h1 class="hz-h font-bold text-white leading-[.95] text-5xl sm:text-7xl xl:text-8xl">Horizon<sup class="text-2xl align-super">™</sup><br><span class="hz-grad">Italy.</span></h1>
+                        <p class="mt-8 text-lg sm:text-xl text-slate-400 max-w-xl leading-relaxed" data-scr>Energia, telecomunicazioni, media, software e difesa digitale. Un unico gruppo, dodici divisioni, una sola direzione: costruire l'infrastruttura del domani.</p>
+                        <div class="mt-10 flex flex-wrap gap-3">
+                            <a href="#divisioni" data-go="home" data-to="divisioni" class="px-7 py-4 rounded-full font-bold text-sm text-[#05070d] bg-white hover:scale-105 transition-transform">Esplora il Gruppo</a>
+                            <a href="#shop" data-go="shop" class="px-7 py-4 rounded-full font-bold text-sm text-white border border-white/20 hover:bg-white/10 transition-all flex items-center gap-2"><i data-lucide="shopping-bag" class="w-4 h-4"></i> Vai allo Shop</a>
+                            <button onclick="apriPortalLavoraConNoi()" class="px-7 py-4 rounded-full font-bold text-sm text-[#5eead4] border border-[#5eead4]/30 hover:bg-[#5eead4]/10 transition-all flex items-center gap-2"><i data-lucide="briefcase" class="w-4 h-4"></i> Lavora nel Gruppo</button>
                         </div>
                     </div>
-                    <div class="w-full space-y-5">
-                        <div>
-                            <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Orion AI (Rete FWA)</span><span class="text-blue-400">Online</span></div>
-                            <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[100%]"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Net-Orion (Cloud Server)</span><span class="text-cyan-400">Zero Latenza</span></div>
-                            <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-[98%]"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[11px] uppercase font-bold text-slate-400 mb-2"><span>Aura Network</span><span class="text-purple-400">Realtime</span></div>
-                            <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[100%]"></div></div>
-                        </div>
+                    <div class="hz-orbit">
+                        <div class="hz-ring"><b></b></div><div class="hz-ring"><b style="background:var(--hz1);box-shadow:0 0 18px var(--hz1)"></b></div><div class="hz-ring"><b style="background:var(--hz3);box-shadow:0 0 18px var(--hz3)"></b></div>
+                        <div class="hz-core"><img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" class="w-3/4" alt=""></div>
+                        <span class="hz-chip text-[#8ab4ff]" style="top:6%;left:-2%">Energia · IREO</span>
+                        <span class="hz-chip text-[#5eead4]" style="top:22%;right:-4%;animation-delay:-2s">Telecom · NET ORION™</span>
+                        <span class="hz-chip text-[#c4b5fd]" style="bottom:14%;left:-4%;animation-delay:-4s">Media · Aura</span>
+                        <span class="hz-chip text-white" style="bottom:2%;right:6%;animation-delay:-1s">Software · Dev.Ryzn</span>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="orion-ai" class="py-24 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-blue-900/10 border-y border-white/5 overflow-hidden flex flex-col items-center">
+            <div class="border-y border-white/5 py-4 overflow-hidden bg-white/[.015]"><div class="hz-tick hz-mono text-[11px] text-slate-500 gap-12 whitespace-nowrap" id="hzTick"></div></div>
+
+            <section class="px-5 pt-12 pb-2"><div class="hz-wrap text-left"><span class="hz-eyebrow">// Accesso rapido</span><div class="grid grid-cols-2 lg:grid-cols-6 gap-3"><button data-go="shop" class="hz-tile"><i data-lucide="shopping-bag" class="text-[#8ab4ff]"></i><span><b class="block text-sm text-white">Shop servizi</b><small class="text-slate-500 text-[11px]">Piani, hosting, ERP</small></span></button><button data-go="shop" data-to="net-orion" class="hz-tile"><i data-lucide="satellite-dish" class="text-[#5eead4]"></i><span><b class="block text-sm text-white">NET ORION™</b><small class="text-slate-500 text-[11px]">Connettività</small></span></button><button onclick="handleUserBadgeClick(event)" class="hz-tile"><i data-lucide="user" class="text-[#c4b5fd]"></i><span><b class="block text-sm text-white">Area personale</b><small class="text-slate-500 text-[11px]">Account e pratiche</small></span></button><button onclick="apriPortalLavoraConNoi()" class="hz-tile"><i data-lucide="briefcase" class="text-[#8ab4ff]"></i><span><b class="block text-sm text-white">Lavora con noi</b><small class="text-slate-500 text-[11px]">Portale HR</small></span></button><button data-go="home" data-to="difesa" class="hz-tile"><i data-lucide="shield-check" class="text-[#5eead4]"></i><span><b class="block text-sm text-white">Horizon Defense</b><small class="text-slate-500 text-[11px]">Difesa digitale</small></span></button><button data-go="tech" data-to="aura" class="hz-tile"><i data-lucide="key-round" class="text-[#c4b5fd]"></i><span><b class="block text-sm text-white">Aura+ Licenza</b><small class="text-slate-500 text-[11px]">Aura Sound</small></span></button></div></div></section>
+            <section id="news" class="hz-sec"><div class="hz-wrap text-left"><span class="hz-eyebrow">// News &amp; Articoli</span>
+                <h2 class="hz-h text-4xl sm:text-5xl font-bold text-white mb-10">Dal mondo <span class="hz-grad">Horizon.</span></h2>
+                <div id="hzNews" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div></div></section>
+
+            <section id="gruppo" class="hz-sec"><div class="hz-wrap grid lg:grid-cols-5 gap-12">
+                <div class="lg:col-span-3 text-left reveal">
+                    <span class="hz-eyebrow">// Il Gruppo</span>
+                    <h2 class="hz-h text-4xl sm:text-6xl font-bold text-white leading-tight" data-scr>Crescita sostenibile. Infrastrutture che servono.</h2>
+                    <p class="mt-8 text-slate-400 text-lg leading-relaxed">Horizon opera nei settori utility, telecomunicazioni, media e tecnologia con un approccio fondato su sviluppo responsabile, affidabilità e impatto positivo sulle comunità. Costruiamo sistemi con uno scopo pratico: dalla gestione delle reti energetiche regionali al software per piattaforme digitali.</p>
+                    <p class="mt-4 text-slate-400 text-lg leading-relaxed">Horizon™ Italy è la sede italiana del gruppo: il punto di contatto per aziende, istituzioni, professionisti e talenti che vogliono lavorare con l'ecosistema Horizon.</p>
+                </div>
+                <div class="lg:col-span-2 grid grid-cols-2 gap-4 reveal">
+                    <div class="hz-card"><div class="hz-h text-5xl font-bold text-white"><span data-count="12">0</span></div><p class="text-xs text-slate-400 mt-2 uppercase tracking-widest">Divisioni</p></div>
+                    <div class="hz-card"><div class="hz-h text-5xl font-bold text-white"><span data-count="6">0</span></div><p class="text-xs text-slate-400 mt-2 uppercase tracking-widest">Hub in Europa</p></div>
+                    <div class="hz-card"><div class="hz-h text-5xl font-bold text-white"><span data-count="99.9" data-dec="1">0</span>%</div><p class="text-xs text-slate-400 mt-2 uppercase tracking-widest">Uptime Aura</p></div>
+                    <div class="hz-card"><div class="hz-h text-5xl font-bold hz-grad">2027</div><p class="text-xs text-slate-400 mt-2 uppercase tracking-widest">Las Vegas Hub</p></div>
+                </div>
+            </div></section>
+
+            <section id="divisioni" class="hz-sec bg-white/[.015] border-y border-white/5"><div class="hz-wrap">
+                <div class="text-left mb-10 reveal"><span class="hz-eyebrow">// Le Divisioni</span><h2 class="hz-h text-4xl sm:text-6xl font-bold text-white" data-scr>Un ecosistema. Dodici motori.</h2></div>
+                <div class="flex flex-wrap gap-2 mb-10" id="hzFilters"></div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="hzDivs"></div>
+                <div class="mt-12 text-left hz-card flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div><h3 class="hz-h text-2xl font-bold text-white">Servizi, hosting e infrastrutture B2B</h3><p class="text-slate-400 text-sm mt-1">Piani, ERP Dev.Ryzn, radiotrasmissione e connettività sono ora nello Shop.</p></div>
+                    <a href="#shop" data-go="shop" class="shrink-0 px-7 py-4 rounded-full font-bold text-sm text-[#05070d] bg-gradient-to-r from-[#8ab4ff] to-[#5eead4]">Apri lo Shop →</a>
+                </div>
+            </div></section>
+
+            <section id="difesa" class="hz-sec"><div class="hz-wrap"><div class="hz-def p-8 sm:p-14 grid lg:grid-cols-2 gap-12 reveal">
+                <div class="hz-scan"></div>
+                <div class="text-left relative z-10">
+                    <span class="hz-mono inline-flex items-center gap-2 text-[11px] text-[#5eead4] border border-[#5eead4]/30 rounded-full px-4 py-1.5 mb-6">🇮🇹 SOVRANITÀ DIGITALE · DIFESA NAZIONALE</span>
+                    <h2 class="hz-h text-4xl sm:text-5xl font-bold text-white leading-tight" data-scr>Horizon Defense</h2>
+                    <p class="mt-6 text-slate-300 text-lg leading-relaxed">La nuova divisione di sviluppo software del gruppo dedicata alla difesa nazionale italiana. Ingegnerizziamo sistemi software avanzati di livello militare per rafforzare la sicurezza degli apparati e le capacità di calcolo dei mezzi.</p>
+                    <p class="mt-4 text-slate-500 text-sm leading-relaxed">Un traguardo che valorizza l'ingegneria italiana e consolida il ruolo del gruppo nell'innovazione tecnologica del Paese.</p>
+                    <button onclick="avviaCandidatura('Ingegneri Informatici - Divisione Sviluppo Militare')" class="mt-8 px-6 py-3 rounded-full text-sm font-bold border border-white/20 text-white hover:bg-white/10 transition">Candidati come ingegnere informatico →</button>
+                </div>
+                <div class="grid gap-4 relative z-10 text-left">
+                    <div class="hz-card"><i data-lucide="shield-check" class="w-6 h-6 text-[#5eead4] mb-3"></i><h4 class="font-bold text-white">Sistemi resilienti</h4><p class="text-sm text-slate-400 mt-1">Software di livello militare progettato per rendere gli apparati dello Stato sicuri e protetti da attacchi informatici.</p></div>
+                    <div class="hz-card"><i data-lucide="plane" class="w-6 h-6 text-[#8ab4ff] mb-3"></i><h4 class="font-bold text-white">Potenziamento dei sistemi di bordo</h4><p class="text-sm text-slate-400 mt-1">Aumento delle capacità digitali ed elaborative dei mezzi aeronautici e di terra della difesa italiana.</p></div>
+                    <div class="hz-card"><i data-lucide="binary" class="w-6 h-6 text-[#c4b5fd] mb-3"></i><h4 class="font-bold text-white">Crittografia di nuova generazione</h4><p class="text-sm text-slate-400 mt-1">Nuovi linguaggi crittografati in fase di testing avanzato da parte del team di ricerca informatica del gruppo.</p></div>
+                </div>
+            </div></div></section>
+
+            <section id="struttura" class="hz-sec bg-white/[.015] border-y border-white/5"><div class="hz-wrap">
+                <div class="text-left mb-12 reveal"><span class="hz-eyebrow">// Struttura societaria</span><h2 class="hz-h text-4xl sm:text-6xl font-bold text-white" data-scr>Governance al vertice. Esecuzione operativa.</h2><p class="text-slate-400 mt-5 max-w-2xl">S. Brotto Holding, sotto la presidenza del fondatore Sebastian Brotto, indirizza e coordina la strategia del gruppo. Le società operative la eseguono. Sede legale a Stănești (Giurgiu, Romania), con sedi in Italia a San Gervasio Bresciano e Alfianello (BS).</p></div>
+                <div class="grid lg:grid-cols-3 gap-5 text-left reveal">
+                    <div class="hz-card"><span class="hz-mono text-[10px] text-slate-500">LIVELLO 01 · HOLDING</span><h3 class="hz-h text-2xl font-bold text-white mt-3">S. Brotto Holding</h3><p class="text-sm text-slate-400 mt-3">Direzione e coordinamento, governance strategica, amministrazione e controllo, finanza di gruppo. Sedi: le stesse di S.B. Horizon, con sede legale a Stănești, Giurgiu (RO).</p></div>
+                    <div class="hz-card"><span class="hz-mono text-[10px] text-slate-500">LIVELLO 02 · OPERATIVA</span><h3 class="hz-h text-2xl font-bold text-white mt-3">S.B. Horizon</h3><p class="text-sm text-slate-400 mt-3">Già S.B. Global Horizon. Nucleo operativo e logistico: infrastrutture, ricerca applicata, acquisti centralizzati e supporto alle controllate. Sede legale: Stănești, Giurgiu (RO). Sedi in Italia: San Gervasio Bresciano e Alfianello (BS).</p></div>
+                    <div class="hz-card"><span class="hz-mono text-[10px] text-slate-500">LIVELLO 03 · CONTROLLATE</span><h3 class="hz-h text-2xl font-bold text-white mt-3">Divisioni & Brand</h3><p class="text-sm text-slate-400 mt-3">Telecom Orion (marchio NET ORION™ e divisione Orion AI, che ha inglobato Horizon FiberCorp e S.O.O.H.), Horizon Defense e tutte le divisioni di prodotto, tra cui Horizon™ Italy.</p></div>
+                </div>
+            </div></section>
+
+            <section id="presenza" class="hz-sec"><div class="hz-wrap">
+                <div class="text-left mb-14 reveal"><span class="hz-eyebrow">// Presenza</span><h2 class="hz-h text-4xl sm:text-6xl font-bold text-white" data-scr>Una rete europea in espansione.</h2><p class="text-slate-400 mt-5 max-w-2xl">Hub attivi in Germania, Italia, Slovenia, Bulgaria e Spagna, con sede centrale in Romania. Prossima tappa: Las Vegas, il 15 febbraio 2027.</p></div>
+                <div class="relative reveal"><div class="hz-line absolute top-[7px] left-0 w-full"></div>
+                    <div class="flex flex-wrap gap-y-8 relative">
+                        <div class="hz-node"><div class="hz-dot"></div><b class="text-white text-sm">Germania</b></div>
+                        <div class="hz-node"><div class="hz-dot it"></div><b class="text-[#5eead4] text-sm">Italia</b><div class="text-[10px] text-slate-500">Horizon™ Italy</div></div>
+                        <div class="hz-node"><div class="hz-dot"></div><b class="text-white text-sm">Slovenia</b></div>
+                        <div class="hz-node"><div class="hz-dot"></div><b class="text-white text-sm">Bulgaria</b></div>
+                        <div class="hz-node"><div class="hz-dot"></div><b class="text-white text-sm">Spagna</b></div>
+                        <div class="hz-node"><div class="hz-dot"></div><b class="text-white text-sm">Romania</b><div class="text-[10px] text-slate-500">Sede centrale</div></div>
+                        <div class="hz-node"><div class="hz-dot soon"></div><b class="text-[#c4b5fd] text-sm">Las Vegas</b><div class="text-[10px] text-slate-500">15 feb 2027</div></div>
+                    </div></div>
+                <div class="mt-16 text-left reveal"><span class="hz-eyebrow">// Sedi</span></div>
+                <div class="grid sm:grid-cols-3 gap-4 text-left reveal">
+                    <div class="hz-card"><i data-lucide="landmark" class="w-5 h-5 text-[#5eead4] mb-3"></i><h4 class="font-bold text-white text-sm">Stănești, Giurgiu (Romania)</h4><p class="text-xs text-slate-400 mt-1">Sede legale di S.B. Horizon e di S. Brotto Holding.</p></div>
+                    <div class="hz-card"><i data-lucide="building-2" class="w-5 h-5 text-[#8ab4ff] mb-3"></i><h4 class="font-bold text-white text-sm">San Gervasio Bresciano (BS)</h4><p class="text-xs text-slate-400 mt-1">Sede in Italia di S.B. Horizon e di S. Brotto Holding.</p></div>
+                    <div class="hz-card"><i data-lucide="building" class="w-5 h-5 text-[#c4b5fd] mb-3"></i><h4 class="font-bold text-white text-sm">Alfianello (BS)</h4><p class="text-xs text-slate-400 mt-1">Sede operativa in Italia di S.B. Horizon e di S. Brotto Holding.</p></div>
+                </div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10 text-left reveal">
+                    <div class="hz-card"><i data-lucide="train-front" class="w-5 h-5 text-[#8ab4ff] mb-3"></i><h4 class="font-bold text-white text-sm">Trasporto efficiente</h4><p class="text-xs text-slate-400 mt-1">Mobilità più silenziosa e pulita, alimentata da energia rinnovabile.</p></div>
+                    <div class="hz-card"><i data-lucide="map-pin" class="w-5 h-5 text-[#5eead4] mb-3"></i><h4 class="font-bold text-white text-sm">Orientamento urbano</h4><p class="text-xs text-slate-400 mt-1">Display a basso consumo con navigazione e avvisi in tempo reale.</p></div>
+                    <div class="hz-card"><i data-lucide="trees" class="w-5 h-5 text-[#c4b5fd] mb-3"></i><h4 class="font-bold text-white text-sm">Spazi verdi</h4><p class="text-xs text-slate-400 mt-1">Irrigazione intelligente per ottimizzare l'uso dell'acqua.</p></div>
+                    <div class="hz-card"><i data-lucide="lightbulb" class="w-5 h-5 text-white mb-3"></i><h4 class="font-bold text-white text-sm">Illuminazione adattiva</h4><p class="text-xs text-slate-400 mt-1">Luce che si regola sulla presenza, risparmiando energia.</p></div>
+                </div>
+            </div></section>
+
+            <section class="hz-sec bg-white/[.015] border-t border-white/5"><div class="hz-wrap grid lg:grid-cols-2 gap-14">
+                <div class="text-left reveal"><span class="hz-eyebrow">// Carriere</span><h2 class="hz-h text-4xl sm:text-5xl font-bold text-white" data-scr>Costruisci l'orizzonte con noi.</h2><p class="text-slate-400 mt-5">Cerchiamo ingegneri, sviluppatori e profili manageriali. Candidati direttamente dal portale HR del gruppo.</p>
+                    <button onclick="apriPortalLavoraConNoi()" class="mt-8 px-7 py-4 rounded-full font-bold text-sm text-[#05070d] bg-gradient-to-r from-[#8ab4ff] to-[#5eead4]">Apri il portale HR</button></div>
+                <div class="reveal"><details class="hz-faq" open><summary>Ryzn Music Group è un'entità separata?<i data-lucide="plus" class="w-4 h-4"></i></summary><p class="text-sm text-slate-400 mt-3">È un team interno al gruppo che lavora con la piattaforma Aura perché gli artisti siano compensati equamente e i diritti gestiti in sicurezza.</p></details>
+                    <details class="hz-faq"><summary>Come collaborano NET ORION™ e Dev.Ryzn?<i data-lucide="plus" class="w-4 h-4"></i></summary><p class="text-sm text-slate-400 mt-3">NET ORION™ gestisce l'infrastruttura fisica (server, fibra); Dev.Ryzn sviluppa le applicazioni e i sistemi che vi girano sopra.</p></details>
+                    <details class="hz-faq"><summary>Dove opera IREO?<i data-lucide="plus" class="w-4 h-4"></i></summary><p class="text-sm text-slate-400 mt-3">Principalmente a supporto di reti di utilità in varie regioni europee, con espansione graduale dove l'impatto è maggiore.</p></details></div>
+            </div></section>
+        </main>
+
+        <!-- ================= PAGINA TECNOLOGIA & TRASPARENZA ================= -->
+        <main id="page-tech" class="hz-page">
+            <section class="relative pt-36 sm:pt-44 pb-10 px-5 overflow-hidden"><div class="hz-aurora" style="opacity:.3"></div>
+                <div class="hz-wrap relative z-10 text-left"><span class="hz-eyebrow">// Tecnologia &amp; Trasparenza</span>
+                    <h1 class="hz-h text-5xl sm:text-7xl font-bold text-white">Come costruiamo <span class="hz-grad">Horizon.</span></h1>
+                    <p class="text-slate-400 mt-5 max-w-2xl text-lg">Motore grafico, software, infrastruttura serverless, sostenibilità, regole, licenze e contratti: tutto il gruppo in un unico posto.</p></div></section>
+
+            <section id="engine" class="hz-sec"><div class="hz-wrap grid lg:grid-cols-2 gap-10 items-center">
+                <div class="text-left"><span class="hz-eyebrow">// Ryzn Engine</span>
+                    <h2 class="hz-h text-4xl sm:text-5xl font-bold text-white">Overlay Rendering: <span class="hz-grad">8K percepito.</span></h2>
+                    <p class="mt-5 text-slate-400 leading-relaxed">Il motore grafico Ryzn Engine non calcola ogni pixel in alta risoluzione. Sovrappone molti fotogrammi a bassa risoluzione, ciascuno con un micro-spostamento diverso: l'occhio li integra nel tempo e il cervello ricostruisce i dettagli mancanti. La nitidezza è applicata dalla percezione, non pixel per pixel, con un costo di calcolo molto inferiore.</p>
+                    <div class="mt-6 flex flex-wrap gap-2"><button id="engA" class="hz-btn">Frame singolo SD</button><button id="engB" class="hz-btn on">Overlay Ryzn</button><button id="engR" class="hz-btn">Rigenera</button></div>
+                    <p class="hz-mono text-[11px] text-slate-500 mt-3" id="engInfo">frame sovrapposti: 0 / 16</p></div>
+                <div class="hz-eng"><canvas id="engCv" width="960" height="540"></canvas></div></div></section>
+
+            <section id="mohican" class="hz-sec bg-white/[.015] border-y border-white/5"><div class="hz-wrap grid lg:grid-cols-3 gap-5 text-left">
+                <div class="lg:col-span-2 hz-card"><span class="hz-mono text-[10px] text-[#5eead4]">GIOCO · RYZN ENGINE · IN SVILUPPO</span><h3 class="hz-h text-3xl font-bold text-white mt-3">The Last Mohican</h3><p class="text-slate-400 mt-3">Il gioco distribuito sul Ryzn Engine e vetrina tecnologica dell'Overlay Rendering. Dettagli, piattaforme e data di uscita saranno comunicati dal team Dev.Ryzn.</p></div>
+                <div class="hz-card"><h4 class="font-bold text-white">Altre tecnologie Ryzn Engine</h4><ul class="text-sm text-slate-400 mt-3 space-y-2"><li>• Frame Bus a zero copie</li><li>• Persistence Scheduler adattivo</li><li>• Color Lift percettivo</li><li>• Audio spaziale con Aura Sound</li></ul></div></div></section>
+
+            <section id="aura" class="hz-sec"><div class="hz-wrap max-w-3xl"><div class="hz-card text-center items-center" style="text-align:center">
+                <span class="hz-mono text-[10px] text-amber-300">AURA SOUND · LICENZA UNIVOCA v2</span>
+                <h3 class="hz-h text-3xl font-bold text-white mt-3">Aura+ <span class="text-amber-300">€ 3,99/mese</span></h3>
+                <p class="text-slate-400 mt-3 text-sm">Abbonamento con chiave di licenza univoca, legata al tuo account Horizon.</p>
+                <div id="auraState" class="mt-5 w-full"></div>
+                <button onclick="auraOpen()" id="auraBtn" class="mt-4 px-7 py-4 rounded-full font-black text-sm text-black bg-gradient-to-r from-amber-300 to-yellow-500">Attiva Aura+ (€ 3,99/mese)</button>
+                <a href="https://aurasound.it" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#5eead4] hover:underline">Scarica Aura Sound ↗ aurasound.it</a></div></div></section>
+
+            <section id="satelliti" class="hz-sec"><div class="hz-wrap text-left"><span class="hz-eyebrow">// Tracciamento satellitare</span>
+                <h2 class="hz-h text-4xl sm:text-5xl font-bold text-white">Satelliti sopra <span class="hz-grad">di te.</span></h2>
+                <p class="text-slate-400 mt-4 max-w-2xl">Mappa del mondo con posizione in tempo reale, traccia dell'orbita e sedi del gruppo. Dati orbitali pubblici (CelesTrak); se non raggiungibili, l'orbita viene simulata e lo indichiamo.</p>
+                <div class="grid lg:grid-cols-3 gap-5 mt-8"><div class="lg:col-span-2 hz-eng"><canvas id="satCv" width="1000" height="500"></canvas></div>
+                    <div class="hz-card"><div class="hz-mono text-[10px] text-[#5eead4]" id="satSrc">in caricamento…</div><select id="satSel" class="w-full mt-3 bg-black/50 border border-white/15 rounded-xl p-3 text-sm text-white"></select>
+                        <dl class="mt-4 text-sm space-y-2 text-slate-300"><div class="flex justify-between"><dt class="text-slate-500">Latitudine</dt><dd id="sLat" class="hz-mono">–</dd></div><div class="flex justify-between"><dt class="text-slate-500">Longitudine</dt><dd id="sLon" class="hz-mono">–</dd></div><div class="flex justify-between"><dt class="text-slate-500">Quota</dt><dd id="sAlt" class="hz-mono">–</dd></div><div class="flex justify-between"><dt class="text-slate-500">Velocità</dt><dd id="sVel" class="hz-mono">–</dd></div><div class="flex justify-between"><dt class="text-slate-500">Distanza da San Gervasio</dt><dd id="sDst" class="hz-mono">–</dd></div></dl>
+                        <p id="sOver" class="mt-4 text-xs text-amber-300"></p><p class="text-[11px] text-slate-500 mt-3">Legenda: punti blu = sedi del gruppo, punto giallo = satellite selezionato, linea = prossimi 90 minuti.</p></div></div></div></section>
+
+            <section id="strumenti" class="hz-sec bg-white/[.015] border-y border-white/5"><div class="hz-wrap text-left"><span class="hz-eyebrow">// Strumenti</span>
+                <div class="grid lg:grid-cols-2 gap-5 mt-4">
+                    <div class="hz-card"><h3 class="font-bold text-white">Orologio sedi</h3><div class="grid grid-cols-3 gap-3 mt-4 text-center" id="hzClocks"></div></div>
+                    <div class="hz-card"><h3 class="font-bold text-white">Calcolatore di latenza fisica</h3>
+                        <select id="lcT" class="w-full mt-3 bg-black/50 border border-white/15 rounded-xl p-3 text-sm text-white"><option value="f">Fibra ottica</option><option value="r">Ponte radio / FWA</option><option value="l">Satellite LEO (550 km)</option><option value="g">Satellite GEO (35.786 km)</option></select>
+                        <label class="block text-xs text-slate-400 mt-3">Distanza: <b id="lcDv" class="text-white">100</b> km</label><input id="lcD" type="range" min="1" max="5000" value="100" class="w-full">
+                        <div class="mt-3 text-3xl font-black text-white hz-mono" id="lcO">–</div><p class="text-[11px] text-slate-500 mt-1">Andata e ritorno, solo propagazione fisica (fibra ≈ 200.000 km/s, radio = luce). Non include elaborazione di rete.</p></div></div></div></section>
+
+            <div id="techSections"></div>
+            <section class="hz-sec pt-0"><div class="hz-wrap text-left text-xs text-slate-500 max-w-3xl">Le informazioni di questa pagina hanno scopo descrittivo e non sostituiscono i contratti, le licenze e le condizioni firmati o accettati. Per testi contrattuali completi contatta il gruppo.</div></section>
+        </main>
+
+        <!-- ================= PAGINA SHOP (tutta la vecchia vetrina) ================= -->
+        <main id="page-shop" class="hz-page">
+            <section class="relative pt-36 sm:pt-44 pb-12 px-5 overflow-hidden"><div class="hz-aurora" style="opacity:.3"></div>
+                <div class="hz-wrap relative z-10 text-left"><span class="hz-eyebrow">// Horizon Shop</span>
+                    <h1 class="hz-h text-5xl sm:text-7xl font-bold text-white" data-scr>Tutti i servizi Horizon.</h1>
+                    <p class="text-slate-400 mt-5 max-w-2xl text-lg">Connettività, hosting, siti web, ERP e infrastrutture B2B. Scegli, configura e attiva dal tuo account.</p>
+                    <div id="hzPromo" class="hidden mt-6 max-w-2xl rounded-2xl border border-amber-400/40 bg-amber-400/10 px-5 py-3 text-sm text-amber-200"></div>
+                    <div class="hz-sub flex flex-wrap gap-2 mt-8"><a href="#net-orion">NET ORION™</a><a href="#servizi-rapidi">Servizi PMI</a><a href="#hub-corporate">HUB Corporate</a><a href="#tecnologia">Tecnologia</a><a href="#prezzi">Piani</a><a href="#sicurezza">Sicurezza</a></div></div>
+            </section>
+        <section id="net-orion" class="py-24 px-4 sm:px-6 relative bg-gradient-to-b from-[#020617] to-blue-900/10 border-y border-white/5 overflow-hidden flex flex-col items-center">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] bg-blue-500/5 blur-[150px] rounded-full pointer-events-none"></div>
             <div class="max-w-5xl mx-auto relative z-10 flex flex-col items-center text-center">
                 <div class="reveal">
                     <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 font-bold tracking-widest uppercase text-xs mb-6">Provider Internet di Nuova Generazione</span>
-                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">ORION AI.<br><span class="text-blue-400">La Connettività del Futuro.</span></h2>
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">NET ORION™.<br><span class="text-blue-400">La Connettività del Futuro.</span></h2>
                     <p class="text-slate-400 text-lg leading-relaxed mb-8 max-w-3xl mx-auto">
-                        Orion AI è la punta di diamante di Horizon Global per le telecomunicazioni. Connettiamo privati e aziende nelle zone più remote tramite reti FWA, ponti radio ad alta frequenza, internet satellitare e un'infrastruttura governata dall'Intelligenza Artificiale per l'azzeramento della latenza.
+                        NET ORION™ è il marchio di Telecom Orion per le telecomunicazioni del gruppo. Connettiamo privati e aziende nelle zone più remote tramite reti FWA, ponti radio ad alta frequenza, internet satellitare e un'infrastruttura governata dall'Intelligenza Artificiale per l'azzeramento della latenza.
                     </p>
                     
                     <div class="grid sm:grid-cols-2 gap-6 w-full max-w-4xl mx-auto mb-10 reveal delay-100">
@@ -440,10 +597,15 @@
                             <strong class="text-white block mb-2">AI Routing Adattivo</strong>
                             <p class="text-sm text-slate-400">L'IA reindirizza i pacchetti dati in millisecondi per evitare congestioni di rete.</p>
                         </div>
+                        <div class="glass-card p-6 bg-black/40 sm:col-span-2">
+                            <i data-lucide="git-merge" class="w-10 h-10 text-emerald-400 mx-auto mb-4"></i>
+                            <strong class="text-white block mb-2">Una nuova struttura societaria</strong>
+                            <p class="text-sm text-slate-400">La vecchia partizione societaria Orion AI non esiste più e oggi si chiama NET ORION™, marchio controllato da Telecom Orion, che ha inglobato Horizon FiberCorp e S.O.O.H. (non più esistenti). Horizon AI ha preso il nome Orion AI: è l'intelligenza artificiale e la divisione sviluppo di Telecom Orion.</p>
+                        </div>
                     </div>
 
-                    <a href="https://orion-ai.it" target="_blank" class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-[2rem] bg-blue-500/10 text-blue-400 font-bold border border-blue-500/30 hover:bg-blue-500 hover:text-white transition-all backdrop-blur-md">
-                        Visita il portale Orion AI <i data-lucide="external-link" class="w-5 h-5"></i>
+                    <a href="https://net-orion.it" target="_blank" class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-[2rem] bg-blue-500/10 text-blue-400 font-bold border border-blue-500/30 hover:bg-blue-500 hover:text-white transition-all backdrop-blur-md">
+                        Visita il portale NET ORION™ <i data-lucide="external-link" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
@@ -502,7 +664,7 @@
 
                     <div class="glass-card flex-shrink-0 w-[280px] lg:w-[360px] p-8 border-cyan-500/20 bg-black/20 group cursor-default">
                         <div class="w-16 h-16 bg-cyan-500/10 rounded-3xl flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="home" class="w-8 h-8"></i></div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Orion Sat Privato</h3>
+                        <h3 class="text-2xl font-bold text-white mb-2">NET ORION™ Sat Privato</h3>
                         <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Connettività satellitare veloce e stabile per abitazioni private.</p>
                         <div class="mb-6 flex-grow flex flex-col items-center justify-center w-full">
                             <div class="flex items-end justify-center gap-1 mb-1">
@@ -511,16 +673,16 @@
                             <span class="text-cyan-400 text-xs font-bold block bg-cyan-500/10 px-3 py-1 rounded-full mt-2">+ € 38,90 Tantum Parabola</span>
                         </div>
                         <ul class="space-y-3 text-sm text-slate-300 mb-8 w-full flex flex-col items-center">
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Rete Satellitare Orion</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Rete Satellitare NET ORION™</li>
                             <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Parabola + Installazione</li>
                             <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Ideale per streaming</li>
                         </ul>
-                        <button onclick="selezionaPiano('Orion Internet Satellitare (Privato)')" class="w-full bg-cyan-600/20 hover:bg-cyan-600 text-cyan-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-cyan-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Privato</button>
+                        <button onclick="selezionaPiano('NET ORION™ Internet Satellitare (Privato)')" class="w-full bg-cyan-600/20 hover:bg-cyan-600 text-cyan-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-cyan-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Privato</button>
                     </div>
 
                     <div class="glass-card flex-shrink-0 w-[280px] lg:w-[360px] p-8 border-orange-500/20 bg-black/20 group cursor-default">
                         <div class="w-16 h-16 bg-orange-500/10 rounded-3xl flex items-center justify-center text-orange-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="building" class="w-8 h-8"></i></div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Orion Sat Business</h3>
+                        <h3 class="text-2xl font-bold text-white mb-2">NET ORION™ Sat Business</h3>
                         <p class="text-sm text-slate-400 mb-6 border-b border-white/10 pb-6 w-full">Connettività ridondata ad altissima affidabilità per aziende.</p>
                         <div class="mb-6 flex-grow flex flex-col items-center justify-center w-full">
                             <div class="flex items-end justify-center gap-1 mb-1">
@@ -533,73 +695,7 @@
                             <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Installazione Business</li>
                             <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Uptime Garantito (SLA)</li>
                         </ul>
-                        <button onclick="selezionaPiano('Orion Internet Satellitare (Business 2 Parabole)')" class="w-full bg-orange-600/20 hover:bg-orange-600 text-orange-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-orange-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Business</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="divisioni" class="py-24 px-0 relative bg-gradient-to-b from-[#020617] to-slate-900/40 border-y border-white/5 overflow-hidden">
-            <div class="max-w-7xl mx-auto px-4">
-                <div class="text-center mb-10 reveal">
-                    <span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 font-bold tracking-widest uppercase text-xs mb-6">Il Nostro Impero</span>
-                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">Le Divisioni di <span class="text-gradient">Horizon</span></h2>
-                    <p class="text-slate-400 text-lg max-w-3xl mx-auto leading-relaxed">
-                        Operiamo in molteplici settori chiave dello sviluppo globale. Scopri i brand e le piattaforme che compongono la nostra rete interattiva.
-                    </p>
-                </div>
-            </div>
-
-            <div class="auto-scroll-wrapper reveal delay-100 max-w-[100vw]">
-                <div class="auto-scroll-track" style="animation-duration: 60s;"> 
-                    
-                    <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-pink-500/20 group cursor-default">
-                        <div class="w-20 h-20 bg-pink-500/10 rounded-[2rem] flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="music" class="w-10 h-10"></i></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">Global Aura</h3>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">La piattaforma di streaming musicale e social network innovativo. L'hub dell'intrattenimento audio di nuova generazione che connette gli artisti ai fan.</p>
-                        <a href="https://pl-globalaura.com" target="_blank" class="inline-flex items-center justify-center gap-2 text-pink-400 font-bold bg-pink-500/10 px-6 py-3 rounded-full hover:bg-pink-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Aura <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                    </div>
-
-                    <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-blue-500/20 group cursor-default">
-                        <div class="w-20 h-20 bg-blue-500/10 rounded-[2rem] flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="satellite" class="w-10 h-10"></i></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">Orion AI</h3>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Provider Internet Next-Gen. Connettività estrema tramite reti FWA, ponti radio e Intelligenza Artificiale applicata alle telecomunicazioni.</p>
-                        <a href="https://orion-ai.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-blue-400 font-bold bg-blue-500/10 px-6 py-3 rounded-full hover:bg-blue-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Orion <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                    </div>
-
-                    <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-cyan-500/20 group cursor-default">
-                        <div class="w-20 h-20 bg-cyan-500/10 rounded-[2rem] flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="server" class="w-10 h-10"></i></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">Net-Orion</h3>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Infrastruttura Cloud proprietaria. Datacenter ad altissime prestazioni per le esigenze enterprise, hosting avanzato e architettura server zero-latency.</p>
-                        <a href="https://net-orion.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-cyan-400 font-bold bg-cyan-500/10 px-6 py-3 rounded-full hover:bg-cyan-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Net-Orion <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                    </div>
-
-                    <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-emerald-500/20 group cursor-default">
-                        <div class="w-20 h-20 bg-emerald-500/10 rounded-[2rem] flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="leaf" class="w-10 h-10"></i></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">iORE Green</h3>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">La nostra divisione Utilities. Forniture di energia elettrica, idrica e gas integrate, con un focus totale sulla sostenibilità e tariffe flat esclusive.</p>
-                        <a href="https://ioregreen.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-emerald-400 font-bold bg-emerald-500/10 px-6 py-3 rounded-full hover:bg-emerald-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita iORE <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                    </div>
-
-                    <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-orange-500/20 group cursor-default">
-                        <div class="w-20 h-20 bg-orange-500/10 rounded-[2rem] flex items-center justify-center text-orange-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="disc" class="w-10 h-10"></i></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">Ryzn Music Group</h3>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Etichetta discografica digitale e network di distribuzione indipendente. Lanciamo e gestiamo artisti nel panorama musicale globale.</p>
-                        <a href="http://ryznmusic.it/" target="_blank" class="inline-flex items-center justify-center gap-2 text-orange-400 font-bold bg-orange-500/10 px-6 py-3 rounded-full hover:bg-orange-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Ryzn <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                    </div>
-
-                    <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-indigo-500/20 group cursor-default">
-                        <div class="w-20 h-20 bg-indigo-500/10 rounded-[2rem] flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="tv" class="w-10 h-10"></i></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">Aura TV</h3>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Broadcasting e streaming video in alta definizione. Il cinema, l'intrattenimento live e la TV ridisegnati per il digitale.</p>
-                        <a href="https://auratv.it" target="_blank" class="inline-flex items-center justify-center gap-2 text-indigo-400 font-bold bg-indigo-500/10 px-6 py-3 rounded-full hover:bg-indigo-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita Aura TV <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                    </div>
-                    
-                    <div class="glass-card flex-shrink-0 w-[280px] lg:w-[380px] p-10 border-yellow-500/20 group cursor-default">
-                        <div class="w-20 h-20 bg-yellow-500/10 rounded-[2rem] flex items-center justify-center text-yellow-400 mb-6 group-hover:scale-110 transition-transform"><i data-lucide="graduation-cap" class="w-10 h-10"></i></div>
-                        <h3 class="text-3xl font-bold text-white mb-4">HC Institute</h3>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Horizon Corporate Institute. Accademia di alta formazione tecnologica, manageriale e sviluppo delle competenze per formare i leader del domani.</p>
-                        <a href="https://hcinstitute.it/" target="_blank" class="inline-flex items-center justify-center gap-2 text-yellow-400 font-bold bg-yellow-500/10 px-6 py-3 rounded-full hover:bg-yellow-500 hover:text-white transition-all mt-auto w-full z-10 relative">Visita l'Istituto <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        <button onclick="selezionaPiano('NET ORION™ Internet Satellitare (Business 2 Parabole)')" class="w-full bg-orange-600/20 hover:bg-orange-600 text-orange-400 hover:text-white py-4 rounded-2xl font-bold transition-all border border-orange-500/30 hover:border-transparent mt-auto z-10 relative">Richiedi Business</button>
                     </div>
                 </div>
             </div>
@@ -613,22 +709,22 @@
                 <div class="animate-marquee-container items-center gap-12 sm:gap-20">
                     <div class="flex items-center gap-12 sm:gap-20 min-w-max">
                         <div class="client-text uppercase tracking-tighter">Famila S.r.l. </div>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Coca-Cola_logo.svg" alt="Coca Cola" class="client-logo" style="height: 30px;">
+                        <img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Coca-Cola_logo.svg" alt="Coca Cola" class="client-logo" style="height: 30px;">
                         <div class="client-text uppercase tracking-tighter">Foma S.p.A.</div>
                         <div class="client-text uppercase tracking-tighter">INPS</div>
                         <div class="client-text uppercase tracking-tighter">INAiL</div>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg" alt="HP" class="client-logo" style="height: 45px;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg" alt="ASUS" class="client-logo">
+                        <img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg" alt="HP" class="client-logo" style="height: 45px;">
+                        <img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg" alt="ASUS" class="client-logo">
                         <div class="client-text font-bold tracking-tight">InfoCamere</div>
                     </div>
                     <div class="flex items-center gap-12 sm:gap-20 min-w-max">
                         <div class="client-text uppercase tracking-tighter">Famila S.r.l. </div>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Coca-Cola_logo.svg" alt="Coca Cola" class="client-logo" style="height: 30px;">
+                        <img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Coca-Cola_logo.svg" alt="Coca Cola" class="client-logo" style="height: 30px;">
                         <div class="client-text uppercase tracking-tighter">Foma S.p.A.</div>
                         <div class="client-text uppercase tracking-tighter">INPS</div>
                         <div class="client-text uppercase tracking-tighter">INAiL</div>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg" alt="HP" class="client-logo" style="height: 45px;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg" alt="ASUS" class="client-logo">
+                        <img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg" alt="HP" class="client-logo" style="height: 45px;">
+                        <img loading="lazy" decoding="async" src="https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg" alt="ASUS" class="client-logo">
                         <div class="client-text font-bold tracking-tight">InfoCamere</div>
                     </div>
                 </div>
@@ -663,7 +759,7 @@
                     <span class="inline-block px-4 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 font-bold tracking-widest uppercase text-xs mb-6">Divisione Servizi B2B Avanzati</span>
                     <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white">Tecnologia Proprietaria <span class="text-gradient">Aziendale</span></h2>
                     <p class="text-slate-400 text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-                        Per le PMI, non affittiamo server da terzi. Costruiamo e installiamo fisicamente l'infrastruttura nella tua azienda, interfacciandola direttamente con i nostri datacenter Net-Orion.
+                        Per le PMI, non affittiamo server da terzi. Costruiamo e installiamo fisicamente l'infrastruttura nella tua azienda, interfacciandola direttamente con i nostri datacenter NET ORION™.
                     </p>
                 </div>
 
@@ -685,9 +781,9 @@
                     <div class="glass-card p-10 border-purple-500/30 relative overflow-hidden group reveal delay-100">
                         <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity"><i data-lucide="code-2" class="w-32 h-32 text-purple-500"></i></div>
                         <div class="w-20 h-20 bg-purple-500/10 rounded-3xl flex items-center justify-center text-purple-400 mb-6"><i data-lucide="monitor" class="w-10 h-10"></i></div>
-                        <h3 class="text-3xl font-bold text-white mb-4 relative z-10">ERP Dev.Ryzn & Net-Orion</h3>
+                        <h3 class="text-3xl font-bold text-white mb-4 relative z-10">ERP Dev.Ryzn & NET ORION™</h3>
                         <p class="text-slate-400 leading-relaxed mb-8 relative z-10">
-                            Il cervello dell'operazione. Un gestionale aziendale (ERP) che fa girare la tua intera azienda, ospitato sui nostri server proprietari ad altissime prestazioni Net-Orion.
+                            Il cervello dell'operazione. Un gestionale aziendale (ERP) che fa girare la tua intera azienda, ospitato sui nostri server proprietari ad altissime prestazioni NET ORION™.
                         </p>
                         <ul class="space-y-4 text-sm text-slate-300 font-medium relative z-10 w-full flex flex-col items-center">
                             <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i> Moduli Risorse Umane, Presenze (Totem), Fatturazione e Magazzino</li>
@@ -737,17 +833,17 @@
                         </ul>
                     </div>
                     <div class="lg:w-1/2 order-1 lg:order-2 w-full glass-card p-6 border-blue-500/20">
-                        <img src="https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&q=80&w=1000" alt="Infrastruttura di Rete" class="w-full h-[400px] object-cover rounded-[2rem] opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
+                        <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&q=80&w=1000" alt="Infrastruttura di Rete" class="w-full h-[400px] object-cover rounded-[2rem] opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
                     </div>
                 </div>
 
                 <div class="flex flex-col lg:flex-row items-center justify-center gap-12 mb-24 reveal w-full">
                     <div class="lg:w-1/2 w-full glass-card p-6 border-purple-500/20">
-                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1000" alt="Server Data Center" class="w-full h-[400px] object-cover rounded-[2rem] opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
+                        <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1000" alt="Server Data Center" class="w-full h-[400px] object-cover rounded-[2rem] opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-500">
                     </div>
                     <div class="lg:w-1/2 flex flex-col items-center text-center">
                         <div class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 text-[10px] font-black text-purple-400 uppercase tracking-widest mb-6">Livello Elaborazione (Cloud)</div>
-                        <h3 class="text-3xl lg:text-4xl font-bold text-white mb-4">Server Net-Orion: <br>Potenza Bruta e Geo-Ridondanza.</h3>
+                        <h3 class="text-3xl lg:text-4xl font-bold text-white mb-4">Server NET ORION™: <br>Potenza Bruta e Geo-Ridondanza.</h3>
                         <p class="text-slate-400 leading-relaxed mb-8 max-w-lg">
                             Non ci appoggiamo ad Amazon AWS o Google Cloud. Ospitare i tuoi dati su macchine fisiche di nostra proprietà ci permette di abbattere i costi e ottimizzare il kernel dei server esclusivamente per il nostro software ERP.
                         </p>
@@ -815,12 +911,12 @@
                 <div class="glass-card p-10 reveal delay-100 border-cyan-500/20">
                     <div class="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 mb-6"><i data-lucide="globe" class="w-8 h-8"></i></div>
                     <h3 class="text-2xl font-bold text-white mb-3">Sito & Dominio</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed">Progettazione web custom ospitata sui server Net-Orion iper-veloci.</p>
+                    <p class="text-sm text-slate-400 leading-relaxed">Progettazione web custom ospitata sui server NET ORION™ iper-veloci.</p>
                 </div>
                 <div class="glass-card p-10 reveal delay-200 border-emerald-500/20">
                     <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 mb-6"><i data-lucide="satellite-dish" class="w-8 h-8"></i></div>
                     <h3 class="text-2xl font-bold text-white mb-3">Rete B2B</h3>
-                    <p class="text-sm text-slate-400 leading-relaxed">Antenne dedicate per una connessione aziendale inarrestabile by Orion.</p>
+                    <p class="text-sm text-slate-400 leading-relaxed">Antenne dedicate per una connessione aziendale inarrestabile by NET ORION™.</p>
                 </div>
                 <div class="glass-card p-10 reveal delay-300 border-purple-500/20">
                     <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 mb-6"><i data-lucide="tablet-smartphone" class="w-8 h-8"></i></div>
@@ -847,7 +943,7 @@
                         <div class="w-20 h-20 bg-blue-500/20 rounded-[2rem] flex items-center justify-center text-blue-400 shrink-0"><i data-lucide="hard-drive" class="w-10 h-10"></i></div>
                         <div>
                             <h3 class="text-2xl font-bold text-white mb-2">Setup e Installazione (Corporate Una Tantum)</h3>
-                            <p class="text-base text-slate-400">Include uscita tecnici, posa Antenna Radiotrasmissione, Totem Presenze fisico e setup Server Net-Orion.</p>
+                            <p class="text-base text-slate-400">Include uscita tecnici, posa Antenna Radiotrasmissione, Totem Presenze fisico e setup Server NET ORION™.</p>
                         </div>
                     </div>
                     <div class="text-center shrink-0 w-full md:w-auto mt-6 md:mt-0">
@@ -908,7 +1004,7 @@
                         </div>
                         <ul class="space-y-4 text-sm text-slate-300 mb-10 w-full flex flex-col items-center">
                             <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Utenti ERP Illimitati</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Server Net-Orion Dedicato</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Server NET ORION™ Dedicato</li>
                             <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Doppia Antenna per Ridondanza</li>
                             <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-500"></i> Assistenza Prioritaria 24/7</li>
                         </ul>
@@ -952,7 +1048,7 @@
                         <div class="glass-card p-8 border-emerald-500/20 bg-black/40 text-center">
                             <i data-lucide="server" class="w-10 h-10 text-emerald-500 mb-6 mx-auto"></i>
                             <h4 class="text-xl font-bold text-white mb-4">Data Center Nazionali</h4>
-                            <p class="text-sm text-slate-400 leading-relaxed">I server fisici Net-Orion sono localizzati in Italia e nell'Unione Europea, prevenendo il trasferimento dati verso paesi extra-UE non sicuri.</p>
+                            <p class="text-sm text-slate-400 leading-relaxed">I server fisici NET ORION™ sono localizzati in Italia e nell'Unione Europea, prevenendo il trasferimento dati verso paesi extra-UE non sicuri.</p>
                         </div>
                         <div class="glass-card p-8 border-blue-500/20 bg-black/40 text-center">
                             <i data-lucide="lock" class="w-10 h-10 text-emerald-500 mb-6 mx-auto"></i>
@@ -964,36 +1060,21 @@
             </div>
         </section>
 
-        <!-- FOOTER CON BOTTONE CON LOGO STAFF IN BASSO PER ACCESSO ADMIN -->
-        <footer class="bg-[#01030a] py-20 px-6 border-t border-blue-900/30 mt-10 overflow-hidden text-center relative">
-            <div class="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                <div class="lg:col-span-2 flex flex-col items-center lg:items-start text-center lg:text-left">
-                    <span class="text-4xl font-black logo-font text-white">HORIZON <span class="text-blue-500">GLOBAL</span></span>
-                    <p class="text-base text-slate-500 mt-6 max-w-md leading-relaxed mx-auto lg:mx-0">
-                        Il conglomerato tecnologico del futuro. Guidiamo l'innovazione dall'infrastruttura B2B (Horizon Servizi), alle telecomunicazioni globali (Orion), fino all'intrattenimento e alle utilities (iORE).
-                    </p>
-                </div>
-                <div class="flex flex-col items-center lg:items-start">
-                    <h5 class="text-sm font-black uppercase text-white mb-8 tracking-widest">Soluzioni</h5>
-                    <ul class="text-base text-slate-400 space-y-4 font-medium flex flex-col items-center lg:items-start">
-                        <li><a href="#servizi-rapidi" class="hover:text-blue-400 transition">Servizi Digitali e Web</a></li>
-                        <li><a href="#divisioni" class="hover:text-blue-400 transition">Le Nostre Divisioni</a></li>
-                        <li><a href="#prezzi" class="hover:text-blue-400 transition">Piani HUB Corporate B2B</a></li>
-                        <li><button onclick="apriPortalLavoraConNoi()" class="hover:text-emerald-400 transition text-emerald-500 font-bold">Lavora con Noi</button></li>
-                    </ul>
-                </div>
-                <div class="flex flex-col items-center lg:items-start">
-                    <h5 class="text-sm font-black uppercase text-white mb-8 tracking-widest">Aziendale</h5>
-                    <ul class="text-base text-slate-400 space-y-4 font-medium flex flex-col items-center lg:items-start">
-                        <li><a href="#sicurezza" class="hover:text-blue-400 transition">Informativa Privacy & GDPR</a></li>
-                        <li><button onclick="selezionaPiano('Richiesta Contatto Generico')" class="hover:text-blue-400 transition">Contattaci</button></li>
-                    </ul>
-                </div>
-            </div>
+        </main>
 
-            <div class="max-w-7xl mx-auto text-center border-t border-white/5 pt-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p class="text-xs text-slate-600 uppercase tracking-[0.2em] font-bold">&copy; 2024-2030 Horizon Global. L'architettura del domani. Tutti i diritti riservati.</p>
-                
+        <footer class="bg-[#030409] py-16 px-6 border-t border-white/5 relative">
+            <div class="hz-wrap grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12 text-left">
+                <div class="lg:col-span-2"><img src="https://raw.githubusercontent.com/ryzn-eu/hrzsvs/main/624E0170-9417-4758-A685-C36E38D4A78E.png" alt="Horizon" class="h-12 w-auto object-contain">
+                    <p class="text-sm text-slate-500 mt-4 max-w-md leading-relaxed">Sede italiana del Gruppo Horizon: energia, telecomunicazioni, media, software e difesa digitale. Horizon™ è un marchio del Gruppo Horizon Global. NET ORION™ è un marchio controllato da Telecom Orion. Sede legale: Stănești, Giurgiu (Romania) · Sedi in Italia: San Gervasio Bresciano e Alfianello (BS) · S. Brotto Holding · S.B. Horizon.</p></div>
+                <div><h5 class="text-xs font-black uppercase text-white mb-5 tracking-widest">Gruppo</h5><ul class="text-sm text-slate-400 space-y-3">
+                    <li><a href="#divisioni" data-go="home" data-to="divisioni" class="hover:text-white">Divisioni</a></li><li><a href="#difesa" data-go="home" data-to="difesa" class="hover:text-white">Horizon Defense</a></li><li><a href="#presenza" data-go="home" data-to="presenza" class="hover:text-white">Presenza</a></li>
+                    <li><button onclick="apriPortalLavoraConNoi()" class="hover:text-[#5eead4] text-[#5eead4] font-bold">Lavora con Noi</button></li></ul></div>
+                <div><h5 class="text-xs font-black uppercase text-white mb-5 tracking-widest">Shop & Info</h5><ul class="text-sm text-slate-400 space-y-3">
+                    <li><a href="#shop" data-go="shop" class="hover:text-white">Shop servizi</a></li><li><a href="#tech" data-go="tech" class="hover:text-white">Tecnologia &amp; Trasparenza</a></li><li><a href="#satelliti" data-go="tech" data-to="satelliti" class="hover:text-white">Satelliti &amp; Mappa</a></li><li><a href="#news" data-go="home" data-to="news" class="hover:text-white">News &amp; Articoli</a></li><li><a href="#aura" data-go="tech" data-to="aura" class="hover:text-white">Aura+ &amp; Licenze</a></li><li><a href="#prezzi" data-go="shop" data-to="prezzi" class="hover:text-white">Piani HUB Corporate</a></li><li><a href="#sicurezza" data-go="shop" data-to="sicurezza" class="hover:text-white">Privacy & GDPR</a></li>
+                    <li><button onclick="selezionaPiano('Richiesta Contatto Generico')" class="hover:text-white">Contattaci</button></li></ul></div>
+            </div>
+            <div class="hz-wrap border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-[11px] text-slate-600 uppercase tracking-[0.2em] font-bold">&copy; 2024-2030 Horizon™ Italy · Gruppo Horizon Global. Tutti i diritti riservati.</p>
                 <button onclick="openAdminPinModal()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white transition-all shadow-md">
                     <i data-lucide="shield-alert" class="w-4 h-4 text-blue-500"></i>
                     <span class="font-mono font-bold">STAFF ACCESS</span>
@@ -1001,6 +1082,7 @@
             </div>
         </footer>
     </div><!-- FINE WRAPPER SITO PUBBLICO -->
+
 
     <!-- DASHBOARD ADMIN INTEGRATA (SBLOCCATA TRAMITE PIN 409169) -->
     <div id="adminDashboardView" class="hidden min-h-screen bg-[#020617] text-white p-4 sm:p-10 text-left">
@@ -1054,6 +1136,7 @@
         </div>
     </div>
 
+    <div id="auraModal"><div class="hz-card max-w-md w-full text-center bg-slate-950" style="text-align:center;align-items:center"><div id="auraModalBody"></div><button onclick="document.getElementById('auraModal').classList.remove('on')" class="mt-5 px-6 py-3 rounded-full text-xs font-bold border border-white/20 text-white">Chiudi</button></div></div>
     <!-- WIDGET TELEFONICO -->
     <a href="tel:+390305409202" class="fixed bottom-8 right-8 z-[90] bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-5 rounded-full shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:scale-110 transition-transform duration-300 flex items-center justify-center group border border-emerald-400/50 backdrop-blur-xl">
         <i data-lucide="phone" class="w-7 h-7 animate-pulse"></i>
@@ -1229,7 +1312,7 @@
                     <i data-lucide="plane-takeoff" class="w-6 h-6 text-cyan-400 shrink-0 mt-1"></i>
                     <div>
                         <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-1">TRASFERTE RETRIBUITE</h4>
-                        <p class="text-xs text-slate-300">Possibile presenza presso la sede centrale di Giurgiu (Romania). Pagate come straordinari + maggiorazione trasferta anche per le 8 ore contrattuali.</p>
+                        <p class="text-xs text-slate-300">Possibile presenza presso la sede legale di Stănești, Giurgiu (Romania). Pagate come straordinari + maggiorazione trasferta anche per le 8 ore contrattuali.</p>
                     </div>
                 </div>
             </div>
@@ -1987,23 +2070,260 @@
             });
         };
 
-        // Animazione Scroll Reveal
+        // Scroll Reveal (fallback leggero, throttled)
+        let _rv = false;
         window.addEventListener('scroll', () => {
-            const reveals = document.querySelectorAll('.reveal');
-            reveals.forEach(el => {
-                const windowHeight = window.innerHeight;
-                const elementTop = el.getBoundingClientRect().top;
-                const elementVisible = 150;
-                if (elementTop < windowHeight - elementVisible) {
-                    el.classList.add('active');
-                }
+            if (_rv) return; _rv = true;
+            requestAnimationFrame(() => {
+                _rv = false;
+                document.querySelectorAll('.reveal:not(.active)').forEach(el => {
+                    if (el.getBoundingClientRect().top < window.innerHeight - 60) el.classList.add('active');
+                });
             });
-        });
+        }, { passive: true });
 
         // Duplicazione elementi dello scroll continuo
         document.querySelectorAll('.auto-scroll-track').forEach(track => {
             track.innerHTML += track.innerHTML;
         });
+
+        // ===== HORIZON ITALY — INTERFACE LAYER (non tocca login/Firebase/ordini) =====
+        (function () {
+            const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
+            const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const GL = 'アイウエオカキクケコ0123456789ABCDEF<>/{}#';
+
+            // Nessun effetto di decodifica: i testi compaiono subito
+            function scramble() {}
+
+            // Transizione pagina: dissolvenza rapida (gestita dal CSS)
+            function rain(cb) { cb(); }
+
+            // Navigazione Home <-> Shop
+            let cur = 'home';
+            function show(p, to) {
+                $$('.hz-page').forEach(e => e.classList.remove('on'));
+                $('#page-' + p).classList.add('on'); cur = p; scrollTo(0, 0);
+                history.replaceState(null, '', '#' + p);
+                lucide.createIcons(); reveal();
+                if (to) setTimeout(() => { const t = document.getElementById(to); if (t) t.scrollIntoView({ behavior: 'smooth' }); }, 120);
+            }
+            window.goPage = function (p, to) {
+                if (p === cur) { if (to) document.getElementById(to)?.scrollIntoView({ behavior: 'smooth' }); else scrollTo({ top: 0, behavior: 'smooth' }); return; }
+                rain(() => show(p, to));
+            };
+            document.addEventListener('click', (e) => { const a = e.target.closest('[data-go]'); if (a) { e.preventDefault(); goPage(a.dataset.go, a.dataset.to); } });
+            // ancora interna alla pagina Shop
+            document.addEventListener('click', (e) => { const a = e.target.closest('.hz-sub a'); if (a) { e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' }); } });
+
+            // Reveal + scramble + contatori all'ingresso
+            let io;
+            function reveal() {
+                io = io || new IntersectionObserver((en) => en.forEach(x => {
+                    if (!x.isIntersecting) return; const el = x.target; io.unobserve(el);
+                    el.classList.add('active');
+                    
+                    el.querySelectorAll('[data-count]').forEach(c => { const end = +c.dataset.count, d = +c.dataset.dec || 0, t0 = performance.now(); (function s(n) { const p = Math.min(1, (n - t0) / 900); c.textContent = (end * (1 - Math.pow(1 - p, 3))).toFixed(d); if (p < 1) requestAnimationFrame(s); })(t0); });
+                }), { threshold: .05, rootMargin: '0px 0px -4% 0px' });
+                $$('.page-visible, .hz-page.on .reveal, .hz-page.on [data-scr]').forEach(e => io.observe(e));
+            }
+
+            // Divisioni (filtrabili)
+            const DIV = [
+                ['IREO · iORE Green', 'Energia', 'zap', 'Gestione sostenibile delle utility: elettricità rinnovabile, progetti di depurazione dell\'acqua e infrastrutture affidabili per le comunità europee.', 'https://ioregreen.it'],
+                ['Telecom Orion', 'Telecom', 'radio-tower', 'Capogruppo delle telecomunicazioni: ha inglobato Horizon FiberCorp e S.O.O.H. e controlla il marchio NET ORION™ e la divisione Orion AI.', ''],
+                ['NET ORION™', 'Telecom', 'server', 'Marchio di Telecom Orion: fibra ottica, reti FWA, ponti radio, internet satellitare e data center, con routing governato dall\'intelligenza artificiale.', 'https://net-orion.it'],
+                ['Orion AI', 'Software', 'brain-circuit', 'L\'intelligenza artificiale e la divisione sviluppo di Telecom Orion (ex Horizon AI): modelli AI per le reti, l\'azzeramento della latenza e i processi del gruppo.', ''],
+                ['Dev.Ryzn', 'Software', 'code-2', 'Il team software del gruppo: applicazioni per le reti e le piattaforme, con focus su sicurezza, stabilità e strumenti AI per la logistica urbana.', ''],
+                ['Horizon Defense', 'Difesa', 'shield-check', 'Sviluppo software di livello militare per la difesa nazionale italiana: sicurezza dei sistemi e potenziamento dei sistemi di bordo.', '#difesa'],
+                ['Global Aura', 'Media', 'music', 'Piattaforma di streaming musicale e social network, nata con Ryzn Music Group per connettere artisti e ascoltatori.', 'https://pl-globalaura.com'],
+                ['Ryzn Music Group', 'Media', 'disc-3', 'Etichetta discografica digitale e rete di distribuzione indipendente: lanciamo e gestiamo artisti nella scena globale.', 'http://ryznmusic.it/'],
+                ['Aura TV', 'Media', 'tv', 'Broadcasting e streaming in alta definizione: cinema, intrattenimento live e TV ripensati per l\'era digitale.', 'https://auratv.it'],
+                ['MoonLight Productions', 'Media', 'clapperboard', 'Divisione creativa di storytelling. Progetti in corso: «The Island» (pre-produzione) e «Project: ORION» (sceneggiatura).', ''],
+                ['HC Institute', 'Formazione', 'graduation-cap', 'Horizon Corporate Institute: accademia di alta formazione tecnologica e manageriale.', 'https://hcinstitute.it/'],
+                ['Horizon Services Italia', 'Servizi', 'building-2', 'Divisione B2B italiana: infrastruttura proprietaria, ERP Dev.Ryzn e telecomunicazioni sicure per le PMI.', '#shop']
+            ];
+            const cats = ['Tutte', ...new Set(DIV.map(d => d[1]))];
+            $('#hzFilters').innerHTML = cats.map((c, i) => `<button class="hz-filter ${i ? '' : 'on'}" data-cat="${c}">${c}</button>`).join('');
+            $('#hzDivs').innerHTML = DIV.map(d => {
+                const act = d[4] === '#shop' ? `<button data-go="shop" class="mt-5 text-xs font-bold text-[#5eead4]">Vai allo Shop →</button>` : d[4] === '#difesa' ? `<button data-go="home" data-to="difesa" class="mt-5 text-xs font-bold text-[#5eead4]">Scopri la divisione →</button>` : d[4] ? `<a href="${d[4]}" target="_blank" rel="noopener" class="mt-5 inline-block text-xs font-bold text-[#5eead4]">Visita il sito ↗</a>` : '';
+                return `<div class="hz-card reveal" data-cat="${d[1]}"><div class="flex items-center justify-between mb-5"><div class="w-11 h-11 rounded-2xl bg-white/5 flex items-center justify-center text-[#8ab4ff]"><i data-lucide="${d[2]}" class="w-5 h-5"></i></div><span class="hz-mono text-[10px] text-slate-500 uppercase">${d[1]}</span></div><h3 class="hz-h text-xl font-bold text-white">${d[0]}</h3><p class="text-sm text-slate-400 mt-2 leading-relaxed">${d[3]}</p>${act}</div>`;
+            }).join('');
+            $('#hzFilters').addEventListener('click', (e) => {
+                const b = e.target.closest('.hz-filter'); if (!b) return;
+                $$('.hz-filter').forEach(x => x.classList.toggle('on', x === b));
+                $$('#hzDivs .hz-card').forEach(c => c.classList.toggle('dim', b.dataset.cat !== 'Tutte' && c.dataset.cat !== b.dataset.cat));
+            });
+
+            // Ticker stato + glow + spotlight
+            const st = ['IREO Grid: Stable', 'Aura Uptime: 99.9%', 'NET ORION™: Optimal', 'Dev.Ryzn: Active', 'MoonLight: Scripting', 'Horizon Defense: Advanced Testing', 'Las Vegas Hub: Feb 2027'];
+            $('#hzTick').innerHTML = [0, 1].map(() => `<div class="flex gap-12">${st.map(s => `<span><span class="text-[#5eead4]">●</span> ${s}</span>`).join('')}</div>`).join('');
+            addEventListener('pointermove', (e) => {
+                const g = $('#hzGlow'); if (g) { g.style.setProperty('--gx', e.clientX + 'px'); g.style.setProperty('--gy', e.clientY + 'px'); }
+                const c = e.target.closest?.('.hz-card'); if (c) { const r = c.getBoundingClientRect(); c.style.setProperty('--mx', e.clientX - r.left + 'px'); c.style.setProperty('--my', e.clientY - r.top + 'px'); }
+            });
+
+            // Boot loader iniziale
+            const lines = ['INIZIALIZZAZIONE RETE HORIZON', 'SINCRONIZZAZIONE HUB EUROPEI', 'CARICAMENTO DIVISIONI', 'ACCESSO PRONTO'];
+            let i = 0; const ld = $('#ldLine'), bar = $('#ldBar');
+            
+            const iv = setInterval(() => {
+                ld.textContent = lines[i]; bar.style.width = ((i + 1) / lines.length * 100) + '%';
+                if (++i >= lines.length) { clearInterval(iv); setTimeout(() => { $('#hz-loader').classList.add('off'); start(); }, 120); }
+            }, reduce ? 40 : 110);
+            function start() {
+                const h = location.hash.replace('#', '');
+                if (h === 'shop' || h === 'tech') show(h); else { lucide.createIcons(); reveal(); }
+            }
+            lucide.createIcons();
+        })();
+        // ===== HORIZON: motore, promo, Natale, licenze Aura+ =====
+        (function () {
+            const $ = (x) => document.querySelector(x), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const now = new Date();
+            const BF_END = new Date('2026-12-01T00:00:00+01:00'), XM_END = new Date('2027-01-07T00:00:00+01:00'), AURA_PAID = new Date('2027-01-03T00:00:00+01:00');
+
+            // --- Sconti automatici: Black Friday -10% fino al 30/11, poi Natale -5% fino al 6/1 ---
+            const promo = now < BF_END ? { pct: 10, label: 'Black Friday' } : now < XM_END ? { pct: 5, label: 'Natale' } : null;
+            window.HZ_PROMO = promo;
+            const eur = (n) => '€ ' + (Number.isInteger(n) ? n.toLocaleString('it-IT') : n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            if (promo) {
+                document.querySelectorAll('#servizi-rapidi .text-5xl.font-black, #prezzi .text-6xl.font-black, #prezzi .text-4xl.font-black.text-blue-400').forEach(el => {
+                    const tn = [...el.childNodes].find(n => n.nodeType === 3 && /€/.test(n.textContent)); if (!tn) return;
+                    const v = parseFloat(tn.textContent.replace(/[^\d,.]/g, '').replace(/\./g, '').replace(',', '.')); if (!v) return;
+                    tn.textContent = eur(Math.round(v * (100 - promo.pct)) / 100); el.title = 'Prezzo di listino ' + eur(v);
+                    el.classList.add('hz-promo-price'); el.dataset.promo = '-' + promo.pct + '% ' + promo.label;
+                });
+                const b = $('#hzPromo'); if (b) { b.classList.remove('hidden'); b.innerHTML = promo.label === 'Black Friday' ? '🏷️ <b>Black Friday: -10%</b> su tutti i piani, applicato automaticamente. Dal 1° dicembre sconto di Natale -5% fino al 6 gennaio.' : '🎄 <b>Sconto di Natale: -5%</b> su tutti i piani, applicato automaticamente fino al 6 gennaio.'; }
+                const sp = window.selezionaPiano; if (typeof sp === 'function') window.selezionaPiano = function () { const r = sp.apply(this, arguments); const tag = () => { const f = $('#pr-servizio'); if (f && f.value && !f.value.includes('Promo')) f.value += ' [Promo ' + promo.label + ' -' + promo.pct + '%]'; }; tag(); Promise.resolve(r).then(tag); return r; };
+            }
+
+            // --- Decorazioni natalizie (11/2026 - 01/2027) ---
+            if (now < XM_END) {
+                document.body.classList.add('xmas');
+                const u = document.querySelector('.hz-util-in span'); if (u) u.insertAdjacentText('afterbegin', '🎄 ');
+                if (!reduce) for (let i = 0; i < 28; i++) { const f = document.createElement('span'), z = 3 + Math.random() * 4; f.className = 'hz-snow'; f.style.cssText = `left:${Math.random() * 100}%;width:${z}px;height:${z}px;animation-duration:${9 + Math.random() * 9}s;animation-delay:-${Math.random() * 14}s`; document.body.appendChild(f); }
+                const fc = document.querySelector('footer p'); if (fc) fc.insertAdjacentText('beforeend', ' 🎄 Buone Feste da tutto il Gruppo Horizon.');
+            }
+
+            // --- Ryzn Engine: demo Overlay Rendering (sovrapposizione di frame SD con jitter sub-pixel) ---
+            const cv = $('#engCv'); if (cv) {
+                const cx = cv.getContext('2d'), W = cv.width, H = cv.height, S = 5, lw = W / S, lh = H / S, lo = document.createElement('canvas'); lo.width = lw; lo.height = lh;
+                const lx = lo.getContext('2d'), N = 16; let mode = 'B', k = 0, raf = 0, vis = false;
+                const H2 = [[0, 0], [.5, .5], [.25, .75], [.75, .25], [.125, .625], [.625, .125], [.375, .375], [.875, .875], [.0625, .5625], [.5625, .0625], [.3125, .8125], [.8125, .3125], [.1875, .1875], [.6875, .6875], [.4375, .4375], [.9375, .9375]];
+                function scene(jx, jy) { lx.setTransform(1, 0, 0, 1, jx, jy); lx.fillStyle = '#05070d'; lx.fillRect(-2, -2, lw + 4, lh + 4); const g = lx.createLinearGradient(0, 0, lw, lh); g.addColorStop(0, '#8ab4ff'); g.addColorStop(1, '#5eead4'); lx.strokeStyle = g; lx.lineWidth = .7; for (let r = 10; r < 60; r += 7) { lx.beginPath(); lx.arc(lw / 2, lh / 2, r, 0, 7); lx.stroke(); } lx.fillStyle = '#fff'; lx.font = '700 11px Sora,Inter,sans-serif'; lx.textAlign = 'center'; lx.fillText('THE LAST MOHICAN', lw / 2, lh / 2 + 4); lx.fillStyle = '#c4b5fd'; lx.font = '5px JetBrains Mono,monospace'; lx.fillText('RYZN ENGINE · OVERLAY', lw / 2, lh / 2 + 14); }
+                function frame() { raf = 0; if (!vis) return; const info = $('#engInfo');
+                    if (mode === 'A') { scene(0, 0); cx.imageSmoothingEnabled = false; cx.globalAlpha = 1; cx.drawImage(lo, 0, 0, W, H); info.textContent = 'frame singolo · ' + lw + '×' + lh + ' px'; return; }
+                    if (k >= N) { info.textContent = 'frame sovrapposti: ' + N + ' / ' + N + ' · risoluzione percepita ×' + S; return; }
+                    const [jx, jy] = H2[k]; scene(jx, jy); cx.imageSmoothingEnabled = false; cx.globalAlpha = k === 0 ? 1 : 1 / (k + 1); cx.drawImage(lo, -jx * S, -jy * S, W, H); k++; info.textContent = 'frame sovrapposti: ' + k + ' / ' + N; raf = requestAnimationFrame(frame); }
+                const go = () => { if (!raf) raf = requestAnimationFrame(frame); };
+                const set = (m) => { mode = m; k = 0; $('#engA').classList.toggle('on', m === 'A'); $('#engB').classList.toggle('on', m === 'B'); go(); };
+                $('#engA').onclick = () => set('A'); $('#engB').onclick = () => set('B'); $('#engR').onclick = () => set('B');
+                new IntersectionObserver((e) => { vis = e[0].isIntersecting; if (vis) set(mode); }, { threshold: .2 }).observe(cv);
+            }
+
+            // --- Sezioni informative ---
+            const SEC = [
+                ['Architettura serverless', 'cloud', [['zap', 'Scale-to-zero', 'Le funzioni girano solo quando servono: nessun server acceso a vuoto, meno consumi e meno costi.'], ['database', 'Dati in Europa', 'Realtime Database in regione europea (europe-west1) con regole di accesso per utente.'], ['globe', 'Edge e cache', 'Pagine statiche servite da rete di distribuzione globale per tempi di risposta ridotti.'], ['git-branch', 'Deploy continui', 'Rilasci piccoli e frequenti, con ritorno rapido alla versione precedente.']]],
+                ['Rispetto ambientale', 'leaf', [['sun', 'Energia rinnovabile', "Con la divisione IREO · iORE Green il gruppo punta a un'alimentazione sempre più rinnovabile dell'infrastruttura."], ['cpu', 'Calcolo efficiente', "L'Overlay Rendering di Ryzn Engine riduce il carico grafico a parità di resa percepita."], ['recycle', 'Hardware a vita lunga', 'Manutenzione, riparazione e recupero dei componenti prima della sostituzione.'], ['droplets', 'Acqua e utility', 'Progetti di depurazione e gestione intelligente delle risorse nelle comunità servite.']]],
+                ['Sicurezza e privacy', 'shield-check', [['lock', 'Cifratura AES-256', 'Dati in transito sui ponti radio e archiviati con cifratura di livello militare.'], ['scale', 'GDPR', 'Trattamento dei dati secondo il Regolamento UE 2016/679, con server in Italia e nell\'UE.'], ['eye-off', 'Minimizzazione', 'Raccogliamo solo i dati necessari al servizio richiesto.'], ['key-round', 'Accessi controllati', 'Account personali, ruoli separati e area staff protetta.']]],
+                ['Organizzazione e regole', 'building-2', [['landmark', 'Governance', 'S. Brotto Holding indirizza la strategia; S.B. Horizon coordina operatività e logistica; le controllate eseguono.'], ['book-open', 'Codice di condotta', 'Regole interne su integrità, conflitti di interesse e uso corretto dei dati.'], ['megaphone', 'Segnalazioni', 'Canale di contatto per segnalare problemi o comportamenti scorretti.'], ['map-pin', 'Sedi', 'Sede legale a Stănești (Giurgiu, RO); sedi in Italia a San Gervasio Bresciano e Alfianello (BS).']]],
+                ['Licenze e distribuzione', 'file-key', [['music', 'Aura Sound freeware', 'Aura Sound è gratuito fino al 2 gennaio 2027.'], ['crown', 'Aura+ a pagamento', 'Dal 3 gennaio 2027: € 3,99/mese con chiave univoca AURA-… legata all\'account.'], ['download', 'Distribuzione diretta', 'Download ufficiale da aurasound.it; nessuna chiave condivisa tra utenti.'], ['handshake', 'Partner e rivenditori', 'Accordi di distribuzione dedicati per software, servizi e connettività.']]],
+                ['Contratti e operatività internazionale', 'globe-2', [['file-text', 'Contratti B2B', 'Durata minima 12 mesi, installazione una tantum e SLA definito per ogni piano Corporate.'], ['arrow-left-right', 'Cross-border', 'Rapporti infragruppo tra Italia e Romania e con i futuri hub, nel rispetto delle norme dei singoli Paesi.'], ['receipt', 'Fatturazione', 'Fatturazione elettronica (SDI) per i clienti italiani, IVA esclusa nei listini.'], ['gavel', 'Licenze software', 'Uso del software regolato da licenza; cessione e sublicenza solo con accordo scritto.']]],
+                ['Roadmap', 'route', [['gift', 'Dic 2026', 'Sconto di Natale -5% dopo il Black Friday.'], ['key-round', '3 gen 2027', 'Aura+ diventa a pagamento (€ 3,99/mese).'], ['map', '15 feb 2027', 'Apertura Las Vegas Hub.'], ['gamepad-2', 'Prossimamente', 'The Last Mohican su Ryzn Engine.']]]
+            ];
+            const T = $('#techSections'); if (T) T.innerHTML = SEC.map((g, i) => `<section class="hz-sec ${i % 2 ? '' : 'bg-white/[.015] border-y border-white/5'}"><div class="hz-wrap"><div class="text-left mb-8 reveal"><span class="hz-eyebrow">// ${g[0]}</span></div><div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">${g[2].map(c => `<div class="hz-card reveal"><i data-lucide="${c[0]}" class="w-5 h-5 text-[#5eead4] mb-3"></i><h4 class="font-bold text-white text-sm">${c[1]}</h4><p class="text-xs text-slate-400 mt-1 leading-relaxed">${c[2]}</p></div>`).join('')}</div></div></section>`).join('');
+
+            // --- Aura+: generatore chiavi (stesso schema di aura_keygen: AURA-<3n>-<8m>-<4|16|36|64>) ---
+            const rnd = (lo, hi) => { const a = new Uint32Array(1); crypto.getRandomValues(a); return lo + a[0] % (hi - lo + 1); };
+            window.auraKey = () => `AURA-${3 * rnd(34, 333333)}-${8 * rnd(13, 125000)}-${[4, 16, 36, 64][rnd(0, 3)]}`;
+            const paid = () => new Date() >= AURA_PAID, M = $('#auraModal'), MB = $('#auraModalBody');
+            const modal = (h) => { MB.innerHTML = h; M.classList.add('on'); };
+            const dl = '<a href="https://aurasound.it" target="_blank" rel="noopener" class="block mt-4 text-sm font-bold text-[#5eead4]">Scarica Aura Sound ↗ aurasound.it</a>';
+            let lic = null;
+            function render() {
+                const st = $('#auraState'), bt = $('#auraBtn'); if (!st) return;
+                const ok = lic && lic.status === 'ATTIVO' && new Date(lic.expiresAt) > new Date();
+                bt.style.display = ok ? 'none' : '';
+                st.innerHTML = ok ? `<div class="rounded-2xl border border-amber-400/40 bg-black/50 p-4"><div class="text-[10px] font-bold text-amber-300 tracking-widest">LICENZA ATTIVA (v2)</div><code class="block mt-2 text-lg font-bold text-white hz-mono">${lic.licenseKey}</code><div class="text-[11px] text-slate-400 mt-2">Scade il ${new Date(lic.expiresAt).toLocaleDateString('it-IT')}</div><button onclick="navigator.clipboard.writeText('${lic.licenseKey}')" class="mt-3 text-xs font-bold text-amber-300">Copia chiave</button></div>` : `<div class="text-xs text-slate-500">${window.currentUser ? 'Nessuna licenza attiva.' : 'Accedi per gestire la tua licenza.'}</div>`;
+            }
+            window.auraRefresh = function () { lic = null; const u = window.currentUser; if (u && window.onValue) window.onValue(window.ref(window.db, `utenti_profilo/${u.uid}/auraPlusLicense_v2`), (sn) => { lic = sn.val(); render(); }, { onlyOnce: true }); render(); };
+            const uub = window.updateUserBadgeUI; window.updateUserBadgeUI = function () { if (uub) uub.apply(this, arguments); window.auraRefresh(); };
+            window.auraOpen = function () {
+                if (!paid()) { const d = Math.ceil((AURA_PAID - new Date()) / 864e5); return modal(`<div class="text-4xl">🔒</div><h3 class="hz-h text-2xl font-bold text-white mt-3">Attivazione disabilitata</h3><p class="text-sm text-slate-400 mt-3">Aura Sound è <b class="text-white">freeware fino al 2 gennaio 2027</b>: la licenza Aura+ non è ancora necessaria. L'abbonamento a € 3,99/mese sarà attivabile dal 3 gennaio 2027 (tra ${d} giorni).</p>${dl}`); }
+                if (!window.currentUser) { const b = $('#userBadgeBtn'); if (b) b.click(); return; }
+                modal(`<h3 class="hz-h text-2xl font-bold text-white">Attiva Aura+</h3><p class="text-sm text-slate-400 mt-3">Abbonamento € 3,99/mese. Verrà generata una chiave univoca legata al tuo account.</p><button onclick="auraGenera()" class="mt-4 px-6 py-3 rounded-full font-black text-sm text-black bg-gradient-to-r from-amber-300 to-yellow-500">Conferma e genera chiave</button>`);
+            };
+            window.auraGenera = async function () {
+                const u = window.currentUser; if (!u) return;
+                try {
+                    let key, n = 0; do { key = window.auraKey(); const ex = await new Promise(r => window.onValue(window.ref(window.db, 'licenses_v2/' + key), s => r(s.exists()), { onlyOnce: true })); if (!ex) break; } while (++n < 5);
+                    const p = { licenseKey: key, status: 'ATTIVO', type: 'Aura+ v2 Instant License', createdAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 30 * 864e5).toISOString(), uid: u.uid, userEmail: u.email };
+                    await window.update(window.ref(window.db, 'utenti_profilo/' + u.uid), { auraPlusLicense_v2: p });
+                    await window.set(window.ref(window.db, 'licenses_v2/' + key), p);
+                    const t = Date.now().toString(); await window.set(window.ref(window.db, `transazioni/${u.uid}/${t}`), { uid: u.uid, nome: u.displayName || u.email, tipo: 'Attivazione Aura+ v2', servizio: 'Aura+ Premium (€ 3,99/mese)', importo: 3.99, data: new Date().toLocaleDateString('it-IT'), timestamp: Date.now(), stato: 'Da incassare' });
+                    lic = p; render(); modal(`<div class="text-4xl">✅</div><h3 class="hz-h text-2xl font-bold text-white mt-3">Aura+ attivato</h3><code class="block mt-3 text-lg font-bold text-white hz-mono">${key}</code>${dl}`);
+                } catch (e) { modal('<h3 class="hz-h text-xl font-bold text-white">Errore</h3><p class="text-sm text-slate-400 mt-3">' + e.message + '</p>'); }
+            };
+            render();
+        })();
+        // ===== HORIZON: news, satelliti, strumenti =====
+        (function () {
+            const $ = (x) => document.querySelector(x);
+            const NEWS = [
+                ['Promo', '16 nov 2026', 'Black Friday Horizon: -10% su tutti i piani', 'Sconto applicato in automatico nello shop fino al 30 novembre.', 'Dal 1° dicembre scatta lo sconto di Natale del 5%, valido fino al 6 gennaio. Lo sconto compare direttamente sui prezzi dei piani e viene riportato nella richiesta d\'ordine.'],
+                ['Software', '16 nov 2026', 'Aura Sound resta gratuito fino al 2 gennaio 2027', 'Poi arriva Aura+ a € 3,99 al mese con licenza univoca.', 'Fino al 2 gennaio 2027 il software è freeware. Dal 3 gennaio l\'abbonamento Aura+ genera una chiave AURA-… legata al tuo account Horizon. Il download resta su aurasound.it.'],
+                ['Tecnologia', 'Ryzn Engine', 'Overlay Rendering: come si ottiene un 8K percepito', 'Molti frame a bassa risoluzione, sovrapposti con micro-spostamenti.', 'Ogni fotogramma campiona la scena in un punto leggermente diverso. L\'occhio somma i fotogrammi nel tempo e ricostruisce il dettaglio: puoi provarlo nella demo della pagina Tecnologia.'],
+                ['Guida', 'Connettività', 'FWA, ponte radio o satellite: come scegliere nelle zone remote', 'Ogni tecnologia ha il suo punto di forza.', 'Il FWA è rapido da attivare dove c\'è una cella vicina; il ponte radio collega punti lontani in linea d\'aria; il satellite arriva ovunque ma dipende dalla visibilità del cielo e, se GEO, ha latenza maggiore.'],
+                ['Spazio', 'Satelliti', 'Perché i satelliti LEO hanno meno latenza', 'Conta la distanza che il segnale deve percorrere.', 'Un satellite LEO a circa 550 km richiede pochi millisecondi di propagazione; un GEO a 35.786 km supera i 400 ms di andata e ritorno. Prova il calcolatore nella pagina Tecnologia.'],
+                ['Espansione', '15 feb 2027', 'Las Vegas Hub: apertura prevista il 15 febbraio 2027', 'Un nuovo punto di presenza del gruppo oltreoceano.', 'La roadmap del gruppo prevede l\'apertura il 15 febbraio 2027. Gli aggiornamenti saranno pubblicati qui.']
+            ];
+            const N = $('#hzNews'); if (N) { N.innerHTML = NEWS.map((n, i) => `<article class="hz-card ${i === 0 ? 'lg:col-span-2' : ''}"><div class="flex justify-between hz-mono text-[10px]"><span class="text-[#5eead4]">${n[0].toUpperCase()}</span><span class="text-slate-500">${n[1]}</span></div><h3 class="font-bold text-white text-lg mt-3 leading-snug">${n[2]}</h3><p class="text-sm text-slate-400 mt-2">${n[3]}</p><p class="nbody hidden text-sm text-slate-300 mt-3 leading-relaxed">${n[4]}</p><button class="nbtn mt-4 text-xs font-bold text-[#8ab4ff]">Leggi di più →</button></article>`).join('');
+                N.addEventListener('click', (e) => { const b = e.target.closest('.nbtn'); if (!b) return; const p = b.parentElement.querySelector('.nbody'); p.classList.toggle('hidden'); b.textContent = p.classList.contains('hidden') ? 'Leggi di più →' : 'Chiudi ←'; }); }
+
+            // Orologi sedi
+            const CL = [['Stănești', 'Europe/Bucharest'], ['Italia', 'Europe/Rome'], ['Las Vegas', 'America/Los_Angeles']];
+            const ck = $('#hzClocks'), tick = () => { ck.innerHTML = CL.map(c => `<div><div class="text-2xl font-black text-white hz-mono">${new Intl.DateTimeFormat('it-IT', { timeZone: c[1], hour: '2-digit', minute: '2-digit' }).format(new Date())}</div><div class="text-[11px] text-slate-500">${c[0]}</div></div>`).join(''); };
+            if (ck) { tick(); setInterval(() => { if (document.getElementById('page-tech').classList.contains('on')) tick(); }, 15000); }
+
+            // Calcolatore latenza
+            const lt = $('#lcT'), ld = $('#lcD'), calc = () => { const t = lt.value, d = +ld.value; $('#lcDv').textContent = d; $('#lcD').disabled = t === 'l' || t === 'g';
+                const ms = t === 'f' ? 2 * d / 200 : t === 'r' ? 2 * d / 300 : t === 'l' ? 4 * 550 / 300 : 4 * 35786 / 300; $('#lcO').textContent = ms.toFixed(ms < 10 ? 2 : 0) + ' ms'; };
+            if (lt) { lt.onchange = ld.oninput = calc; calc(); }
+
+            // Tracker satelliti
+            const cv = $('#satCv'); if (!cv) return; const cx = cv.getContext('2d'), W = 1000, H = 500, R = 6371, rad = Math.PI / 180;
+            const X = (lo) => (lo + 180) / 360 * W, Y = (la) => (90 - la) / 180 * H;
+            const LAND = [[[-168, 66], [-140, 70], [-95, 72], [-80, 63], [-62, 58], [-55, 48], [-70, 42], [-80, 25], [-97, 26], [-105, 20], [-118, 32], [-124, 42], [-125, 50], [-140, 59]], [[-80, 10], [-60, 10], [-35, -6], [-40, -22], [-58, -38], [-68, -54], [-75, -45], [-71, -20], [-81, -5]], [[-10, 36], [-9, 43], [0, 50], [10, 57], [30, 70], [60, 70], [100, 78], [140, 72], [170, 68], [160, 55], [140, 45], [122, 30], [110, 20], [100, 8], [90, 22], [72, 20], [58, 24], [45, 13], [35, 28], [28, 36], [12, 38], [-5, 36]], [[-17, 21], [-6, 36], [10, 37], [32, 31], [43, 12], [51, 11], [40, -15], [32, -28], [18, -34], [12, -17], [9, 4], [-8, 5], [-17, 14]], [[114, -22], [130, -12], [142, -11], [153, -27], [146, -39], [130, -32], [115, -34]], [[-55, 60], [-20, 70], [-30, 83], [-65, 80]]];
+            const SEDI = [['Stănești', 44.28, 25.93], ['San Gervasio B.', 45.30, 10.17], ['Alfianello', 45.27, 10.07], ['Las Vegas', 36.17, -115.14]];
+            const SIM = [['ISS (simulata)', 51.6, 5576, 408, 0], ['Orbita LEO 53° (simulata)', 53, 5700, 550, 2], ['Orbita polare (simulata)', 97.6, 5900, 600, 4]];
+            let sats = null, live = false, sel = 0, vis = false, timer = 0;
+            const sim = (o, t) => { const i = o[1] * rad, u = 2 * Math.PI * t / o[2] + o[4], la = Math.asin(Math.sin(i) * Math.sin(u)) / rad; let lo = (Math.atan2(Math.cos(i) * Math.sin(u), Math.cos(u)) - 2 * Math.PI * t / 86164) / rad; lo = ((lo + 540) % 360) - 180; return { lat: la, lon: lo, alt: o[3], vel: 2 * Math.PI * (R + o[3]) / o[2] }; };
+            const live1 = (rec, d) => { const pv = satellite.propagate(rec, d); if (!pv.position) return null; const g = satellite.gstime(d), p = satellite.eciToGeodetic(pv.position, g), v = pv.velocity; return { lat: p.latitude / rad, lon: ((satellite.degreesLong(p.longitude) + 540) % 360) - 180, alt: p.height, vel: Math.hypot(v.x, v.y, v.z) }; };
+            const pos = (i, d) => live ? live1(sats[i].rec, d) : sim(SIM[i], d.getTime() / 1000);
+            const dist = (a, b, c, e) => { const s1 = Math.sin((c - a) * rad / 2), s2 = Math.sin((e - b) * rad / 2); return 2 * R * Math.asin(Math.sqrt(s1 * s1 + Math.cos(a * rad) * Math.cos(c * rad) * s2 * s2)); };
+            function draw() { if (!vis) return; const d = new Date(), P = pos(sel, d); if (!P) return;
+                cx.fillStyle = '#05070d'; cx.fillRect(0, 0, W, H); cx.fillStyle = 'rgba(138,180,255,.12)'; cx.strokeStyle = 'rgba(138,180,255,.35)'; LAND.forEach(poly => { cx.beginPath(); poly.forEach((q, i) => i ? cx.lineTo(X(q[0]), Y(q[1])) : cx.moveTo(X(q[0]), Y(q[1]))); cx.closePath(); cx.fill(); cx.stroke(); });
+                cx.strokeStyle = 'rgba(255,255,255,.07)'; cx.beginPath(); for (let lo = -180; lo <= 180; lo += 30) { cx.moveTo(X(lo), 0); cx.lineTo(X(lo), H); } for (let la = -90; la <= 90; la += 30) { cx.moveTo(0, Y(la)); cx.lineTo(W, Y(la)); } cx.stroke();
+                cx.strokeStyle = 'rgba(251,191,36,.6)'; cx.beginPath(); let prev = null; for (let m = 0; m <= 90; m += 1) { const q = pos(sel, new Date(d.getTime() + m * 60000)); if (!q) continue; if (prev && Math.abs(q.lon - prev) > 180) cx.moveTo(X(q.lon), Y(q.lat)); else m ? cx.lineTo(X(q.lon), Y(q.lat)) : cx.moveTo(X(q.lon), Y(q.lat)); prev = q.lon; } cx.stroke();
+                cx.font = '14px JetBrains Mono,monospace'; SEDI.forEach(q => { cx.fillStyle = '#60a5fa'; cx.beginPath(); cx.arc(X(q[2]), Y(q[1]), 4, 0, 7); cx.fill(); cx.fillStyle = '#cbd5e1'; cx.fillText(q[0], X(q[2]) + 7, Y(q[1]) - 6); });
+                cx.fillStyle = '#fbbf24'; cx.beginPath(); cx.arc(X(P.lon), Y(P.lat), 6, 0, 7); cx.fill();
+                const dg = dist(P.lat, P.lon, 45.30, 10.17), foot = R * Math.acos(R / (R + P.alt));
+                $('#sLat').textContent = P.lat.toFixed(2) + '°'; $('#sLon').textContent = P.lon.toFixed(2) + '°'; $('#sAlt').textContent = Math.round(P.alt) + ' km'; $('#sVel').textContent = P.vel.toFixed(2) + ' km/s'; $('#sDst').textContent = Math.round(dg) + ' km';
+                $('#sOver').textContent = dg < foot ? '● Il satellite è sopra l\'orizzonte di San Gervasio Bresciano.' : ''; }
+            const start = () => { if (timer) return; draw(); timer = setInterval(draw, 1000); };
+            const fill = () => { $('#satSel').innerHTML = (live ? sats.map(x => x.name) : SIM.map(x => x[0])).map((n, i) => `<option value="${i}">${n}</option>`).join(''); $('#satSrc').textContent = live ? 'DATI REALI · CelesTrak · SGP4' : 'SIMULAZIONE · orbite approssimate (dati reali non raggiungibili)'; };
+            async function init() {
+                try { await new Promise((ok, ko) => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/satellite.js/5.0.0/satellite.min.js'; sc.onload = ok; sc.onerror = ko; document.head.appendChild(sc); });
+                    const c = new AbortController(); setTimeout(() => c.abort(), 7000);
+                    const tx = await (await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=tle', { signal: c.signal })).text();
+                    const L = tx.trim().split(/\r?\n/).map(x => x.trim()); const out = []; for (let i = 0; i + 2 < L.length && out.length < 12; i += 3) out.push({ name: L[i], rec: satellite.twoline2satrec(L[i + 1], L[i + 2]) });
+                    if (out.length) { sats = out; live = true; }
+                } catch (e) { live = false; }
+                fill(); $('#satSel').onchange = (e) => { sel = +e.target.value; draw(); }; start(); }
+            let inited = false; new IntersectionObserver((e) => { vis = e[0].isIntersecting; if (vis && !inited) { inited = true; init(); } else if (vis) start(); else { clearInterval(timer); timer = 0; } }, { threshold: .1 }).observe(cv);
+            if (window.lucide) lucide.createIcons();
+        })();
     </script>
 </body>
 </html>
